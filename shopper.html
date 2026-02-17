@@ -1,0 +1,2577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ping Broadband — Sales Intelligence</title>
+<style>
+:root {
+  --bg-primary: #0f1724;
+  --bg-secondary: #1a2332;
+  --bg-card: #1e2a3a;
+  --bg-card-hover: #243447;
+  --bg-input: #162030;
+  --border: #2a3a4e;
+  --border-active: #4a9eff;
+  --text-primary: #e8edf4;
+  --text-secondary: #8899aa;
+  --text-muted: #5a6a7a;
+  --accent: #4a9eff;
+  --accent-hover: #6ab0ff;
+  --accent-dim: rgba(74,158,255,0.15);
+  --success: #34d399;
+  --success-dim: rgba(52,211,153,0.15);
+  --warning: #fbbf24;
+  --warning-dim: rgba(251,191,36,0.15);
+  --danger: #f87171;
+  --danger-dim: rgba(248,113,113,0.15);
+  --purple: #a78bfa;
+  --sidebar-w: 240px;
+  --header-h: 56px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+/* HEADER */
+#header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: var(--header-h);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 20px; gap: 12px;
+  transition: background .4s;
+}
+#header .logo { font-weight: 700; font-size: 15px; color: var(--accent); white-space: nowrap; }
+#header .breadcrumbs {
+  display: flex; align-items: center; gap: 8px; flex: 1;
+  font-size: 13px; color: var(--text-secondary); overflow-x: auto;
+  white-space: nowrap; scrollbar-width: none;
+}
+#header .breadcrumbs::-webkit-scrollbar { display: none; }
+.crumb { background: var(--bg-card); padding: 3px 10px; border-radius: 20px; font-size: 12px; }
+.crumb.active { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent); }
+.score-badge {
+  padding: 4px 14px; border-radius: 20px; font-weight: 700; font-size: 13px;
+  min-width: 80px; text-align: center;
+}
+.score-low { background: var(--danger-dim); color: var(--danger); }
+.score-mid { background: var(--warning-dim); color: var(--warning); }
+.score-high { background: var(--success-dim); color: var(--success); }
+#objection-btn {
+  background: var(--danger-dim); color: var(--danger); border: 1px solid var(--danger);
+  padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px;
+  font-weight: 600; white-space: nowrap; transition: all .2s;
+}
+#objection-btn:hover { background: var(--danger); color: #fff; }
+/* SIDEBAR */
+#sidebar {
+  position: fixed; top: var(--header-h); left: 0; bottom: 0;
+  width: var(--sidebar-w); background: var(--bg-secondary);
+  border-right: 1px solid var(--border); padding: 16px 12px;
+  overflow-y: auto; z-index: 90;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.sidebar-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 6px; }
+.sidebar-progress { font-size: 13px; color: var(--accent); margin-bottom: 16px; font-weight: 600; }
+.check-item {
+  display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+  border-radius: var(--radius); cursor: pointer; font-size: 13px;
+  color: var(--text-secondary); transition: all .2s; margin-bottom: 2px;
+}
+.check-item:hover { background: var(--bg-card); color: var(--text-primary); }
+.check-item.active { background: var(--accent-dim); color: var(--accent); font-weight: 600; }
+.check-item.completed { color: var(--success); }
+.check-item.skipped { color: var(--text-muted); text-decoration: line-through; }
+.check-icon {
+  width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  font-size: 11px; transition: all .2s;
+}
+.check-item.completed .check-icon { border-color: var(--success); background: var(--success); color: #fff; }
+.check-item.active .check-icon { border-color: var(--accent); box-shadow: 0 0 8px var(--accent); }
+.check-item.in-progress .check-icon { border-color: var(--warning); background: var(--warning-dim); }
+/* MAIN */
+#main {
+  margin-left: var(--sidebar-w); margin-top: var(--header-h);
+  padding: 24px 32px 120px 32px; max-width: 960px;
+}
+.section {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 28px; margin-bottom: 24px;
+  transition: border-color .3s;
+}
+.section.highlight { border-color: var(--accent); box-shadow: 0 0 20px rgba(74,158,255,0.1); }
+.section-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+  color: var(--accent); margin-bottom: 4px; font-weight: 600;
+}
+.section-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+.script-block {
+  background: var(--bg-input); border-left: 3px solid var(--accent);
+  padding: 14px 18px; border-radius: 0 var(--radius) var(--radius) 0;
+  margin: 12px 0; font-size: 14px; line-height: 1.7; color: var(--text-primary);
+}
+.script-block .var { color: var(--accent); font-weight: 600; }
+.script-block .coaching { color: var(--warning); font-size: 12px; font-style: italic; display: block; margin-top: 8px; }
+.coach-note {
+  background: var(--warning-dim); border: 1px solid rgba(251,191,36,0.3);
+  padding: 10px 14px; border-radius: var(--radius); font-size: 12px;
+  color: var(--warning); margin: 12px 0;
+}
+/* FORM ELEMENTS */
+input[type="text"], input[type="number"], input[type="date"], input[type="email"], input[type="tel"] {
+  background: var(--bg-input); border: 1px solid var(--border); color: var(--text-primary);
+  padding: 8px 14px; border-radius: var(--radius); font-size: 14px;
+  outline: none; transition: border .2s; width: 100%;
+}
+input:focus { border-color: var(--accent); }
+.input-row { display: flex; gap: 12px; margin: 10px 0; align-items: center; }
+.input-row label { font-size: 13px; color: var(--text-secondary); white-space: nowrap; min-width: 70px; }
+.input-row input { flex: 1; }
+/* TOGGLE */
+.toggle-group { display: inline-flex; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); margin: 8px 0; }
+.toggle-btn {
+  padding: 8px 20px; font-size: 13px; cursor: pointer; border: none;
+  background: var(--bg-input); color: var(--text-secondary); transition: all .2s;
+}
+.toggle-btn.active { background: var(--accent); color: #fff; font-weight: 600; }
+/* PILL BUTTONS */
+.pill-group { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.pill {
+  padding: 8px 16px; border-radius: 20px; font-size: 13px; cursor: pointer;
+  background: var(--bg-input); border: 1px solid var(--border); color: var(--text-secondary);
+  transition: all .2s; user-select: none;
+}
+.pill:hover { border-color: var(--accent); color: var(--text-primary); }
+.pill.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.pill.multi-selected { background: var(--purple); border-color: var(--purple); color: #fff; }
+/* SCORE BUTTONS */
+.score-group { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+.score-btn {
+  width: 48px; height: 48px; border-radius: var(--radius); border: 2px solid var(--border);
+  background: var(--bg-input); color: var(--text-primary); font-size: 18px; font-weight: 700;
+  cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center;
+}
+.score-btn:hover { border-color: var(--accent); transform: scale(1.05); }
+.score-btn.selected { transform: scale(1.1); }
+.score-btn.s-low { border-color: var(--danger); background: var(--danger-dim); color: var(--danger); }
+.score-btn.s-mid { border-color: var(--warning); background: var(--warning-dim); color: var(--warning); }
+.score-btn.s-high { border-color: var(--success); background: var(--success-dim); color: var(--success); }
+/* PAIN TILES */
+.pain-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 10px; margin: 12px 0; }
+.pain-tile {
+  background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px; cursor: pointer; transition: all .25s; font-size: 13px;
+}
+.pain-tile:hover { border-color: var(--accent); background: var(--bg-card-hover); }
+.pain-tile.selected { border-color: var(--accent); background: var(--accent-dim); }
+.pain-tile .freq { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.pain-sub-options { display: none; margin: 12px 0; padding: 12px; background: var(--bg-input); border-radius: var(--radius); border: 1px solid var(--border); }
+.pain-sub-options.open { display: block; animation: slideDown .3s ease; }
+.sub-option {
+  padding: 10px 14px; border-radius: var(--radius); cursor: pointer; font-size: 13px;
+  border: 1px solid transparent; transition: all .2s; margin-bottom: 6px;
+  color: var(--text-secondary);
+}
+.sub-option:hover { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--border); }
+.sub-option.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.sub-option .quote { font-size: 11px; color: var(--text-muted); font-style: italic; display: block; margin-top: 2px; }
+/* SPLIT LAYOUT */
+.split { display: grid; grid-template-columns: 65fr 35fr; gap: 20px; }
+.empathy-panel {
+  background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px; position: sticky; top: calc(var(--header-h) + 24px); align-self: start;
+}
+.empathy-panel h3 { font-size: 14px; margin-bottom: 12px; color: var(--purple); }
+.empathy-item {
+  padding: 8px 12px; font-size: 13px; border-radius: var(--radius); cursor: pointer;
+  transition: background .2s; color: var(--text-secondary); margin-bottom: 4px;
+}
+.empathy-item:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+.empathy-item .when { font-size: 11px; color: var(--text-muted); display: block; }
+/* QUESTION CARDS */
+.q-card {
+  background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px; margin-bottom: 12px; transition: border-color .2s;
+}
+.q-card.answered { border-color: var(--success); }
+.q-card .q-num { font-size: 11px; color: var(--accent); font-weight: 700; }
+.q-card .q-text { font-size: 14px; margin: 4px 0 10px; }
+.q-card .q-script { font-size: 13px; color: var(--text-secondary); font-style: italic; margin-bottom: 10px; }
+/* BENEFIT CARD */
+.benefit-card {
+  background: var(--bg-input); border: 1px solid var(--accent); border-radius: var(--radius);
+  padding: 16px; margin-bottom: 12px;
+}
+.benefit-card.secondary { border-color: var(--border); opacity: 0.7; }
+.benefit-card .benefit-title { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+/* PLAN CARDS */
+.plan-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 12px 0; }
+.plan-card {
+  background: var(--bg-input); border: 2px solid var(--border); border-radius: var(--radius-lg);
+  padding: 20px; text-align: center; cursor: pointer; transition: all .25s;
+}
+.plan-card:hover { border-color: var(--accent); }
+.plan-card.selected { border-color: var(--accent); background: var(--accent-dim); }
+.plan-card.recommended { position: relative; }
+.plan-card.recommended::after {
+  content: 'RECOMMENDED'; position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #fff; font-size: 10px; padding: 2px 10px;
+  border-radius: 10px; font-weight: 700; letter-spacing: 1px;
+}
+.plan-card .plan-name { font-size: 16px; font-weight: 700; }
+.plan-card .plan-speed { font-size: 13px; color: var(--text-secondary); margin: 4px 0; }
+.plan-card .plan-price { font-size: 28px; font-weight: 700; color: var(--accent); }
+.plan-card .plan-price span { font-size: 14px; font-weight: 400; color: var(--text-secondary); }
+/* ROI BOX */
+.roi-box {
+  background: var(--success-dim); border: 1px solid var(--success);
+  border-radius: var(--radius-lg); padding: 20px; text-align: center; margin: 16px 0;
+}
+.roi-big { font-size: 36px; font-weight: 700; color: var(--success); }
+.roi-sub { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+/* RESPONSE BUTTONS */
+.response-group { display: flex; gap: 8px; margin: 12px 0; }
+.resp-btn {
+  padding: 10px 20px; border-radius: var(--radius); cursor: pointer; font-size: 13px;
+  border: 1px solid var(--border); background: var(--bg-input); color: var(--text-secondary);
+  transition: all .2s; font-weight: 500;
+}
+.resp-btn:hover { border-color: var(--accent); color: var(--text-primary); }
+.resp-btn.positive { border-color: var(--success); color: var(--success); }
+.resp-btn.positive:hover { background: var(--success); color: #fff; }
+.resp-btn.neutral { border-color: var(--warning); color: var(--warning); }
+.resp-btn.objection { border-color: var(--danger); color: var(--danger); }
+.resp-btn.selected { font-weight: 700; }
+.resp-btn.positive.selected { background: var(--success); color: #fff; }
+.resp-btn.neutral.selected { background: var(--warning); color: #000; }
+.resp-btn.objection.selected { background: var(--danger); color: #fff; }
+/* OBJECTION PANEL */
+#objection-overlay {
+  position: fixed; top: 0; right: -480px; bottom: 0; width: 480px; z-index: 200;
+  background: var(--bg-secondary); border-left: 1px solid var(--border);
+  box-shadow: -10px 0 40px rgba(0,0,0,0.5); transition: right .35s ease;
+  display: flex; flex-direction: column;
+}
+#objection-overlay.open { right: 0; }
+#objection-overlay .panel-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+#objection-overlay .panel-header h2 { font-size: 16px; color: var(--danger); }
+.panel-close {
+  background: none; border: 1px solid var(--border); color: var(--text-secondary);
+  width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center; transition: all .2s;
+}
+.panel-close:hover { border-color: var(--danger); color: var(--danger); }
+#objection-overlay .panel-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+.obj-tile {
+  padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius);
+  cursor: pointer; margin-bottom: 8px; font-size: 13px; color: var(--text-secondary);
+  transition: all .2s;
+}
+.obj-tile:hover { border-color: var(--danger); color: var(--text-primary); background: var(--bg-card); }
+.obj-tile.active { border-color: var(--danger); background: var(--danger-dim); color: var(--danger); }
+.obj-detail { display: none; padding: 16px 0; }
+.obj-detail.open { display: block; animation: slideDown .3s ease; }
+.obj-step { margin-bottom: 14px; }
+.obj-step-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 4px; }
+.obj-step-label.validate { color: var(--accent); }
+.obj-step-label.isolate { color: var(--warning); }
+.obj-step-label.reframe { color: var(--success); }
+.obj-step-label.reclose { color: var(--purple); }
+/* COMPETITOR PANEL */
+#competitor-overlay {
+  position: fixed; top: 0; right: -520px; bottom: 0; width: 520px; z-index: 200;
+  background: var(--bg-secondary); border-left: 1px solid var(--border);
+  box-shadow: -10px 0 40px rgba(0,0,0,0.5); transition: right .35s ease;
+  display: flex; flex-direction: column;
+}
+#competitor-overlay.open { right: 0; }
+#competitor-overlay .panel-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+#competitor-overlay .panel-header h2 { font-size: 16px; color: var(--warning); }
+.comp-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 12px 0; }
+.comp-table th { text-align: left; padding: 8px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 11px; text-transform: uppercase; }
+.comp-table td { padding: 8px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+.comp-table td:last-child { color: var(--success); }
+/* BACKDROP */
+#backdrop {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 150;
+  background: rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity .3s;
+}
+#backdrop.open { opacity: 1; pointer-events: auto; }
+/* NEXT BUTTON */
+.next-btn {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 16px;
+  padding: 10px 24px; background: var(--accent); color: #fff; border: none;
+  border-radius: var(--radius); cursor: pointer; font-size: 13px; font-weight: 600;
+  transition: background .2s;
+}
+.next-btn:hover { background: var(--accent-hover); }
+/* ANIMATIONS */
+@keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes flash { 0%,100% { border-color: var(--border); } 50% { border-color: var(--accent); box-shadow: 0 0 16px rgba(74,158,255,0.2); } }
+.flash-update { animation: flash .6s ease; }
+/* PROPERTY / HOUSEKEEPING */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-group { margin-bottom: 12px; }
+.form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+/* WRAP-UP */
+.summary-list { list-style: none; }
+.summary-list li { padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 14px; display: flex; gap: 10px; }
+.summary-list li .lbl { color: var(--text-muted); min-width: 120px; font-size: 12px; }
+.complete-btn {
+  display: block; width: 100%; padding: 16px; margin-top: 20px;
+  background: var(--success); color: #fff; border: none; border-radius: var(--radius-lg);
+  font-size: 16px; font-weight: 700; cursor: pointer; transition: background .2s;
+}
+.complete-btn:hover { background: #2fbc87; }
+/* HIDDEN */
+.hidden { display: none !important; }
+/* COMPETITOR BTN */
+#competitor-btn {
+  position: fixed; bottom: 20px; right: 20px; z-index: 80;
+  background: var(--warning); color: #000; border: none; padding: 10px 18px;
+  border-radius: 24px; font-size: 13px; font-weight: 700; cursor: pointer;
+  box-shadow: var(--shadow); transition: transform .2s;
+}
+#competitor-btn:hover { transform: scale(1.05); }
+#competitor-btn.hidden { display: none; }
+/* RESPONSIVE */
+@media (max-width:1024px) {
+  #sidebar { display: none; }
+  #main { margin-left: 0; }
+  .split { grid-template-columns: 1fr; }
+  .plan-grid { grid-template-columns: 1fr; }
+  #objection-overlay, #competitor-overlay { width: 100%; right: -100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div class="logo">PING BROADBAND</div>
+  <div class="breadcrumbs" id="breadcrumbs">
+    <span class="crumb" id="bc-name">Lead Name</span>
+    <span class="crumb" id="bc-address">Address</span>
+    <span class="crumb" id="bc-provider">Provider</span>
+    <span class="crumb" id="bc-score">Score: —</span>
+    <span class="crumb" id="bc-pain">Pain: —</span>
+    <span class="crumb" id="bc-priority">Priority: —</span>
+  </div>
+  <button id="objection-btn" onclick="openObjectionPanel()">Handle Objection</button>
+</div>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="sidebar-title">Call Progress</div>
+  <div class="sidebar-progress" id="progress-text">0 / 15 complete</div>
+  <div id="checklist"></div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main">
+
+<!-- ==================== SECTION 1: OPENING ==================== -->
+<div class="section" id="sec-opening" data-check="opening">
+  <div class="section-label">Section 1</div>
+  <div class="section-title">Opening</div>
+
+  <div class="toggle-group" id="call-type-toggle">
+    <div class="toggle-btn active" data-val="outbound" onclick="setCallType('outbound')">Outbound</div>
+    <div class="toggle-btn" data-val="inbound" onclick="setCallType('inbound')">Inbound</div>
+  </div>
+
+  <div class="input-row">
+    <label>Name</label>
+    <input type="text" id="inp-name" placeholder="First name" oninput="updateState('lead_name',this.value)">
+  </div>
+  <div class="input-row">
+    <label>Address</label>
+    <input type="text" id="inp-address" placeholder="Street address" oninput="updateState('lead_address',this.value)">
+  </div>
+
+  <div id="script-opening-outbound">
+    <div class="script-block">
+      <strong>Step 1 — Confirm Identity:</strong><br>
+      "Hey, is this <span class="var" data-var="lead_name">[Name]</span>?"<br>
+      <span class="coaching">Wait for "yes" — don't say another word until you hear it.</span>
+    </div>
+    <div class="script-block">
+      <strong>Step 2 — Establish Context:</strong><br>
+      "Hey <span class="var" data-var="lead_name">[Name]</span>, it's [Your Name]. You were looking into internet options for <span class="var" data-var="lead_address">[Address]</span> recently, right?"<br>
+      <span class="coaching">Wait for "yes" — two yeses in 10 seconds creates momentum.</span>
+    </div>
+    <div class="script-block">
+      <strong>Step 3 — Recording + Straight into Discovery:</strong><br>
+      "Awesome. Just a heads up, the call is recorded. And just so I can point you in the right direction — on a scale of 1 to 10, how would you rate your current internet?"<br>
+      <span class="coaching">Do NOT ask permission to continue. Go straight from recording disclosure into the 1-10 question in one breath with no pause.</span>
+    </div>
+  </div>
+
+  <div id="script-opening-inbound" class="hidden">
+    <div class="script-block">
+      <strong>Step 1 — Warm Greeting:</strong><br>
+      "Thanks for calling Ping Broadband, this is [Your Name]. Just so you know, this call is recorded. How can I help you today?"
+    </div>
+    <div class="script-block">
+      <strong>Step 2 — Redirect into Discovery:</strong><br>
+      "Got it, I can definitely help with that. Before I pull anything up — on a scale of 1 to 10, how would you rate your current provider?"
+    </div>
+  </div>
+
+  <div class="coach-note">If they say they're busy: "No worries — is later today or tomorrow better?" Both answers keep the lead alive.</div>
+
+  <button class="next-btn" onclick="scrollToSection('sec-score')">Continue to Score &darr;</button>
+</div>
+
+<!-- ==================== SECTION 2: SCORE ==================== -->
+<div class="section" id="sec-score" data-check="score">
+  <div class="section-label">Section 2</div>
+  <div class="section-title">Satisfaction Score</div>
+  <p style="font-size:14px;color:var(--text-secondary);margin-bottom:8px">"On a scale of 1 to 10, how would you rate your current internet?"</p>
+
+  <div class="score-group" id="score-buttons">
+    <div class="score-btn" onclick="setScore(1)">1</div>
+    <div class="score-btn" onclick="setScore(2)">2</div>
+    <div class="score-btn" onclick="setScore(3)">3</div>
+    <div class="score-btn" onclick="setScore(4)">4</div>
+    <div class="score-btn" onclick="setScore(5)">5</div>
+    <div class="score-btn" onclick="setScore(6)">6</div>
+    <div class="score-btn" onclick="setScore(7)">7</div>
+    <div class="score-btn" onclick="setScore(8)">8</div>
+    <div class="score-btn" onclick="setScore(9)">9</div>
+    <div class="score-btn" onclick="setScore(10)">10</div>
+  </div>
+
+  <div id="score-branch" class="hidden">
+    <div class="script-block" id="score-branch-script"></div>
+  </div>
+
+  <button class="next-btn" onclick="scrollToSection('sec-pain')">Continue to Pain Deepener &darr;</button>
+</div>
+
+<!-- ==================== SECTION 3: PAIN DEEPENER + EMPATHY ==================== -->
+<div class="section" id="sec-pain" data-check="pain">
+  <div class="section-label">Section 3</div>
+  <div class="section-title">Pain Deepener + Empathy Toolkit</div>
+
+  <div class="split">
+    <div>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">Click the pain category the customer describes. Sub-options expand below.</p>
+      <div class="pain-grid" id="pain-tiles"></div>
+      <div id="pain-sub-container"></div>
+
+      <div id="pain-deepener-questions" class="hidden" style="margin-top:16px">
+        <div class="section-label">Pain Deepener Questions</div>
+        <div id="pain-deepener-script"></div>
+      </div>
+
+      <div style="margin-top:16px">
+        <div class="section-label">Pain Quantifiers</div>
+        <div style="margin-top:8px">
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:6px">How often?</p>
+          <div class="pill-group">
+            <div class="pill" onclick="setPainFreq('daily')">Every day</div>
+            <div class="pill" onclick="setPainFreq('few_per_week')">Few times/week</div>
+            <div class="pill" onclick="setPainFreq('weekly')">Weekly</div>
+            <div class="pill" onclick="setPainFreq('monthly')">Monthly</div>
+          </div>
+        </div>
+        <div style="margin-top:10px">
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:6px">How long has it been going on?</p>
+          <div class="pill-group">
+            <div class="pill" onclick="setPainDuration('weeks')">Weeks</div>
+            <div class="pill" onclick="setPainDuration('months')">Months</div>
+            <div class="pill" onclick="setPainDuration('over_a_year')">Over a year</div>
+            <div class="pill" onclick="setPainDuration('years')">Years</div>
+          </div>
+        </div>
+        <div style="margin-top:10px">
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:6px">"Have you talked to [Provider] about it?" <span style="color:var(--success);font-size:11px;font-weight:700">+20.1pp lift — only 7% of reps ask this!</span></p>
+          <div class="pill-group">
+            <div class="pill" onclick="setProviderFix('yes')">Yes — didn't help</div>
+            <div class="pill" onclick="setProviderFix('no')">No — never tried</div>
+          </div>
+          <div class="script-block" style="font-size:12px;margin-top:6px">If yes: "And nobody's been able to fix it this whole time?"<br>If no: "So they don't even know you're unhappy. That tells you something."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMPATHY TOOLKIT -->
+    <div class="empathy-panel">
+      <h3>Empathy Toolkit</h3>
+      <div class="empathy-item" onclick="this.style.background='var(--accent-dim)'">"I hear you."<span class="when">After any frustration</span></div>
+      <div class="empathy-item" onclick="this.style.background='var(--accent-dim)'">"That's frustrating."<span class="when">After a specific problem</span></div>
+      <div class="empathy-item" onclick="this.style.background='var(--accent-dim)'">"Yeah, that makes total sense."<span class="when">After they explain reasoning</span></div>
+      <div class="empathy-item" onclick="this.style.background='var(--accent-dim)'">"Wow, that's tough."<span class="when">After something painful</span></div>
+      <div class="empathy-item" onclick="this.style.background='var(--accent-dim)'">"Man, that's no fun."<span class="when">After a bad experience</span></div>
+      <div class="empathy-item" onclick="this.style.background='var(--accent-dim)'">"I get it — that would drive me crazy too."<span class="when">After repeated issues</span></div>
+      <div class="empathy-item" onclick="this.style.background='var(--accent-dim)'">"That's a big deal, especially with your situation."<span class="when">Impact on work/family</span></div>
+      <div class="empathy-item" onclick="this.style.background='var(--accent-dim)'">"Nobody should have to deal with that."<span class="when">After particularly bad experiences</span></div>
+      <div class="coach-note" style="margin-top:12px">
+        Pattern: They talk &rarr; you empathize &rarr; you ask the next question. Never skip the empathy step. 4+ per call = +20.9pp lift. Talk ratio under 40%!
+      </div>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="scrollToSection('sec-seven')">Continue to Must-Ask Seven &darr;</button>
+</div>
+
+<!-- ==================== SECTION 4: MUST-ASK SEVEN ==================== -->
+<div class="section" id="sec-seven" data-check="seven">
+  <div class="section-label">Section 4</div>
+  <div class="section-title">Must-Ask Seven</div>
+
+  <!-- Q1: Provider -->
+  <div class="q-card" id="q1-card">
+    <div class="q-num">Question 1 — Provider</div>
+    <div class="q-text">"Who are you with right now?"</div>
+    <input type="text" id="inp-provider" placeholder="e.g. Spectrum, Xfinity, Frontier, Starlink, T-Mobile..." oninput="updateState('current_provider',this.value)">
+    <div id="provider-intel-hint" class="hidden" style="margin-top:8px;font-size:12px;color:var(--warning)">Competitor intel loaded — click the yellow "Competitor Intel" button (bottom right) for battle card.</div>
+  </div>
+
+  <!-- Q2: Price -->
+  <div class="q-card" id="q2-card">
+    <div class="q-num">Question 2 — Price</div>
+    <div class="q-text">"What are you paying them per month?"</div>
+    <div class="input-row">
+      <label>$</label>
+      <input type="number" id="inp-price" placeholder="Monthly price" oninput="updateState('current_price',parseFloat(this.value)||0)">
+    </div>
+    <div class="coach-note">CRUCIAL for ROI/savings math later. Pin it down.</div>
+  </div>
+
+  <!-- Q3: Speed -->
+  <div class="q-card" id="q3-card">
+    <div class="q-num">Question 3 — Speed</div>
+    <div class="q-text">"Do you know what speed you're on?"</div>
+    <input type="text" id="inp-speed" placeholder="e.g. 100 Mbps, basic plan, don't know" oninput="updateState('current_speed',this.value)">
+    <div class="script-block" style="margin-top:8px;font-size:12px">If they don't know: "No worries, most people don't. Do you know if it's their basic plan or one of the higher-tier ones?"</div>
+  </div>
+
+  <!-- Q4: Household -->
+  <div class="q-card" id="q4-card">
+    <div class="q-num">Question 4 — Household</div>
+    <div class="q-text">"How many people are usually on at the same time?"</div>
+    <div class="pill-group">
+      <div class="pill" onclick="setHousehold(1)">1</div>
+      <div class="pill" onclick="setHousehold(2)">2</div>
+      <div class="pill" onclick="setHousehold(3)">3-4</div>
+      <div class="pill" onclick="setHousehold(5)">5-6</div>
+      <div class="pill" onclick="setHousehold(7)">7+</div>
+    </div>
+    <div class="coach-note" style="margin-top:8px">If 2+ people: IMMEDIATELY ask the Decision Maker Trap below.</div>
+    <!-- Inline DM Trap — auto-appears when household >= 2 -->
+    <div id="dm-trap-inline" class="hidden" style="margin-top:12px;padding:14px;background:rgba(167,139,250,0.1);border:1px solid var(--purple);border-radius:var(--radius)">
+      <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:6px">ASK NOW — Decision Maker Trap</div>
+      <div class="script-block" style="border-left-color:var(--purple)">"And how does <span class="var" data-var="lead_name">your partner</span>'s [spouse/partner] feel about switching providers?"</div>
+      <input type="text" id="inp-dm-inline-feeling" placeholder="Their response..." oninput="updateState('spouse_feeling',this.value)" style="margin-top:8px">
+      <div class="coach-note" style="margin-top:6px">File this away. If they later say "I need to talk to my spouse," you neutralize it: "You mentioned they've been wanting to switch too."</div>
+    </div>
+  </div>
+
+  <!-- Q5: Usage -->
+  <div class="q-card" id="q5-card">
+    <div class="q-num">Question 5 — Usage</div>
+    <div class="q-text">"What does the household mainly use internet for?"</div>
+    <div class="pill-group" id="usage-pills">
+      <div class="pill" onclick="toggleUsage(this,'streaming')">Streaming</div>
+      <div class="pill" onclick="toggleUsage(this,'gaming')">Gaming</div>
+      <div class="pill" onclick="toggleUsage(this,'wfh')">Work from Home</div>
+      <div class="pill" onclick="toggleUsage(this,'browsing')">Browsing</div>
+      <div class="pill" onclick="toggleUsage(this,'smart_home')">Smart Home</div>
+      <div class="pill" onclick="toggleUsage(this,'school')">School</div>
+    </div>
+  </div>
+
+  <!-- Q6: Priority -->
+  <div class="q-card" id="q6-card">
+    <div class="q-num">Question 6 — Priority</div>
+    <div class="q-text">"Are you looking for faster speed, lower price, or a mix of both?"</div>
+    <div class="pill-group">
+      <div class="pill" onclick="setPriority('speed')">Faster Speed</div>
+      <div class="pill" onclick="setPriority('price')">Lower Price</div>
+      <div class="pill" onclick="setPriority('mix')">Mix of Both</div>
+    </div>
+  </div>
+
+  <!-- Q7: Trigger -->
+  <div class="q-card" id="q7-card">
+    <div class="q-num">Question 7 — The Trigger</div>
+    <div class="q-text">"What finally made you decide to look into something new?"</div>
+    <div class="pill-group">
+      <div class="pill" onclick="setTrigger('price_hike')">Price Hike</div>
+      <div class="pill" onclick="setTrigger('outage')">Bad Outage</div>
+      <div class="pill" onclick="setTrigger('referral')">Friend/Neighbor</div>
+      <div class="pill" onclick="setTrigger('moving')">Moving</div>
+    </div>
+    <input type="text" id="inp-trigger-other" placeholder="Other reason..." style="margin-top:8px" oninput="updateState('switch_trigger_text',this.value)">
+    <div id="trigger-response" class="hidden script-block" style="margin-top:8px"></div>
+  </div>
+
+  <!-- Decision Maker Trap -->
+  <div class="q-card" id="q-dm-card" style="border-color:var(--purple)">
+    <div class="q-num" style="color:var(--purple)">BONUS — Decision Maker Trap</div>
+    <div class="q-text">"Is it just you making this decision, or does someone else weigh in?"</div>
+    <div class="pill-group">
+      <div class="pill" onclick="setDecisionMaker('just_me')">Just Me</div>
+      <div class="pill" onclick="setDecisionMaker('spouse')">Spouse / Partner</div>
+      <div class="pill" onclick="setDecisionMaker('landlord')">Landlord</div>
+      <div class="pill" onclick="setDecisionMaker('roommate')">Roommate</div>
+    </div>
+    <div id="spouse-feeling-row" class="hidden" style="margin-top:10px">
+      <p style="font-size:13px;color:var(--purple)">"How does your partner feel about switching?"</p>
+      <input type="text" id="inp-spouse-feeling" placeholder="Their response..." oninput="updateState('spouse_feeling',this.value)">
+      <div class="coach-note" style="margin-top:6px">File this away. If they later say "I need to talk to my spouse," you neutralize it: "You mentioned they've been wanting to switch too."</div>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="scrollToSection('sec-value')">Continue to Value Match &darr;</button>
+</div>
+
+<!-- ==================== SECTION 5: VALUE MATCH ==================== -->
+<div class="section" id="sec-value" data-check="value">
+  <div class="section-label">Section 5</div>
+  <div class="section-title">Value Match</div>
+  <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">Auto-selected based on their pain. Lead with these two benefits — do NOT feature dump. (+25.3pp lift)</p>
+  <div id="value-benefits">
+    <div class="benefit-card" id="benefit-1">
+      <div class="benefit-title" id="benefit-1-title">Complete discovery first</div>
+      <div class="script-block" id="benefit-1-script">Benefits will auto-populate based on pain type selected above.</div>
+    </div>
+    <div class="benefit-card" id="benefit-2">
+      <div class="benefit-title" id="benefit-2-title">—</div>
+      <div class="script-block" id="benefit-2-script">—</div>
+    </div>
+  </div>
+  <div style="margin-top:12px">
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:6px">Other benefits to weave in naturally:</p>
+    <div class="pill-group">
+      <div class="pill" style="cursor:default;font-size:11px">Price Lock</div>
+      <div class="pill" style="cursor:default;font-size:11px">30-Day Guarantee</div>
+      <div class="pill" style="cursor:default;font-size:11px">No Contract</div>
+      <div class="pill" style="cursor:default;font-size:11px">Local Support</div>
+      <div class="pill" style="cursor:default;font-size:11px">Unlimited Data</div>
+      <div class="pill" style="cursor:default;font-size:11px">Low Latency</div>
+    </div>
+  </div>
+  <div class="coach-note">MANDATORY TRIAL CLOSE after each benefit — "Does that make sense?" / "That's really what you need, right?" Wait for confirmation before continuing.</div>
+  <button class="next-btn" onclick="scrollToSection('sec-future')">Continue to Future State &darr;</button>
+</div>
+
+<!-- ==================== SECTION 6: FUTURE STATE ==================== -->
+<div class="section" id="sec-future" data-check="future">
+  <div class="section-label">Section 6</div>
+  <div class="section-title">Future State</div>
+  <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px">Paint the picture. Invert their pain. (+30.6pp lift — half of winning calls include this, only 19.4% of losing calls do.)</p>
+  <div class="coach-note">Formula: Their pain &rarr; goes away &rarr; opposite of their pain &rarr; how their life is better.</div>
+  <div class="script-block" id="future-state-script">
+    Complete pain deepener above to auto-generate future state.
+  </div>
+  <div class="coach-note">MANDATORY TRIAL CLOSE: "That's really what you're looking for, right?"</div>
+  <button class="next-btn" onclick="scrollToSection('sec-roi')">Continue to ROI Math &darr;</button>
+</div>
+
+<!-- ==================== SECTION 7: ROI MATH ==================== -->
+<div class="section" id="sec-roi" data-check="roi">
+  <div class="section-label">Section 7</div>
+  <div class="section-title">ROI / Savings Math</div>
+  <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px">Winning reps do this 4x more often than losing reps. This is not optional.</p>
+
+  <div id="roi-content">
+    <div id="roi-needs-data" style="color:var(--text-muted);font-size:14px;padding:20px;text-align:center">
+      Enter their current price (Q2) and select a plan below to see savings math.
+    </div>
+    <div id="roi-calculated" class="hidden">
+      <div class="roi-box">
+        <div class="roi-big" id="roi-annual">$0</div>
+        <div class="roi-sub" id="roi-annual-label">saved per year</div>
+      </div>
+      <div class="script-block" id="roi-script"></div>
+    </div>
+  </div>
+  <button class="next-btn" onclick="scrollToSection('sec-rec')">Continue to Recommendation &darr;</button>
+</div>
+
+<!-- ==================== SECTION 8: RECOMMENDATION ==================== -->
+<div class="section" id="sec-rec" data-check="rec">
+  <div class="section-label">Section 8</div>
+  <div class="section-title">Recommendation + "Don't Cancel" + Trial Close</div>
+
+  <div class="plan-grid" id="plan-grid">
+    <div class="plan-card" onclick="selectPlan('starter')">
+      <div class="plan-name">Starter</div>
+      <div class="plan-speed">100 Mbps / 25 up</div>
+      <div class="plan-price">$49<span>.99/mo</span></div>
+      <p style="font-size:11px;color:var(--text-muted);margin-top:6px">1-2 people, browsing &amp; streaming</p>
+    </div>
+    <div class="plan-card" onclick="selectPlan('standard')">
+      <div class="plan-name">Standard</div>
+      <div class="plan-speed">250 Mbps / 50 up</div>
+      <div class="plan-price">$69<span>.99/mo</span></div>
+      <p style="font-size:11px;color:var(--text-muted);margin-top:6px">3-5 people, WFH + streaming</p>
+    </div>
+    <div class="plan-card" onclick="selectPlan('premium')">
+      <div class="plan-name">Premium</div>
+      <div class="plan-speed">500 Mbps / 100 up</div>
+      <div class="plan-price">$89<span>.99/mo</span></div>
+      <p style="font-size:11px;color:var(--text-muted);margin-top:6px">5+ people, gaming + WFH + 4K</p>
+    </div>
+  </div>
+
+  <div id="rec-script" class="hidden">
+    <div class="script-block" id="rec-script-text"></div>
+    <div class="script-block" style="border-left-color:var(--warning)">
+      <strong>"Don't Cancel" Positioning:</strong><br>
+      "And by the way — don't cancel <span class="var" data-var="current_provider">[Provider]</span> yet. Keep them running. Let us get you set up, try them both side by side, and see which one you like better. You've got 30 days — if we don't blow them away, you get every penny back and nothing changes for you."
+    </div>
+    <div style="margin-top:16px">
+      <strong style="color:var(--danger)">TRIAL CLOSE #1:</strong>
+      <div class="script-block" style="border-left-color:var(--danger)">"Sound like a plan?"</div>
+      <div class="response-group">
+        <button class="resp-btn positive" onclick="setTrialClose('yes')">Yes!</button>
+        <button class="resp-btn neutral" onclick="setTrialClose('hesitant')">Hesitant</button>
+        <button class="resp-btn objection" onclick="setTrialClose('objection')">Objection</button>
+      </div>
+    </div>
+  </div>
+  <button class="next-btn" onclick="scrollToSection('sec-close2')">Continue to Close #2 &darr;</button>
+</div>
+
+<!-- ==================== SECTION 9: CLOSE #2 ==================== -->
+<div class="section" id="sec-close2" data-check="close2">
+  <div class="section-label">Section 9</div>
+  <div class="section-title">Close #2 — Assumptive Scheduling</div>
+  <div class="coach-note">Do NOT ask "Would you like to sign up?" — that's a yes/no and you'll get a no. Assume the sale. Go straight to logistics.</div>
+
+  <div class="script-block">
+    "Perfect — for the tech to come out and get you set up, what works better for you: mornings or afternoons?"
+  </div>
+
+  <div class="pill-group" style="margin:12px 0">
+    <div class="pill" onclick="setTimeSlot('morning')" id="pill-morning">Mornings (9-10 AM)</div>
+    <div class="pill" onclick="setTimeSlot('afternoon')" id="pill-afternoon">Afternoons (1-3 PM or 3-6 PM)</div>
+  </div>
+
+  <div class="input-row">
+    <label>Install Date</label>
+    <input type="date" id="inp-install-date" oninput="updateState('install_date',this.value)">
+  </div>
+  <div class="input-row">
+    <label>Time Window</label>
+    <input type="text" id="inp-install-time" placeholder="e.g. 9-10 AM" oninput="updateState('install_time',this.value)">
+  </div>
+
+  <div style="margin-top:12px">
+    <div class="response-group">
+      <button class="resp-btn positive" onclick="setClose2('scheduled')">Scheduled!</button>
+      <button class="resp-btn neutral" onclick="setClose2('hesitant')">Hesitant</button>
+      <button class="resp-btn objection" onclick="setClose2('objection')">Objection</button>
+    </div>
+  </div>
+  <button class="next-btn" onclick="scrollToSection('sec-close3')">Continue &darr;</button>
+</div>
+
+<!-- ==================== SECTION 10: CLOSE #3 ==================== -->
+<div class="section" id="sec-close3" data-check="close3">
+  <div class="section-label">Section 10</div>
+  <div class="section-title">Close #3 — Anchor Close</div>
+  <div class="coach-note">Only needed if they hesitated at Close #2. Pull together everything from the call.</div>
+
+  <div class="script-block" id="anchor-close-script">
+    "I totally understand wanting to think about it. But you told me you're at a <span class="var" data-var="satisfaction_score">[Score]</span> with <span class="var" data-var="current_provider">[Provider]</span> because of <span class="var" data-var="pain_label">[their specific pain]</span>. This gets you to that 10 — and remember, don't cancel them yet. Just test us for 30 days, side by side. If we don't deliver, you get every penny back and you're right back where you started. Zero risk."
+  </div>
+
+  <div id="spouse-callback" class="hidden">
+    <div class="script-block" style="border-left-color:var(--purple)">
+      <strong>Decision Maker Callback:</strong><br>
+      <span id="spouse-callback-text">"And you mentioned your partner has been wanting to switch too — this gives you both a chance to test it out with zero risk."</span>
+    </div>
+  </div>
+
+  <div class="script-block">
+    <strong>Then go right back to scheduling:</strong><br>
+    "I've got a morning slot and an afternoon slot — which one works better for you?"
+  </div>
+
+  <div class="response-group">
+    <button class="resp-btn positive" onclick="setClose3('yes')">Let's Do It!</button>
+    <button class="resp-btn neutral" onclick="setClose3('hesitant')">Still Hesitant</button>
+    <button class="resp-btn objection" onclick="setClose3('hard_no')">Hard No — Set Follow-Up</button>
+  </div>
+  <button class="next-btn" onclick="scrollToSection('sec-referral')">Continue to Referral &darr;</button>
+</div>
+
+<!-- ==================== SECTION 11: REFERRAL ASK ==================== -->
+<div class="section" id="sec-referral" data-check="referral">
+  <div class="section-label">Section 11</div>
+  <div class="section-title">Referral Ask</div>
+  <div class="coach-note">Asked on 10.5% of sold calls, 0% of lost calls. Takes 15 seconds. Never skip on a sold call.</div>
+
+  <div class="script-block">
+    "Awesome, you're all set! Oh — quick question: do you know anyone else in the neighborhood dealing with the same kind of issues? We've got a referral program — if they sign up, you both get a free month of service."
+  </div>
+
+  <div class="response-group">
+    <button class="resp-btn positive" onclick="setReferral('got_name')">Got a Name</button>
+    <button class="resp-btn neutral" onclick="setReferral('not_now')">Not Right Now</button>
+    <button class="resp-btn" onclick="setReferral('skip')" style="border-color:var(--text-muted);color:var(--text-muted)">Skip</button>
+  </div>
+  <div id="referral-name-row" class="hidden" style="margin-top:10px">
+    <div class="input-row">
+      <label>Name</label>
+      <input type="text" id="inp-referral-name" placeholder="Referral name" oninput="updateState('referral_name',this.value)">
+    </div>
+    <div class="input-row">
+      <label>Phone</label>
+      <input type="tel" id="inp-referral-phone" placeholder="Their number" oninput="updateState('referral_phone',this.value)">
+    </div>
+    <div class="script-block">"That's great — I'll make sure you both get that free month. What's the best number for them?"</div>
+  </div>
+  <div id="referral-no-row" class="hidden" style="margin-top:10px">
+    <div class="script-block">"No worries at all! If anyone comes to mind later, just have them mention your name when they call in."</div>
+  </div>
+  <button class="next-btn" onclick="scrollToSection('sec-house')">Continue to Housekeeping &darr;</button>
+</div>
+
+<!-- ==================== SECTION 12: HOUSEKEEPING ==================== -->
+<div class="section" id="sec-house" data-check="house">
+  <div class="section-label">Section 12</div>
+  <div class="section-title">Housekeeping</div>
+  <div class="script-block">"Great, just a few quick things for the install team."</div>
+
+  <div style="margin-top:16px">
+    <div class="section-label">Property Details</div>
+    <div class="form-grid" style="margin-top:8px">
+      <div class="form-group">
+        <label>Home Type</label>
+        <div class="pill-group">
+          <div class="pill" onclick="setProperty(this,'home_type','single')">Single Family</div>
+          <div class="pill" onclick="setProperty(this,'home_type','mobile')">Mobile/Mfg</div>
+          <div class="pill" onclick="setProperty(this,'home_type','apartment')">Apartment</div>
+          <div class="pill" onclick="setProperty(this,'home_type','townhouse')">Townhouse</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Roof Type</label>
+        <div class="pill-group">
+          <div class="pill" onclick="setProperty(this,'roof_type','shingle')">Shingle</div>
+          <div class="pill" onclick="setProperty(this,'roof_type','metal')">Metal</div>
+          <div class="pill" onclick="setProperty(this,'roof_type','tile')">Tile</div>
+          <div class="pill" onclick="setProperty(this,'roof_type','flat')">Flat/TPO</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Stories</label>
+        <div class="pill-group">
+          <div class="pill" onclick="setProperty(this,'stories','1')">1</div>
+          <div class="pill" onclick="setProperty(this,'stories','2')">2</div>
+          <div class="pill" onclick="setProperty(this,'stories','3+')">3+</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Own or Rent</label>
+        <div class="pill-group">
+          <div class="pill" onclick="setProperty(this,'ownership','own')">Own</div>
+          <div class="pill" onclick="setProperty(this,'ownership','rent');document.getElementById('rent-notice').classList.remove('hidden')">Rent</div>
+        </div>
+        <div id="rent-notice" class="hidden script-block" style="margin-top:8px;border-left-color:var(--warning);font-size:13px">
+          "Got it — just a heads up, the install includes mounting equipment on the exterior of the building, so your landlord may need to know. Usually not an issue, but wanted to mention it."<br>
+          <span class="coaching">If they need landlord approval, offer to send info they can forward.</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Gate Code</label>
+        <input type="text" placeholder="If applicable" oninput="updateState('gate_code',this.value)">
+      </div>
+      <div class="form-group">
+        <label>Dogs?</label>
+        <div class="pill-group">
+          <div class="pill" onclick="setProperty(this,'dogs','yes')">Yes — call first</div>
+          <div class="pill" onclick="setProperty(this,'dogs','no')">No</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Special Instructions / Hazards</label>
+      <input type="text" placeholder="Notes for the tech..." oninput="updateState('install_notes',this.value)">
+    </div>
+  </div>
+
+  <div style="margin-top:20px">
+    <div class="section-label">Payment</div>
+    <div class="script-block">"Last thing — there's a one-time $169 setup fee that covers the equipment and professional installation. We take card, cash, or check — what works best?"</div>
+    <div class="coach-note">If they push back: "That covers the professional install plus the equipment — it's a one-time thing and then you're all set. Most people just put it on a card and knock it out. Want to do that?"</div>
+    <div class="form-grid" style="margin-top:10px">
+      <div class="form-group">
+        <label>Payment Option</label>
+        <div class="pill-group">
+          <div class="pill" onclick="setProperty(this,'payment','full')">Full Pay: $169</div>
+          <div class="pill" onclick="setProperty(this,'payment','installments')">3x $56.33</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Autopay?</label>
+        <div class="pill-group">
+          <div class="pill" onclick="setProperty(this,'autopay','yes')">Yes — $5 discount</div>
+          <div class="pill" onclick="setProperty(this,'autopay','no')">No — manual</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Email for Invoice</label>
+        <input type="email" placeholder="email@example.com" oninput="updateState('email',this.value)">
+      </div>
+      <div class="form-group">
+        <label>Best Contact Number</label>
+        <input type="tel" placeholder="(555) 555-5555" oninput="updateState('contact_phone',this.value)">
+      </div>
+    </div>
+  </div>
+  <button class="next-btn" onclick="scrollToSection('sec-wrapup')">Continue to Wrap-Up &darr;</button>
+</div>
+
+<!-- ==================== SECTION 13: WRAP-UP ==================== -->
+<div class="section" id="sec-wrapup" data-check="wrapup">
+  <div class="section-label">Section 13</div>
+  <div class="section-title">Wrap-Up — Confirmation Read-Back</div>
+
+  <div class="script-block" id="wrapup-script">
+    "Alright <span class="var" data-var="lead_name">[Name]</span>, let me read this back to make sure we're all good:"
+  </div>
+
+  <ul class="summary-list" id="summary-list">
+    <li><span class="lbl">Address</span> <span id="sum-address">—</span></li>
+    <li><span class="lbl">Plan</span> <span id="sum-plan">—</span></li>
+    <li><span class="lbl">Speed</span> <span id="sum-speed">—</span></li>
+    <li><span class="lbl">Monthly Price</span> <span id="sum-price">—</span></li>
+    <li><span class="lbl">Data</span> <span>Unlimited — no caps, no throttling</span></li>
+    <li><span class="lbl">Price Lock</span> <span>Rate locked — never increases</span></li>
+    <li><span class="lbl">Contract</span> <span>No contract — cancel anytime</span></li>
+    <li><span class="lbl">Guarantee</span> <span>30-day money-back guarantee</span></li>
+    <li><span class="lbl">Install Date</span> <span id="sum-date">—</span></li>
+    <li><span class="lbl">Time Window</span> <span id="sum-time">—</span></li>
+    <li><span class="lbl">Setup Fee</span> <span id="sum-fee">$169</span></li>
+  </ul>
+
+  <div class="script-block" style="margin-top:16px">
+    "You're at <span class="var" data-var="lead_address">[Address]</span>."<br>
+    "Going on our <span id="sum-plan-name2">—</span> plan at <span id="sum-price2">—</span> per month."<br>
+    "Install is set for <span id="sum-date2">—</span> at <span id="sum-time2">—</span>."<br>
+    "The tech will give you a call about 30 minutes before they arrive."
+  </div>
+  <div class="script-block" style="margin-top:8px">
+    "You've got 30 days money-back if for any reason you're not happy, no contracts so you're never locked in, and if you ever need anything, we're just a call away."<br><br>
+    "Don't cancel <span class="var" data-var="current_provider">[Provider]</span> yet — keep them running until we're set up and you've had a chance to compare."<br><br>
+    "Welcome to Ping Broadband, <span class="var" data-var="lead_name">[Name]</span>. I think you're going to notice a huge difference. Have a great <span id="sum-daypart">day</span>!"
+  </div>
+  <div class="coach-note">End the call on a high note. Don't ramble. Don't re-sell. They already said yes.</div>
+
+  <button class="complete-btn" onclick="markComplete()">Mark Call Complete &#10003;</button>
+  <button class="next-btn" style="width:100%;margin-top:12px;background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border)" onclick="newCall()">Start New Call</button>
+</div>
+
+</div><!-- end #main -->
+
+<!-- OBJECTION HANDLER OVERLAY -->
+<div id="backdrop" onclick="closeAllPanels()"></div>
+
+<div id="objection-overlay">
+  <div class="panel-header">
+    <h2>Objection Handler</h2>
+    <button class="panel-close" onclick="closeAllPanels()">&times;</button>
+  </div>
+  <div class="panel-body">
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">Resolve &rarr; don't dodge. +71.1pp lift. Framework: Validate &rarr; Isolate &rarr; Reframe &rarr; Re-close.</p>
+    <div id="objection-tiles"></div>
+    <div id="objection-detail" class="obj-detail"></div>
+  </div>
+</div>
+
+<!-- COMPETITOR OVERLAY -->
+<div id="competitor-overlay">
+  <div class="panel-header">
+    <h2>Competitor Intel</h2>
+    <button class="panel-close" onclick="closeAllPanels()">&times;</button>
+  </div>
+  <div class="panel-body" id="competitor-body">
+    <p style="color:var(--text-muted)">Enter the customer's current provider (Q1) to load competitor data.</p>
+  </div>
+</div>
+
+<button id="competitor-btn" class="hidden" onclick="openCompetitorPanel()">Competitor Intel</button>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+// ===== STATE =====
+const state = {
+  call_type: 'outbound',
+  lead_name: '', lead_address: '',
+  satisfaction_score: 0, score_branch: '',
+  pain_type: '', pain_impact: '', pain_frequency: '', pain_duration: '', provider_tried_fix: '',
+  current_provider: '', current_price: 0, current_speed: '',
+  household_size: 0, usage_types: [], priority_preference: '', switch_trigger: '', switch_trigger_text: '',
+  decision_maker: '', spouse_feeling: '',
+  recommended_plan: '', plan_price: 0, plan_speed: '', plan_upload: '',
+  close1_response: '', close2_response: '', close3_response: '',
+  install_date: '', install_time: '',
+  referral_asked: '', referral_name: '', referral_phone: '',
+  home_type: '', roof_type: '', stories: '', ownership: '', dogs: '',
+  gate_code: '', install_notes: '', payment: '', autopay: '', email: '', contact_phone: '',
+  call_complete: false
+};
+
+// ===== CHECKLIST CONFIG =====
+const checkItems = [
+  { id: 'opening', label: 'Opening', section: 'sec-opening' },
+  { id: 'score', label: 'Score', section: 'sec-score' },
+  { id: 'pain', label: 'Pain Deepener', section: 'sec-pain' },
+  { id: 'seven', label: 'Must-Ask Seven', section: 'sec-seven' },
+  { id: 'value', label: 'Value Match', section: 'sec-value' },
+  { id: 'future', label: 'Future State', section: 'sec-future' },
+  { id: 'roi', label: 'ROI Math', section: 'sec-roi' },
+  { id: 'rec', label: 'Recommendation', section: 'sec-rec' },
+  { id: 'close1', label: 'Trial Close #1', section: 'sec-rec' },
+  { id: 'close2', label: 'Close #2', section: 'sec-close2' },
+  { id: 'close3', label: 'Close #3', section: 'sec-close3' },
+  { id: 'referral', label: 'Referral Ask', section: 'sec-referral' },
+  { id: 'house', label: 'Housekeeping', section: 'sec-house' },
+  { id: 'wrapup', label: 'Wrap-Up', section: 'sec-wrapup' }
+];
+const checkState = {};
+checkItems.forEach(c => checkState[c.id] = 'pending');
+
+// ===== PLANS =====
+const plans = {
+  starter:  { name: 'Starter', speed: '100 Mbps', upload: '25 Mbps', price: 49.99 },
+  standard: { name: 'Standard', speed: '250 Mbps', upload: '50 Mbps', price: 69.99 },
+  premium:  { name: 'Premium', speed: '500 Mbps', upload: '100 Mbps', price: 89.99 }
+};
+
+// ===== PAIN TREE =====
+const painTree = {
+  slow_speeds: {
+    label: 'Slow speeds / buffering', freq: '56%',
+    subs: [
+      { id:'streaming_buffer', label:'Shows/movies buffering', quote:'"Whenever we watch TV, it interrupts"' },
+      { id:'gaming_lag', label:'Video game lag', quote:'"The kids can\'t even game on it"' },
+      { id:'video_calls_freeze', label:'Video calls freezing', quote:'"Zoom calls freeze up"' },
+      { id:'web_slow', label:'Web pages load slow', quote:'"Pages take forever to load"' },
+      { id:'speed_gap', label:'Not getting advertised speed', quote:'"I\'m paying for 250 but never get over 150"' },
+      { id:'peak_hour_slow', label:'Slow at peak hours', quote:'"In the evening it slows way down"' },
+      { id:'downloads_slow', label:'Downloads take forever', quote:'"It takes all night to download an update"' }
+    ],
+    deepener: [
+      '"So when you\'re trying to [watch/game/video call], it\'s [buffering/lagging/freezing] on you?"',
+      '"And how often does that happen — is it every day, or more like certain times?"',
+      '"How long has that been going on?"',
+      '"And nobody\'s been able to fix it this whole time?"'
+    ]
+  },
+  drops_outages: {
+    label: 'Connection keeps dropping', freq: '58%',
+    subs: [
+      { id:'random_drops', label:'Internet goes out randomly', quote:'"It just drops for no reason"' },
+      { id:'reboot_router', label:'Have to reboot the router', quote:'"I\'m restarting the router three times a day"' },
+      { id:'drops_at_worst_time', label:'Drops during important moments', quote:'"My security camera shuts off when the internet drops"' },
+      { id:'weather_drops', label:'Goes out in bad weather', quote:'"Every time it rains we lose internet"' },
+      { id:'scheduled_drops', label:'Goes out at the same time daily', quote:'"Every evening around 7 it slows down or drops"' },
+      { id:'unfixable', label:'Provider sends new equipment but same issue', quote:'"They keep giving us new boxes and it\'s still the same"' }
+    ],
+    deepener: [
+      '"So the internet just [goes out/drops/cuts off] on you — how often is that happening?"',
+      '"And when it drops, how long does it take to come back?"',
+      '"How long has that been going on?"',
+      '"And nobody\'s been able to fix it this whole time?"'
+    ]
+  },
+  price_increase: {
+    label: 'Bill keeps going up', freq: '37%',
+    subs: [
+      { id:'promo_expired', label:'Promo price expired', quote:'"We started at a certain price and now we\'ve doubled that"' },
+      { id:'hidden_fees', label:'Hidden fees on the bill', quote:'"Equipment rental, broadcast fee — it adds up to way more"' },
+      { id:'cant_afford', label:'Can\'t afford current bill', quote:'"Paying $200/month for internet is getting ridiculous"' },
+      { id:'surprise_increase', label:'Rate increases with no warning', quote:'"They gave me a set price, then jumped it"' },
+      { id:'bad_value', label:'Paying too much for what they get', quote:'"Paying all this money and it still doesn\'t work"' },
+      { id:'billing_problems', label:'Billing / autopay issues', quote:'"Every month it costs me $30 extra in overdraft fees"' }
+    ],
+    deepener: [
+      '"So you started at [intro price] and now you\'re paying [current price]? Did they even warn you?"',
+      '"And for that price, is the service at least good, or are you paying more AND dealing with problems?"',
+      '"How long have you been dealing with that?"'
+    ]
+  },
+  data_caps: {
+    label: 'Data caps / throttling', freq: '48%',
+    subs: [
+      { id:'throttled', label:'Hit the cap and get throttled', quote:'"After we use our data it slows down to nothing"' },
+      { id:'overage_fees', label:'Overage charges', quote:'"Last month I had $50 in overage fees"' },
+      { id:'rationing_data', label:'Can\'t stream without worrying', quote:'"I can\'t even let my kids watch Netflix"' },
+      { id:'cap_too_low', label:'Cap is too low for household', quote:'"15 gigs a month is gone in a weekend"' }
+    ],
+    deepener: [
+      '"So you\'re [hitting the cap/getting throttled/paying overages] — how often does that happen?"',
+      '"And when it throttles down, what does that actually look like? Can you even use it?"',
+      '"How long has that been going on?"'
+    ]
+  },
+  wfh_issues: {
+    label: 'Work from home issues', freq: '40%',
+    subs: [
+      { id:'wfh_video_calls', label:'Video calls drop or freeze', quote:'"Zoom calls for work are choppy — picture quality is terrible"' },
+      { id:'wfh_upload', label:'Upload speed too slow', quote:'"Upload speed is nowhere near what we need"' },
+      { id:'wfh_vpn', label:'VPN disconnects', quote:'"My VPN keeps dropping — IT has to log me back in"' },
+      { id:'wfh_shared_bandwidth', label:'Can\'t work + family online at same time', quote:'"When the kids get home my work internet goes to garbage"' },
+      { id:'wfh_business_critical', label:'Internet unreliable for business', quote:'"I own my own business — can\'t jeopardize my job"' }
+    ],
+    deepener: [
+      '"So when you\'re working from home and the internet [drops/lags/freezes], what does that look like for you?"',
+      '"How often does that happen — is it a daily thing?"',
+      '"And nobody\'s been able to fix it this whole time?"'
+    ]
+  },
+  bad_support: {
+    label: 'Bad customer service', freq: '9%',
+    subs: [
+      { id:'cant_reach_person', label:'Can\'t reach a real person', quote:'"Push one, push two, 25 times — I can\'t get to talk to somebody"' },
+      { id:'long_hold', label:'Long hold times', quote:'"I was on hold for two hours"' },
+      { id:'never_fixed', label:'They never fix the problem', quote:'"They\'ve come out four times and it\'s still broken"' },
+      { id:'slow_repair', label:'Repair takes days/weeks', quote:'"I put in a ticket and they said 10 days"' },
+      { id:'dont_care', label:'They don\'t care', quote:'"I\'ve been a customer for 15 years and they treat me like a number"' }
+    ],
+    deepener: [
+      '"So when you call them, what happens? Walk me through what that\'s like."',
+      '"And how long have you been dealing with that?"',
+      '"Has anyone been able to fix the issue, or does it just keep happening?"'
+    ]
+  },
+  household_capacity: {
+    label: 'Too many devices', freq: 'Common',
+    subs: [
+      { id:'full_house', label:'Kids streaming + parents working', quote:'"Three generations in this house"' },
+      { id:'smart_home', label:'Smart home devices on wifi', quote:'"We have cameras, smart speakers, thermostats"' },
+      { id:'bandwidth_war', label:'Everyone fights for bandwidth', quote:'"We have to take turns using the internet"' },
+      { id:'many_devices', label:'Need to support 5+ devices', quote:'"Nine people in this house"' }
+    ],
+    deepener: [
+      '"So you\'ve got [number] people all trying to use the internet at the same time — and it can\'t keep up?"',
+      '"Is there a time of day when it\'s the worst?"',
+      '"And nobody\'s been able to fix it?"'
+    ]
+  },
+  new_service: {
+    label: 'Just moved / new provider', freq: 'N/A',
+    subs: [
+      { id:'moved', label:'Just moved in', quote:'' },
+      { id:'new_build', label:'Building a new home', quote:'' },
+      { id:'first_time', label:'Never had home internet', quote:'' }
+    ],
+    deepener: []
+  },
+  forced_switch: {
+    label: 'Provider leaving area', freq: 'Niche',
+    subs: [
+      { id:'tower_decommission', label:'Tower being decommissioned', quote:'"They\'re gonna decommission the tower"' },
+      { id:'provider_leaving', label:'Provider shutting down service', quote:'"They told us they\'re not going to service this area"' },
+      { id:'forced_by_landlord', label:'Landlord/HOA changed provider', quote:'"The building switched to a different company"' }
+    ],
+    deepener: []
+  },
+  rural_underserved: {
+    label: 'Never had good options', freq: '80% context',
+    subs: [
+      { id:'satellite_only_option', label:'Only option was satellite', quote:'"Satellite was very expensive and not worth it"' },
+      { id:'no_providers', label:'No providers serve my area', quote:'"Every company says it\'s too far away"' },
+      { id:'hotspot_only', label:'Using phone hotspot as main internet', quote:'"Only internet I got is on my phone"' },
+      { id:'never_had', label:'Never had home internet', quote:'"I don\'t have internet. Never did."' },
+      { id:'referral', label:'Neighbor told me about you', quote:'"My neighbor across the street is using you guys"' },
+      { id:'remote_location', label:'Live in a remote area', quote:'"We\'re out in the boondocks"' }
+    ],
+    deepener: [
+      '"So you\'ve been out there without good internet this whole time — how long has that been?"',
+      '"What have you been doing to get by? Hotspot? Going to the library?"',
+      '"And nobody\'s been able to serve your area until now?"'
+    ]
+  },
+  trust_deficit: {
+    label: 'Been burned before', freq: '30-50% declines',
+    subs: [
+      { id:'fear_wont_work', label:'Afraid it won\'t work', quote:'"She\'s gonna be concerned that it ain\'t gonna work right"' },
+      { id:'fear_contract', label:'Don\'t want a contract', quote:'"That would hurt my credit if I canceled, right?"' },
+      { id:'research_mode', label:'Need to research first', quote:'"I\'m gonna have to do some digging around"' },
+      { id:'been_lied_to', label:'Previous provider lied to them', quote:'"They gave me a set price, then jumped it"' },
+      { id:'skeptical_guarantee', label:'Skeptical of guarantees', quote:'"The thirty day thing — is that guaranteed?"' }
+    ],
+    deepener: [
+      '"I totally get that. You\'ve been through it before and you don\'t want to go through it again. That makes sense."',
+      '"Here\'s what I can tell you — there\'s no contract, so you\'re never stuck. And the 30 days is real. If it doesn\'t work, you get every penny back."'
+    ]
+  }
+};
+
+// ===== VALUE MATCH MAPPING =====
+const valueMatch = {
+  slow_speeds: {
+    b1: { title:'Consistent Speeds — No Throttling', script:'"So here\'s the thing — our plan comes with unlimited data and we never throttle your speeds. So that buffering you\'re dealing with right now? That goes away. No more spinning wheels in the middle of a show, no more video calls dropping out. Does that make sense?"' },
+    b2: { title:'Dedicated Connection', script:'"You\'re on a dedicated connection — not shared cable where everyone in the neighborhood drags you down at peak hours. Your speed at 8 PM is the same as at noon."' }
+  },
+  drops_outages: {
+    b1: { title:'Reliable Uptime — Dedicated Connection', script:'"So our network is built for reliability. You get a dedicated connection with enterprise-grade equipment. When it rains, when it\'s peak hours, when everyone\'s streaming — your connection stays solid. That\'s really what you need, right?"' },
+    b2: { title:'Local Support Team', script:'"And if something ever does go wrong, we\'re a local company right here in your area. A real person picks up. Gets it handled. No overseas call center, no sitting on hold."' }
+  },
+  price_increase: {
+    b1: { title:'Price Lock — Rate Never Increases', script:'"So one of the biggest differences with us is that the price I quote you today is the price you keep. It\'s locked in — no surprise increases after 12 months, no promo rates that expire. What you see on day one is what you see every month after that. That\'s pretty different from what you\'re dealing with now, right?"' },
+    b2: { title:'No Contract — Cancel Anytime', script:'"And we don\'t do contracts. It\'s month-to-month, and if you ever want to cancel, there\'s no termination fee. You stay because you want to, not because some contract says you have to. Sound good?"' }
+  },
+  data_caps: {
+    b1: { title:'Truly Unlimited Data — No Throttling', script:'"With us, unlimited means unlimited. Stream all day, game all night, work from home all week — your speed never drops because you \'used too much.\' There is no cap to hit. No more rationing your data. Make sense?"' },
+    b2: { title:'No Overage Charges Ever', script:'"No more surprise charges on the bill. Use as much as you want — the price doesn\'t change. The price I quote you is the price you pay, period."' }
+  },
+  wfh_issues: {
+    b1: { title:'Low Latency + Strong Upload', script:'"So our network runs with really low latency — what that means in plain English is your video calls are smooth, your gaming doesn\'t lag, and everything just feels instant. Upload speed is strong too, so VPN stays connected, files upload fast, and video is clear. Make sense?"' },
+    b2: { title:'Dedicated Bandwidth — No Deprioritization', script:'"With us you\'re on a dedicated connection. When the kids get home and everyone gets online, your work connection doesn\'t skip a beat. No more telling the family to get off the internet so you can do your job."' }
+  },
+  bad_support: {
+    b1: { title:'Local Support — Real People', script:'"So we\'re actually a local company. When you call us, you\'re going to get a real person who knows your area and knows your account. No overseas call centers, no sitting on hold for 45 minutes. Just real people who actually care. That\'s a big deal to you, right?"' },
+    b2: { title:'Responsive — No Phone Tree', script:'"When you have a problem, it gets fixed. First call. Not four visits and a ticket that sits for 10 days. That\'s what local support looks like."' }
+  },
+  household_capacity: {
+    b1: { title:'Handles Full Household at Once', script:'"Our connection can handle your whole household — every device, all at once. Kids streaming, parents working, smart home running — nobody has to take turns. The bandwidth is there for everyone. That\'s what you need, right?"' },
+    b2: { title:'Dedicated Bandwidth', script:'"And because it\'s a dedicated connection, you\'re not sharing with your neighbors. Your speed is your speed."' }
+  },
+  new_service: {
+    b1: { title:'We Can Reach Your Address', script:'"Great news — we can serve your address. Let me get you set up right from the start so you\'re not stuck signing a contract with someone else."' },
+    b2: { title:'Price Lock + No Contract', script:'"The price is locked from day one, no contract, and you\'ve got 30 days to make sure you love it."' }
+  },
+  forced_switch: {
+    b1: { title:'We Can Reach Your Address', script:'"We\'ve got you covered. Let me get you set up quickly so there\'s no gap in service."' },
+    b2: { title:'Price Lock + No Contract', script:'"The price is locked, no contract, and you\'ve got 30 days money-back guarantee."' }
+  },
+  rural_underserved: {
+    b1: { title:'We Can Actually Reach Your Address', script:'"The good news is we can actually serve your area. You\'re not stuck anymore. Real internet, at your home, that actually works. No more hotspot, no more satellite, no more driving to the library. Sound good?"' },
+    b2: { title:'Local Company — Local Support', script:'"And we\'re a local company. You call, a real person picks up. We know your area because we\'re here."' }
+  },
+  trust_deficit: {
+    b1: { title:'30-Day Money-Back Guarantee', script:'"That\'s exactly why we do the 30-day guarantee. You don\'t have to take my word for it — try it, test it, and if it doesn\'t deliver, full refund. Zero risk. I\'m not going to make promises the service can\'t keep."' },
+    b2: { title:'No Contract — Month-to-Month', script:'"There\'s no contract. You\'re never stuck. The price I quote you is locked in — no promo that expires, no surprise on month 13. What I tell you today is what you get."' }
+  }
+};
+
+// ===== FUTURE STATE MAPPING =====
+const futureStates = {
+  streaming_buffer: '"Imagine sitting down to watch a movie and it just... plays. No spinning wheel, no waiting. You hit play and it goes. That\'s every night for you."',
+  gaming_lag: '"Your kids sit down to play and it just works — no lag, no getting kicked, no losing a match because the internet hiccuped."',
+  video_calls_freeze: '"You\'re on a Zoom call and your face isn\'t frozen, your voice isn\'t cutting out — you look professional, not like your internet is from 2005."',
+  web_slow: '"Pages load instantly. You click, it loads. No more staring at a blank screen wondering if your internet is working."',
+  speed_gap: '"You run a speed test and the number matches what you\'re paying for. Consistently. Not just at 3 AM."',
+  peak_hour_slow: '"It\'s 8 PM, everyone\'s home, the kids are streaming, you\'re watching your show — and it just works. Same speed at 8 PM as noon."',
+  downloads_slow: '"You start a download and it\'s done in minutes, not overnight. Updates, movies, whatever — fast."',
+  random_drops: '"What if your internet just... stayed on? No random drops, no wondering if it\'s going to cut out during dinner. Just consistent, reliable connection."',
+  reboot_router: '"No more unplugging the router three times a day. You set it and forget it — it just works."',
+  drops_at_worst_time: '"You\'re on a call, your kid\'s in the middle of a game, your cameras are running — and nobody has to worry about it cutting out."',
+  weather_drops: '"It rains, it storms — your internet doesn\'t care. It just stays on. No more watching the weather forecast and worrying about your connection."',
+  scheduled_drops: '"7 PM hits, everyone gets home, and your internet just keeps going. No evening slowdowns, no daily dropouts."',
+  unfixable: '"No more waiting for a tech who sends a new box that doesn\'t fix anything. It works right from day one."',
+  promo_expired: '"You open your bill next month, same price. You open it a year from now, same price. No more promo games. No surprise on month 13."',
+  hidden_fees: '"One price. No equipment rental, no broadcast fee, no hidden taxes that double your bill. What I quote you is what you pay."',
+  cant_afford: '"What if you could cut that bill and get better service? That\'s real money back in your pocket every month."',
+  surprise_increase: '"No more opening the bill and wondering what it\'ll be this month. The price is locked. Period."',
+  bad_value: '"You shouldn\'t have to pay premium prices for internet that doesn\'t work. Imagine paying less AND actually getting what you\'re paying for."',
+  billing_problems: '"No more overdraft fees from billing mistakes. Clean, simple billing. Same amount, same day, every month."',
+  throttled: '"Stream all day, game all night, work from home all week — your speed never drops because you \'used too much.\' There\'s no cap to hit."',
+  overage_fees: '"No more checking your data balance before watching a movie. No more surprise charges. Use as much as you want — the price doesn\'t change."',
+  rationing_data: '"Your kids can watch Netflix, you can stream, nobody has to check how much data is left. Because there is no limit."',
+  cap_too_low: '"Your whole household uses the internet without worrying about a cap. Because there is no cap. Unlimited means unlimited."',
+  wfh_video_calls: '"You hop on a Zoom call and it just stays connected. The whole call. No dropping, no scrambling to reconnect. You sit down and work."',
+  wfh_upload: '"Files upload fast, video is clear, everything your work needs — it just works."',
+  wfh_vpn: '"Your VPN stays connected all day. No more getting locked out, no more calling IT to log you back in."',
+  wfh_shared_bandwidth: '"Your kids come home, everyone gets on their devices, and your work doesn\'t skip a beat."',
+  wfh_business_critical: '"Your business depends on your connection. It just works — consistently, reliably, every single day."',
+  cant_reach_person: '"When you call, a real person answers. Local team, your area. No phone tree, no \'please hold.\' Someone picks up."',
+  long_hold: '"No more two-hour hold times. You call, someone answers. That\'s it."',
+  never_fixed: '"What if the first time you called about a problem, someone actually fixed it? That\'s what local support looks like."',
+  slow_repair: '"No more 10-day tickets. Local team, fast response. Problem gets handled."',
+  dont_care: '"You call and the person on the other end actually cares. They know your name, they know your account. That\'s the difference."',
+  full_house: '"Everyone gets online — all at once — and nobody notices. Kids stream, you work, spouse watches their show, cameras keep running."',
+  smart_home: '"All your smart devices stay connected. Cameras, speakers, thermostats — everything runs smoothly, all the time."',
+  bandwidth_war: '"No more taking turns. Everyone gets the speed they need, at the same time."',
+  many_devices: '"All those devices — phones, laptops, TVs, tablets — all connected, all fast, all at once."',
+  satellite_only_option: '"No more satellite bills. No more weather dropouts. Real, fast, consistent internet."',
+  no_providers: '"The good news is we can actually reach your address. You\'re not stuck anymore. Real internet, at your home."',
+  hotspot_only: '"No more burning through your phone data just to check email. Real home internet — unlimited, on every device."',
+  never_had: '"You\'re about to find out what you\'ve been missing. Streaming, video calls with the grandkids, everything — all from your living room."',
+  referral: '"Your neighbor is already loving it — you\'re about to find out why."',
+  remote_location: '"We built our network for places like yours. Distance doesn\'t matter. You get the same quality connection."',
+  fear_wont_work: '"That\'s exactly why we do the 30-day guarantee. Try it, test it, and if it doesn\'t deliver, full refund. Zero risk."',
+  fear_contract: '"No contract. You\'re never stuck. If you ever want to cancel — no fee, no penalty, no hassle."',
+  research_mode: '"I\'ll send you everything we talked about. But the best research is a 30-day test drive with your money back if it doesn\'t deliver."',
+  been_lied_to: '"The price I quote you is the price you pay. It\'s locked. No promo that expires, no surprise on month 13."',
+  skeptical_guarantee: '"It\'s real. Written in your agreement. 30 days. If we don\'t deliver, every penny back. I wouldn\'t tell you that if I wasn\'t confident."',
+  tower_decommission: '"We\'ve got you covered. Let\'s get you set up quickly so there\'s no gap in service."',
+  provider_leaving: '"You\'re in good hands. We\'re not going anywhere — local company, here to stay."',
+  forced_by_landlord: '"Let\'s get you set up on something you actually chose. No contract, so if things change, you\'re flexible."',
+  moved: '"Perfect timing — let\'s get you set up right from the start."',
+  new_build: '"Great timing to build it in from day one."',
+  first_time: '"You\'re going to love having real home internet."'
+};
+
+// ===== OBJECTION DATA =====
+const objections = [
+  {
+    id:'price_high', label:'"The price is too high"',
+    validate:'"That\'s totally fair — price matters, and I\'d compare too."',
+    isolate:'"Is it the monthly cost specifically, or is there something else giving you pause?"',
+    reframe: function(){ return `"You rated ${state.current_provider||'them'} a ${state.satisfaction_score||'__'} because of ${getPainLabel()}. Staying at a ${state.satisfaction_score||'__'} to save $${Math.abs(state.plan_price-state.current_price).toFixed(0)} a month — is that worth dealing with that every single day? And remember, their price isn't locked. Ours is."`; },
+    reclose:'"Try us side by side for 30 days — don\'t cancel them yet. If the difference isn\'t worth it, you get every penny back. Would mornings or afternoons work better for install?"'
+  },
+  {
+    id:'think_about_it', label:'"I need to think about it"',
+    validate:'"It\'s great that you want to think about it — I wouldn\'t want you to rush into anything."',
+    isolate:'"But let me ask you — is it the price, the service, or something else that\'s giving you pause?"',
+    reframe: function(){ return '"Here\'s the thing: with the 30-day money-back guarantee, you\'re not committing to anything — you\'re just testing it out. Don\'t cancel ' + (state.current_provider||'them') + ' — keep them running. Run both side by side and you decide which one you want to keep. If we don\'t deliver, full refund. Zero risk."'; },
+    reclose:'"So really, the only thing to think about is what day works best for install — because the 30-day guarantee means you\'re just testing, not committing. What day works?"'
+  },
+  {
+    id:'talk_to_spouse', label:'"I need to talk to my spouse"',
+    validate:'"Absolutely — that\'s a household decision, I\'d want to talk it over too."',
+    isolate:'"If it were just up to you, is this something you\'d want to move forward with?"',
+    reframe: function(){
+      if(state.spouse_feeling) return `"You know, earlier you mentioned that your partner ${state.spouse_feeling} — it sounds like you're both on the same page. And with the 30-day money-back guarantee, you're not making a final decision tonight. You're just testing it. If either of you isn't happy, full refund."`;
+      return '"What if we get you set up and you both get to test it for 30 days? That way you\'re not asking for permission — you\'re bringing them a solution to try. If either of you doesn\'t love it, full refund."';
+    },
+    reclose:'"That way tonight you can say \'I found something better and we can try it for 30 days risk-free.\' Would this week or next work for install?"'
+  },
+  {
+    id:'happy_current', label:'"I\'m happy with my current provider"',
+    validate:'"Hey, if it\'s working, I get it — nobody wants to fix what isn\'t broken."',
+    isolate: function(){ return `"Just out of curiosity — you rated them a ${state.satisfaction_score||'__'}. What would make it a 10?"`; },
+    reframe: function(){ return `"So that gap between ${state.satisfaction_score||'__'} and a 10 is usually ${getPainLabel()}. What if you could close it without any risk? We're month-to-month, no contract, and you get 30 days to compare us head-to-head with ${state.current_provider||'them'}. Keep them connected the whole time."`; },
+    reclose:'"Worst case, you confirm they really are the best option. Best case, you finally get to a 10. Want to set up an install and see?"'
+  },
+  {
+    id:'install_fee', label:'"What about the installation fee?"',
+    validate:'"I hear you — nobody likes upfront costs, especially before you\'ve tried the service."',
+    isolate:'"Is it the install fee specifically, or the overall cost that\'s the concern?"',
+    reframe:'"That\'s a one-time cost for professional installation — equipment, setup, everything tested before we leave. And with the 30-day money-back guarantee, if you\'re not happy, you get your money back. So you\'re not risking anything. After that, your monthly rate is locked — no equipment rental fees piling up."',
+    reclose:'"Want to grab a morning or afternoon slot?"'
+  },
+  {
+    id:'renting', label:'"I\'m renting / need landlord approval"',
+    validate:'"That\'s a smart thing to check — you don\'t want any issues with your landlord."',
+    isolate:'"Is it that you think they\'d say no, or you just haven\'t asked yet?"',
+    reframe:'"Most landlords are totally fine with it because better internet actually adds value to the property. And since we\'re month-to-month with no contract, if your lease ends, there\'s nothing to deal with. We can even reach out to your landlord directly if that helps."',
+    reclose:'"Want to check with them this week and I\'ll follow up on [DAY]? I can send you something to forward to them."'
+  },
+  {
+    id:'speed_not_enough', label:'"Your speeds aren\'t fast enough"',
+    validate:'"Speed matters — especially with everything running at once. That\'s a fair concern."',
+    isolate:'"Let me ask — when you say faster, is it the download number on paper, or is it more about how it actually feels? Like buffering, lag, things loading slow?"',
+    reframe: function(){ return `"Here's what most people don't realize — the number on the plan doesn't tell the whole story. What makes internet feel fast is latency and consistency. We deliver low latency and we never throttle. A gigabit plan that slows to a crawl at peak hours isn't faster than a consistent plan that delivers all day. You rated your internet a ${state.satisfaction_score||'__'} — and you're probably on a plan that says it's fast on paper."`; },
+    reclose:'"Try us for 30 days and run a speed test yourself during peak hours. Compare it to what you\'re getting at 8 PM. If we don\'t outperform them in real-world use, every penny back. Fair enough?"'
+  },
+  {
+    id:'never_heard', label:'"I\'ve never heard of you guys"',
+    validate:'"That\'s a really fair question — you should absolutely know who you\'re trusting with your internet."',
+    isolate:'"Is it more about knowing who we are, or wanting to make sure the service is reliable once it\'s in?"',
+    reframe:'"We\'re a local provider — which actually means you get local support. Real people, not an overseas call center. Our 30-day money-back guarantee exists for exactly this reason. You don\'t have to take my word for it. Test us for a month with zero risk."',
+    reclose:'"That\'s really the best way to get to know us — a 30-day test drive. What day works for install?"'
+  },
+  {
+    id:'call_back', label:'"I\'ll call you back"',
+    validate:'"Of course — I don\'t want to catch you at a bad time."',
+    isolate:'"Before I let you go — is it just timing, or is there a question I didn\'t answer?"',
+    reframe: function(){ return `"Most people who say they'll call back get busy and it never happens — and then they're stuck at that ${state.satisfaction_score||'__'} with ${state.current_provider||'their provider'} for another year. I'd hate for that to happen. Can we lock in a time for me to call YOU back instead?"`; },
+    reclose:'"That way it\'s on my calendar, not yours. Would [DAY] at [TIME] work, or is there a better time?"'
+  },
+  {
+    id:'in_contract', label:'"I\'m in a contract"',
+    validate:'"Ugh, contracts — that\'s exactly why we don\'t do them. Nobody should be stuck with service they\'re not happy with."',
+    isolate:'"Do you know how much the early termination fee would actually be? And when does the contract end?"',
+    reframe:'"Here\'s how I\'d look at it — they raise their rates every year after the promo ends. With us, the rate is locked forever. Even if you pay the ETF now, you\'ll save that back in months just from not having your rate go up. And with our 30-day money-back guarantee, you can run both side by side to make sure you love us before canceling them."',
+    reclose:'"Want to get the install scheduled so you can start comparing? 30 days risk-free."'
+  }
+];
+
+// ===== COMPETITOR DATA =====
+const competitors = {
+  spectrum: {
+    name:'Spectrum', match:['spectrum','charter','time warner','twc','bright house'],
+    killer:'"Do you know what your Spectrum bill will be 12 months from now?"',
+    response:'"Spectrum is a big name — I get it. Here\'s the thing: that $30 rate is a promo. After 12 months it jumps to $55, $65, sometimes $75. No cap on increases. With us, the price is locked. No contract, no promo games. Try us 30 days — if you don\'t notice a difference, every penny back."',
+    table:[
+      ['Intro price','$30-50/mo (12-month promo)','Quoted rate from day one'],
+      ['After promo','$55-75/mo and climbing','Same — price is locked'],
+      ['Contract','No, but rate jumps after promo','No contract, rate never changes'],
+      ['Bandwidth','Shared cable (peak slowdowns)','Dedicated connection'],
+      ['Data caps','"Unlimited" but throttling reported','Truly unlimited, no throttling'],
+      ['Support','Long hold, overseas centers','Local support team'],
+      ['Risk','Cancel old service, hope for best','30-day money-back guarantee']
+    ]
+  },
+  xfinity: {
+    name:'Xfinity / Comcast', match:['xfinity','comcast'],
+    killer:'"When you look at your Xfinity bill, do you know how much you\'re actually paying once you add equipment rental and fees?"',
+    response:'"Xfinity looks competitive at first glance. But the equipment rental is about $15/mo, there\'s a 1.2 TB data cap with overages up to $100/mo, and most plans need a contract. With us — no equipment fee, no data cap, no contract. Try us 30 days."',
+    table:[
+      ['Advertised price','$40-65/mo (contract required)','Quoted rate, no contract'],
+      ['Equipment fees','$14-15/mo router rental','No monthly equipment fee'],
+      ['Data cap','1.2 TB/mo (overages to $100/mo)','Truly unlimited'],
+      ['Contract','1-2 years, ETF if cancel early','Month-to-month'],
+      ['After promo','Increases significantly','Locked in forever'],
+      ['Hidden costs','Broadcast, sports, equipment fees','Price quoted = price paid'],
+      ['Risk','Locked into contract','30-day money-back guarantee']
+    ]
+  },
+  frontier: {
+    name:'Frontier', match:['frontier','fios','verizon fios'],
+    killer:'"Do you know if you\'re on Frontier\'s DSL or their fiber? When did you last run a speed test?"',
+    response:'"Frontier\'s been around a long time. What we hear from folks with them is speeds don\'t hold up — especially DSL at 10-15 Mbps. Once a couple people are streaming or working from home, it\'s tough. We deliver consistent speeds, local support, no week-long repair waits. Try us 30 days."',
+    table:[
+      ['Typical speeds','3-25 Mbps (DSL)','Consistent speeds as quoted'],
+      ['Reliability','Frequent outages reported','Dedicated, consistent uptime'],
+      ['Technology','Aging copper DSL lines','Modern infrastructure'],
+      ['Support','Days to weeks for repairs','Local team, responsive'],
+      ['Contract','Varies','No contract'],
+      ['Data caps','Varies','Truly unlimited'],
+      ['Risk','Stuck hoping it improves','30-day money-back guarantee']
+    ]
+  },
+  starlink: {
+    name:'Starlink', match:['starlink','spacex','elon'],
+    killer:'"Are you comfortable spending $600 upfront on equipment before you know if speeds will be consistent at your address?"',
+    response:'"Starlink is impressive tech. Where people get frustrated is consistency — speeds bounce around, weather affects it, and at $120/mo plus $599 equipment, it\'s a big investment. With us, consistent connection, lower monthly cost, $169 one-time install, and 30-day money-back."',
+    table:[
+      ['Monthly cost','$120/mo','Lower rate, locked in'],
+      ['Upfront cost','$599 equipment','$169 one-time install'],
+      ['Speeds','25-220 Mbps (highly variable)','Consistent as quoted'],
+      ['Latency','25-60ms+ (spikes common)','Low, reliable for video/gaming'],
+      ['Weather impact','Rain/snow/clouds degrade signal','Not affected by weather'],
+      ['Contract','No, but $599 sunk cost','No contract, 30-day guarantee'],
+      ['Support','App/email only','Local support team']
+    ]
+  },
+  tmobile: {
+    name:'T-Mobile Home Internet', match:['t-mobile','tmobile','t mobile','metro'],
+    killer:'"If your speeds drop during the evening when the family\'s online, and T-Mobile doesn\'t guarantee any minimum speed, what\'s your backup plan?"',
+    response:'"T-Mobile is solid on paper — $50, no contract. The challenge is consistency. Same towers as phone customers, and home internet gets lower priority. Evenings, speeds drop. Upload is usually 5-10 Mbps. With us, dedicated connection, consistent speeds, real upload for video calls. Try us 30 days."',
+    table:[
+      ['Monthly cost','$50/mo','Competitive, price locked'],
+      ['Speeds','33-245 Mbps (no guarantee)','Consistent as quoted'],
+      ['Peak hours','Deprioritized behind mobile','Dedicated, no deprioritization'],
+      ['Upload','Typically 5-10 Mbps','Strong upload for WFH'],
+      ['Latency','Variable, spikes with congestion','Low, consistent'],
+      ['Installation','Self-install, signal is trial/error','Professional install ($169)'],
+      ['Guarantee','No speed guarantee','30-day money-back guarantee']
+    ]
+  }
+};
+
+// ===== TRIGGER RESPONSES =====
+const triggerResponses = {
+  price_hike: '"Yeah, that\'s how they get you. The rate goes up and they just hope you won\'t notice. With us, the price is locked — it never goes up."',
+  outage: '"That\'s the kind of thing that makes you realize it\'s not going to get better on its own, right?"',
+  referral: '"That\'s actually how a lot of our customers find us — word of mouth. Once people switch, they tell their neighbors."',
+  moving: '"Perfect timing — let\'s get you set up right from the start so you\'re not stuck signing a contract with someone else."'
+};
+
+// ===== IMPACT-SPECIFIC DEEPENER QUESTIONS =====
+const impactDeepeners = {
+  // Slow speeds
+  streaming_buffer: [
+    '"So when you sit down to watch a show, it\'s buffering on you — like the spinning wheel in the middle of the screen?"',
+    '"How often does that happen? Every time you watch, or just certain times?"',
+    '"How long has the buffering been going on?"',
+    '"And nobody\'s been able to fix it this whole time?"'
+  ],
+  gaming_lag: [
+    '"So when the kids try to game, it\'s lagging on them? Like rubber-banding or getting kicked from matches?"',
+    '"How often does that happen — every time they play, or just peak hours?"',
+    '"How long has gaming been a problem on your connection?"',
+    '"And nobody\'s been able to fix it this whole time?"'
+  ],
+  video_calls_freeze: [
+    '"So your video calls are freezing up — like your face locks, your voice cuts out, that kind of thing?"',
+    '"How often does that happen? Is it every call, or just certain times of day?"',
+    '"Is this affecting your work, or more personal calls?"',
+    '"And nobody\'s been able to fix it this whole time?"'
+  ],
+  web_slow: [
+    '"So even basic web pages are loading slow? Like you click and just wait?"',
+    '"Is it all the time, or worse at certain times of day?"',
+    '"How long has it been like this?"',
+    '"And nobody\'s been able to fix it?"'
+  ],
+  speed_gap: [
+    '"So you\'re paying for a certain speed but not actually getting it? What speed are you supposed to be getting?"',
+    '"Have you run a speed test? What numbers are you actually seeing?"',
+    '"Is it always low, or does it fluctuate throughout the day?"',
+    '"Have you called them about it? What did they say?"'
+  ],
+  peak_hour_slow: [
+    '"So in the evenings when everyone gets home, the internet slows way down?"',
+    '"What time does it usually start? Like 6 PM, 7 PM?"',
+    '"And how bad does it get — can you still stream, or is it basically unusable?"',
+    '"How long has the evening slowdown been happening?"'
+  ],
+  downloads_slow: [
+    '"So downloads are taking forever — like game updates, movies, that kind of thing?"',
+    '"Are we talking hours? Overnight?"',
+    '"Is it slow all the time, or just when other people are on?"',
+    '"How long has that been going on?"'
+  ],
+  // Drops/outages
+  random_drops: [
+    '"So the internet just drops on you randomly — no warning, it just goes out?"',
+    '"How often is that happening? Once a day? Multiple times?"',
+    '"When it drops, how long does it take to come back?"',
+    '"And nobody\'s been able to fix it this whole time?"'
+  ],
+  reboot_router: [
+    '"So you\'re having to reboot the router just to get it working again? How many times a day?"',
+    '"And after you reboot, how long does it stay working before it drops again?"',
+    '"How long have you been dealing with the reboot routine?"',
+    '"Have they sent you new equipment? Did that help at all?"'
+  ],
+  drops_at_worst_time: [
+    '"So it drops right when you need it most — during calls, while working, security cameras going offline?"',
+    '"How often does that happen?"',
+    '"What\'s the worst time it\'s dropped on you?"',
+    '"And nobody\'s been able to fix it this whole time?"'
+  ],
+  weather_drops: [
+    '"So every time it rains or storms, you lose internet?"',
+    '"How long does it usually stay out after bad weather?"',
+    '"Has this been going on since you got the service, or did it start recently?"',
+    '"Have they come out to look at it?"'
+  ],
+  scheduled_drops: [
+    '"So every evening around the same time it slows down or drops completely?"',
+    '"What time does it usually happen?"',
+    '"And is it just slow, or does it actually go out?"',
+    '"How long has the nightly pattern been going on?"'
+  ],
+  unfixable: [
+    '"So they\'ve sent new equipment and it still doesn\'t fix it? How many times have they tried?"',
+    '"What did they say was wrong?"',
+    '"And after each visit, how long did it work before the same problem came back?"',
+    '"That\'s frustrating. How long has this cycle been going on?"'
+  ],
+  // Price
+  promo_expired: [
+    '"So you started at one price and now it\'s jumped up? What were you paying before vs now?"',
+    '"Did they even warn you the promo was ending?"',
+    '"Have you called to try to get the rate back down?"',
+    '"And for that higher price, is the service at least good?"'
+  ],
+  hidden_fees: [
+    '"So when you look at your bill, there are fees on top of what they told you? Like equipment rental, broadcast fees?"',
+    '"What does your total bill actually come to vs what they quoted you?"',
+    '"How long have those extra charges been on there?"',
+    '"That adds up fast. Have you tried to get them removed?"'
+  ],
+  cant_afford: [
+    '"So the bill is just too much right now? What are you paying?"',
+    '"And for that price, how would you rate the service? Are you at least getting your money\'s worth?"',
+    '"What would be a comfortable price point for you?"',
+    '"How long have you been feeling like it\'s too expensive?"'
+  ],
+  surprise_increase: [
+    '"So they raised your rate without warning? How much did it jump?"',
+    '"When did that happen?"',
+    '"Did you call them about it? What did they say?"',
+    '"And do you expect it to go up again?"'
+  ],
+  bad_value: [
+    '"So you\'re paying a lot and the service isn\'t even good? What are you paying?"',
+    '"What\'s the biggest problem — is it speed, reliability, or both?"',
+    '"How long have you been overpaying for bad service?"',
+    '"Have you looked into other options before now?"'
+  ],
+  billing_problems: [
+    '"So there are actual billing issues — like wrong charges, wrong dates, that kind of thing?"',
+    '"How long has the billing been a problem?"',
+    '"Has it cost you money? Like overdraft fees or late charges?"',
+    '"Have you tried to get it fixed? What happened?"'
+  ],
+  // Data caps
+  throttled: [
+    '"So once you hit the data cap, they throttle you down? What does that feel like — can you even use it?"',
+    '"How quickly do you hit the cap each month? Like mid-month, end of month?"',
+    '"What do you do once you\'re throttled? Just deal with it?"',
+    '"How long has the throttling been an issue?"'
+  ],
+  overage_fees: [
+    '"So you\'re getting charged extra for going over your data? How much in overage fees?"',
+    '"Does that happen every month?"',
+    '"Do you know what\'s using all the data? Streaming, gaming?"',
+    '"How long have the overages been happening?"'
+  ],
+  rationing_data: [
+    '"So you\'re actually having to ration your data — like limiting what you watch or download?"',
+    '"How does that work? Does someone have to check the data balance before streaming?"',
+    '"Does the whole household know about the limit, or do you end up policing it?"',
+    '"How long have you been managing data like that?"'
+  ],
+  cap_too_low: [
+    '"So the data cap is way too low for your household? What\'s the cap — and how fast do you blow through it?"',
+    '"How many people and devices are using it?"',
+    '"What happens when you go over? Throttled or extra charges?"',
+    '"Have you looked at upgrading the plan with them?"'
+  ],
+  // WFH
+  wfh_video_calls: [
+    '"So your work video calls are choppy — picture freezing, voice cutting out?"',
+    '"How often does that happen? Every call, or just certain times?"',
+    '"Is it affecting how you come across at work? Like clients or your boss seeing you freeze?"',
+    '"And nobody\'s been able to fix it this whole time?"'
+  ],
+  wfh_upload: [
+    '"So the upload speed is too slow for what your work needs? What are you trying to upload — files, video, software?"',
+    '"Do you know what upload speed you\'re getting?"',
+    '"How often does it cause problems?"',
+    '"Has your company or IT team said anything about it?"'
+  ],
+  wfh_vpn: [
+    '"So your VPN keeps disconnecting — and then IT has to log you back in?"',
+    '"How often does that happen? Multiple times a day?"',
+    '"How long are you locked out each time?"',
+    '"That\'s basically losing work hours. Has anyone been able to fix it?"'
+  ],
+  wfh_shared_bandwidth: [
+    '"So when the kids get home and everyone gets online, your work connection goes to garbage?"',
+    '"What time does it usually start affecting your work?"',
+    '"Are you having to tell the family to get off the internet so you can work?"',
+    '"How long has that been going on?"'
+  ],
+  wfh_business_critical: [
+    '"So your business depends on having a reliable connection — and it\'s not reliable?"',
+    '"What kind of work? Video calls, file transfers, cloud software?"',
+    '"How often does the internet cause problems for your business?"',
+    '"Has it cost you money or clients?"'
+  ],
+  // Bad support
+  cant_reach_person: [
+    '"So when you call them, you can\'t even get a real person on the phone?"',
+    '"What happens — phone tree, hold music, automated system?"',
+    '"How long do you usually wait before giving up?"',
+    '"How many times have you tried?"'
+  ],
+  long_hold: [
+    '"So you\'re sitting on hold for hours just trying to get help?"',
+    '"What\'s the longest you\'ve waited?"',
+    '"And when you finally get through, do they actually fix the problem?"',
+    '"How often do you have to call them?"'
+  ],
+  never_fixed: [
+    '"So they keep coming out but the problem never actually gets fixed?"',
+    '"How many times have they sent someone?"',
+    '"What do they say each time? Do they give you a different excuse?"',
+    '"How long has this been going on?"'
+  ],
+  slow_repair: [
+    '"So when something goes wrong, it takes days or weeks to get a tech out?"',
+    '"What\'s the longest you\'ve waited for a repair?"',
+    '"And in the meantime, you just have no internet?"',
+    '"How many times has that happened?"'
+  ],
+  dont_care: [
+    '"So you\'ve been a customer for a long time and they just don\'t treat you like it?"',
+    '"How long have you been with them?"',
+    '"What happened that made you feel like they don\'t care?"',
+    '"Have you thought about switching before now?"'
+  ],
+  // Household capacity
+  full_house: [
+    '"So you\'ve got multiple generations all trying to use the internet at once — kids, parents, maybe grandparents?"',
+    '"How many people and devices are we talking about?"',
+    '"What happens when everyone\'s on? Does it just crawl?"',
+    '"Is there a time of day when it\'s the worst?"'
+  ],
+  smart_home: [
+    '"So you\'ve got cameras, smart speakers, thermostats — all running on wifi?"',
+    '"How many smart devices roughly?"',
+    '"Are the devices dropping off or going offline?"',
+    '"Is it the smart home causing the slowdown, or is everything slow?"'
+  ],
+  bandwidth_war: [
+    '"So everyone\'s literally fighting for bandwidth — taking turns using the internet?"',
+    '"Who usually loses that fight?"',
+    '"Is it worst in the evenings?"',
+    '"How long has the household been dealing with that?"'
+  ],
+  many_devices: [
+    '"So you\'ve got a lot of people and devices all needing internet at the same time?"',
+    '"How many devices roughly — phones, laptops, TVs, tablets?"',
+    '"And the current connection just can\'t handle it all?"',
+    '"What breaks first — streaming, video calls, or everything?"'
+  ],
+  // Rural/underserved
+  satellite_only_option: [
+    '"So satellite was the only thing available out there? How was it — expensive, slow, weather issues?"',
+    '"How long were you stuck with satellite?"',
+    '"What was the worst part about it?"',
+    '"And nobody else could serve your area until now?"'
+  ],
+  no_providers: [
+    '"So every provider you\'ve tried has said they can\'t reach you?"',
+    '"How many companies have you checked with?"',
+    '"How long have you been looking for an option?"',
+    '"What have you been doing for internet in the meantime?"'
+  ],
+  hotspot_only: [
+    '"So you\'ve been using your phone as your internet? Hotspot for everything?"',
+    '"How much is that costing you in phone data?"',
+    '"Is it fast enough for what you need, or are you just making do?"',
+    '"How long have you been living on hotspot?"'
+  ],
+  never_had: [
+    '"So you\'ve never had home internet before? What made you decide to look into it now?"',
+    '"What are you hoping to do with it — streaming, video calls, browsing?"',
+    '"How many people in the house would be using it?"',
+    '"Have you checked with other providers, or are we the first?"'
+  ],
+  referral: [
+    '"So your neighbor is already on our service? That\'s great. How do they like it?"',
+    '"What made you decide to reach out — did they mention something specific?"',
+    '"What are you currently using for internet?"',
+    '"What would matter most to you — speed, price, or reliability?"'
+  ],
+  remote_location: [
+    '"So you\'re out in a pretty remote spot? How far from the main road?"',
+    '"Have other providers told you they can\'t reach you?"',
+    '"What have you been doing for internet?"',
+    '"How long have you been out there without good options?"'
+  ],
+  // Trust deficit
+  fear_wont_work: [
+    '"I totally get that — you\'ve been burned before and you don\'t want to go through it again."',
+    '"What happened with the last provider? What went wrong?"',
+    '"Here\'s what I can tell you — there\'s no contract, so you\'re never stuck. And the 30 days is real."',
+    '"What would you need to see in those 30 days to feel confident?"'
+  ],
+  fear_contract: [
+    '"I hear you — contracts are the worst. What happened with your last one?"',
+    '"With us, it\'s month-to-month. No contract, no termination fee, no credit impact."',
+    '"If you could try it with zero strings attached, would you be open to testing it?"'
+  ],
+  research_mode: [
+    '"That\'s smart — you want to make sure you\'re making the right call."',
+    '"What specifically are you looking to compare? Speed, price, reviews?"',
+    '"Here\'s what I\'d suggest — the best research is a 30-day test drive. If we don\'t deliver, full refund."',
+    '"What questions do you still have that I can answer right now?"'
+  ],
+  been_lied_to: [
+    '"I hear you. They told you one thing and did another. That\'s exactly why people don\'t trust providers."',
+    '"What specifically did they promise that they didn\'t deliver?"',
+    '"With us, the price I quote you is locked. No promo that expires. What I tell you today is what you get."',
+    '"Would a 30-day money-back guarantee help you feel more comfortable testing it?"'
+  ],
+  skeptical_guarantee: [
+    '"That\'s a fair question. The 30 days is real — it\'s written in your agreement."',
+    '"If we don\'t deliver, you get every penny back. Equipment comes off, no hassle."',
+    '"I wouldn\'t tell you that if I wasn\'t confident in what we deliver."',
+    '"What would it take for you to feel comfortable giving it a try?"'
+  ]
+};
+
+// ===== UTILITY FUNCTIONS =====
+function getPainLabel() {
+  if (!state.pain_type) return '[their pain]';
+  const tree = painTree[state.pain_type];
+  if (!tree) return '[their pain]';
+  if (state.pain_impact) {
+    const sub = tree.subs.find(s => s.id === state.pain_impact);
+    if (sub) return sub.label.toLowerCase();
+  }
+  return tree.label.toLowerCase();
+}
+
+function N(v) { return v || '—'; }
+
+// ===== STATE MANAGEMENT =====
+function updateState(key, value) {
+  state[key] = value;
+  // Sync spouse_feeling between inline DM trap and bonus DM card inputs
+  if (key === 'spouse_feeling') {
+    const inpInline = document.getElementById('inp-dm-inline-feeling');
+    const inpBonus = document.getElementById('inp-spouse-feeling');
+    if (inpInline && inpInline.value !== value) inpInline.value = value;
+    if (inpBonus && inpBonus.value !== value) inpBonus.value = value;
+    // Auto-set decision_maker to spouse if they're filling in spouse feeling from inline
+    if (value && !state.decision_maker) state.decision_maker = 'spouse';
+  }
+  saveToLocalStorage();
+  renderAll();
+}
+
+function saveToLocalStorage() {
+  try { localStorage.setItem('ping_sales_state', JSON.stringify(state)); } catch(e) {}
+}
+
+function loadFromLocalStorage() {
+  try {
+    const saved = localStorage.getItem('ping_sales_state');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      Object.assign(state, parsed);
+      // Restore input fields
+      if (state.lead_name) document.getElementById('inp-name').value = state.lead_name;
+      if (state.lead_address) document.getElementById('inp-address').value = state.lead_address;
+      if (state.current_provider) document.getElementById('inp-provider').value = state.current_provider;
+      if (state.current_price) document.getElementById('inp-price').value = state.current_price;
+      if (state.current_speed) document.getElementById('inp-speed').value = state.current_speed;
+      if (state.spouse_feeling) document.getElementById('inp-spouse-feeling').value = state.spouse_feeling;
+      if (state.install_date) document.getElementById('inp-install-date').value = state.install_date;
+      if (state.install_time) document.getElementById('inp-install-time').value = state.install_time;
+      // Restore toggles
+      if (state.call_type) setCallType(state.call_type, true);
+      if (state.satisfaction_score) setScore(state.satisfaction_score, true);
+      if (state.pain_type) { selectPainTile(state.pain_type, true); }
+      if (state.recommended_plan) selectPlan(state.recommended_plan, true);
+      renderAll();
+    }
+  } catch(e) {}
+}
+
+// ===== RENDER EVERYTHING =====
+function renderAll() {
+  renderBreadcrumbs();
+  renderVarSpans();
+  renderScoreBranch();
+  renderPainDeepener();
+  renderValueMatch();
+  renderFutureState();
+  renderROI();
+  renderRecScript();
+  renderAnchorClose();
+  renderSpouseCallback();
+  renderTriggerResponse();
+  renderCompetitorBtn();
+  renderSummary();
+  updateChecklist();
+}
+
+function renderBreadcrumbs() {
+  const bc = (id, val, cls) => {
+    const el = document.getElementById(id);
+    el.textContent = val;
+    el.className = 'crumb' + (cls ? ' ' + cls : '');
+  };
+  bc('bc-name', state.lead_name || 'Lead Name', state.lead_name ? 'active' : '');
+  bc('bc-address', state.lead_address || 'Address', state.lead_address ? 'active' : '');
+  bc('bc-provider', state.current_provider ? 'Provider: ' + state.current_provider : 'Provider', state.current_provider ? 'active' : '');
+  const scoreEl = document.getElementById('bc-score');
+  if (state.satisfaction_score) {
+    scoreEl.textContent = 'Score: ' + state.satisfaction_score + '/10';
+    scoreEl.className = 'crumb score-badge ' + (state.satisfaction_score <= 4 ? 'score-low' : state.satisfaction_score <= 7 ? 'score-mid' : 'score-high');
+  } else {
+    scoreEl.textContent = 'Score: —';
+    scoreEl.className = 'crumb';
+  }
+  bc('bc-pain', state.pain_type ? 'Pain: ' + (painTree[state.pain_type]?.label || state.pain_type) : 'Pain: —', state.pain_type ? 'active' : '');
+  bc('bc-priority', state.priority_preference ? 'Priority: ' + state.priority_preference : 'Priority: —', state.priority_preference ? 'active' : '');
+}
+
+function renderVarSpans() {
+  document.querySelectorAll('.var[data-var]').forEach(el => {
+    const key = el.dataset.var;
+    if (key === 'pain_label') el.textContent = getPainLabel();
+    else if (key === 'satisfaction_score' && state.satisfaction_score) el.textContent = state.satisfaction_score;
+    else if (state[key] !== undefined && state[key] !== '' && state[key] !== 0) el.textContent = state[key];
+  });
+}
+
+function renderScoreBranch() {
+  const container = document.getElementById('score-branch');
+  const script = document.getElementById('score-branch-script');
+  if (!state.satisfaction_score) { container.classList.add('hidden'); return; }
+  container.classList.remove('hidden');
+  const s = state.satisfaction_score;
+  if (s <= 4) {
+    script.innerHTML = `<strong>Score ${s} — In Pain:</strong><br>"Wow, a ${s}. That's rough. What would need to change to make it a 10?"<br><span class="coaching">They're already frustrated — lean into it. Let them vent.</span>`;
+  } else if (s <= 7) {
+    script.innerHTML = `<strong>Score ${s} — Dissatisfied but Tolerating:</strong><br>"Okay, not terrible but not great. What's keeping it from being higher?"<br><span class="coaching">Biggest opportunity. They know things aren't right but haven't been motivated enough to switch.</span>`;
+  } else {
+    script.innerHTML = `<strong>Score ${s} — Mostly Happy:</strong><br>"Nice, that's solid! So what made you reach out today?"<br><span class="coaching">Something triggered this call. Find the crack.</span>`;
+  }
+}
+
+function renderPainDeepener() {
+  const container = document.getElementById('pain-deepener-questions');
+  const script = document.getElementById('pain-deepener-script');
+  // Use impact-specific deepeners if available, fall back to generic pain_type deepeners
+  const specificQs = state.pain_impact ? impactDeepeners[state.pain_impact] : null;
+  const genericQs = state.pain_type ? painTree[state.pain_type]?.deepener : null;
+  const questions = specificQs || genericQs;
+  if (!questions || !questions.length) {
+    container.classList.add('hidden');
+    return;
+  }
+  container.classList.remove('hidden');
+  const label = specificQs ? `<div style="font-size:11px;color:var(--accent);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Specific to: ${state.pain_impact.replace(/_/g,' ')}</div>` : '';
+  script.innerHTML = label + questions.map(q =>
+    `<div class="script-block">${q}</div>`
+  ).join('') + '<div class="coach-note">STOP TALKING after each question. Let the silence work. Talk ratio UNDER 40%.</div>';
+}
+
+function renderValueMatch() {
+  const vm = valueMatch[state.pain_type];
+  if (!vm) return;
+  document.getElementById('benefit-1-title').textContent = vm.b1.title;
+  document.getElementById('benefit-1-script').innerHTML = vm.b1.script;
+  document.getElementById('benefit-2-title').textContent = vm.b2.title;
+  document.getElementById('benefit-2-script').innerHTML = vm.b2.script;
+  flashSection('sec-value');
+}
+
+function renderFutureState() {
+  const el = document.getElementById('future-state-script');
+  const impact = state.pain_impact;
+  if (impact && futureStates[impact]) {
+    el.innerHTML = futureStates[impact] + '<br><br><strong>Trial close:</strong> "That\'s really what you\'re looking for, right?"';
+    flashSection('sec-future');
+  } else if (state.pain_type && futureStates[state.pain_type]) {
+    el.innerHTML = futureStates[state.pain_type];
+  } else {
+    el.innerHTML = 'Complete pain deepener above to auto-generate future state.';
+  }
+}
+
+function renderROI() {
+  const plan = plans[state.recommended_plan];
+  const cp = state.current_price;
+  if (!plan || !cp) {
+    document.getElementById('roi-needs-data').classList.remove('hidden');
+    document.getElementById('roi-calculated').classList.add('hidden');
+    return;
+  }
+  document.getElementById('roi-needs-data').classList.add('hidden');
+  document.getElementById('roi-calculated').classList.remove('hidden');
+  const pp = plan.price;
+  const diff = cp - pp;
+  const annual = Math.abs(diff * 12);
+  const roiBox = document.querySelector('.roi-box');
+  const roiBig = document.getElementById('roi-annual');
+  const roiLabel = document.getElementById('roi-annual-label');
+  const roiScript = document.getElementById('roi-script');
+
+  if (diff > 0) {
+    roiBig.textContent = '$' + annual.toFixed(0);
+    roiLabel.textContent = 'saved per year';
+    roiBox.style.background = 'var(--success-dim)';
+    roiBox.style.borderColor = 'var(--success)';
+    roiBig.style.color = 'var(--success)';
+    roiScript.innerHTML = `"Right now you're paying $${cp.toFixed(0)} a month — that's $${(cp*12).toFixed(0)} a year. With us, you'd be at $${pp.toFixed(0)} a month — that's $${(pp*12).toFixed(0)} a year. That's <strong>$${annual.toFixed(0)} back in your pocket</strong> over the next year. AND you're going from a ${state.satisfaction_score||'__'} out of 10 to a 10. Better internet, less money. Win-win."`;
+  } else if (diff === 0) {
+    roiBig.textContent = 'Same Price';
+    roiLabel.textContent = 'but way better service';
+    roiBox.style.background = 'var(--accent-dim)';
+    roiBox.style.borderColor = 'var(--accent)';
+    roiBig.style.color = 'var(--accent)';
+    roiScript.innerHTML = `"You're paying $${cp.toFixed(0)} now for a ${state.satisfaction_score||'__'} out of 10. For about the same price, you'd be at a 10 — unlimited data, no throttling, no contracts. Same money, completely different experience."`;
+  } else {
+    roiBig.textContent = '+$' + Math.abs(diff).toFixed(0) + '/mo';
+    roiLabel.textContent = 'more — but worth it';
+    roiBox.style.background = 'var(--warning-dim)';
+    roiBox.style.borderColor = 'var(--warning)';
+    roiBig.style.color = 'var(--warning)';
+    roiScript.innerHTML = `"Right now you're paying $${cp.toFixed(0)} for a ${state.satisfaction_score||'__'} out of 10. This plan is $${pp.toFixed(0)} — about $${Math.abs(diff).toFixed(0)} more per month. But you're going from a ${state.satisfaction_score||'__'} to a 10. No more ${getPainLabel()}. Is $${Math.abs(diff).toFixed(0)} a month — less than a cup of coffee a day — worth it to never deal with that again?"`;
+  }
+  flashSection('sec-roi');
+}
+
+function renderRecScript() {
+  const plan = plans[state.recommended_plan];
+  if (!plan) { document.getElementById('rec-script').classList.add('hidden'); return; }
+  document.getElementById('rec-script').classList.remove('hidden');
+  const usageText = state.usage_types.length ? state.usage_types.join(', ') : 'your usage';
+  document.getElementById('rec-script-text').innerHTML =
+    `"So based on everything you told me — the ${usageText}, ${state.household_size||'your'} people in the house, and wanting to fix ${getPainLabel()} — I'd put you on our <strong>${plan.name}</strong> at <strong>$${plan.price}/month</strong>. That gets you ${plan.speed} download, ${plan.upload} upload, unlimited data, no contracts, and the price is locked."`;
+}
+
+function renderAnchorClose() {
+  const el = document.getElementById('anchor-close-script');
+  const score = state.satisfaction_score || '__';
+  const provider = state.current_provider || '[Provider]';
+  const pain = getPainLabel();
+  el.innerHTML = `"I totally understand wanting to think about it. But you told me you're at a <strong style="color:var(--danger)">${score}</strong> with <strong style="color:var(--accent)">${provider}</strong> because of <strong style="color:var(--accent)">${pain}</strong>. This gets you to that 10 — and remember, don't cancel them yet. Just test us for 30 days, side by side. If we don't deliver, you get every penny back and you're right back where you started. Zero risk."`;
+  // Add frequency/duration if captured
+  if (state.pain_frequency || state.pain_duration) {
+    let extra = '';
+    if (state.pain_duration) extra += ` You've been dealing with this for ${state.pain_duration.replace('_',' ')}.`;
+    if (state.pain_frequency) extra += ` It happens ${state.pain_frequency.replace('_',' ')}.`;
+    el.innerHTML += `<span class="coaching">Use their pain quantifiers:${extra}</span>`;
+  }
+}
+
+function renderSpouseCallback() {
+  const el = document.getElementById('spouse-callback');
+  if (state.spouse_feeling && state.decision_maker === 'spouse') {
+    el.classList.remove('hidden');
+    document.getElementById('spouse-callback-text').innerHTML =
+      `"You mentioned earlier that your partner ${state.spouse_feeling} — sounds like you're both on the same page. And with the 30-day money-back guarantee, you're not making a final decision. You're just testing it. If either of you isn't happy, full refund, no questions asked."`;
+  } else if (state.decision_maker === 'spouse') {
+    el.classList.remove('hidden');
+    document.getElementById('spouse-callback-text').innerHTML =
+      '"What if we get you set up and you both get to test it for 30 days? That way you\'re not asking for permission — you\'re bringing them a solution to try. If either of you doesn\'t love it, full refund."';
+  } else {
+    el.classList.add('hidden');
+  }
+}
+
+function renderTriggerResponse() {
+  const el = document.getElementById('trigger-response');
+  const resp = triggerResponses[state.switch_trigger];
+  if (resp) {
+    el.classList.remove('hidden');
+    el.innerHTML = resp;
+  } else {
+    el.classList.add('hidden');
+  }
+}
+
+function renderCompetitorBtn() {
+  const btn = document.getElementById('competitor-btn');
+  const hint = document.getElementById('provider-intel-hint');
+  if (state.current_provider && findCompetitor(state.current_provider)) {
+    btn.classList.remove('hidden');
+    if (hint) hint.classList.remove('hidden');
+  } else {
+    btn.classList.add('hidden');
+    if (hint) hint.classList.add('hidden');
+  }
+}
+
+function renderSummary() {
+  const plan = plans[state.recommended_plan];
+  document.getElementById('sum-address').textContent = N(state.lead_address);
+  document.getElementById('sum-plan').textContent = plan ? plan.name : '—';
+  document.getElementById('sum-speed').textContent = plan ? plan.speed + ' down / ' + plan.upload + ' up' : '—';
+  document.getElementById('sum-price').textContent = plan ? '$' + plan.price + '/mo' : '—';
+  document.getElementById('sum-date').textContent = N(state.install_date);
+  document.getElementById('sum-time').textContent = N(state.install_time);
+  // Wrap-up read-back script
+  document.getElementById('sum-plan-name2').textContent = plan ? plan.name : '—';
+  document.getElementById('sum-price2').textContent = plan ? '$' + plan.price : '—';
+  document.getElementById('sum-date2').textContent = N(state.install_date);
+  document.getElementById('sum-time2').textContent = N(state.install_time);
+  const h = new Date().getHours();
+  document.getElementById('sum-daypart').textContent = h >= 17 ? 'evening' : h >= 12 ? 'afternoon' : 'day';
+  // Setup fee with payment method
+  const feeEl = document.getElementById('sum-fee');
+  if (state.payment === 'installments') feeEl.textContent = '$169 (3x $56.33)';
+  else feeEl.textContent = '$169';
+  if (state.autopay === 'yes') feeEl.textContent += ' + autopay ($5/mo discount)';
+}
+
+function flashSection(id) {
+  const el = document.getElementById(id);
+  if (el) { el.classList.add('flash-update'); setTimeout(() => el.classList.remove('flash-update'), 700); }
+}
+
+// ===== EVENT HANDLERS =====
+function setCallType(type, noScroll) {
+  state.call_type = type;
+  document.querySelectorAll('#call-type-toggle .toggle-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.val === type);
+  });
+  document.getElementById('script-opening-outbound').classList.toggle('hidden', type !== 'outbound');
+  document.getElementById('script-opening-inbound').classList.toggle('hidden', type !== 'inbound');
+  saveToLocalStorage();
+}
+
+function setScore(n, noScroll) {
+  state.satisfaction_score = n;
+  state.score_branch = n <= 4 ? 'in_pain' : n <= 7 ? 'dissatisfied' : 'mostly_happy';
+  document.querySelectorAll('.score-btn').forEach(b => {
+    const val = parseInt(b.textContent);
+    b.classList.remove('selected','s-low','s-mid','s-high');
+    if (val === n) {
+      b.classList.add('selected');
+      b.classList.add(n <= 4 ? 's-low' : n <= 7 ? 's-mid' : 's-high');
+    }
+  });
+  checkState.score = 'completed';
+  saveToLocalStorage();
+  renderAll();
+  if (!noScroll) setTimeout(() => scrollToSection('sec-pain'), 400);
+}
+
+function selectPainTile(type, noScroll) {
+  state.pain_type = type;
+  document.querySelectorAll('.pain-tile').forEach(t => t.classList.toggle('selected', t.dataset.type === type));
+  // Show sub options
+  document.querySelectorAll('.pain-sub-options').forEach(el => {
+    el.classList.toggle('open', el.dataset.type === type);
+  });
+  saveToLocalStorage();
+  renderAll();
+}
+
+function selectPainSub(type, impact) {
+  state.pain_impact = impact;
+  document.querySelectorAll('.sub-option').forEach(s => s.classList.toggle('selected', s.dataset.impact === impact));
+  if (state.pain_type && state.pain_impact) checkState.pain = 'completed';
+  saveToLocalStorage();
+  renderAll();
+}
+
+function setPainFreq(val) {
+  state.pain_frequency = val;
+  document.querySelectorAll('.pill').forEach(p => {
+    if (p.onclick && p.onclick.toString().includes('setPainFreq')) {
+      // handled via click
+    }
+  });
+  setActivePill(event.target);
+  saveToLocalStorage();
+}
+
+function setPainDuration(val) {
+  state.pain_duration = val;
+  setActivePill(event.target);
+  saveToLocalStorage();
+}
+
+function setProviderFix(val) {
+  state.provider_tried_fix = val;
+  setActivePill(event.target);
+  saveToLocalStorage();
+}
+
+function setHousehold(n) {
+  state.household_size = n;
+  setActivePill(event.target);
+  document.getElementById('q4-card').classList.add('answered');
+  const dmInline = document.getElementById('dm-trap-inline');
+  if (n >= 2) {
+    // Show inline DM trap immediately
+    dmInline.classList.remove('hidden');
+    dmInline.classList.add('flash-update');
+    setTimeout(() => dmInline.classList.remove('flash-update'), 700);
+    // Also highlight the bonus DM card below
+    document.getElementById('q-dm-card').style.borderColor = 'var(--danger)';
+    document.getElementById('q-dm-card').classList.add('flash-update');
+    setTimeout(() => document.getElementById('q-dm-card').classList.remove('flash-update'), 700);
+    // Scroll inline trap into view
+    setTimeout(() => dmInline.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+  } else {
+    dmInline.classList.add('hidden');
+    document.getElementById('q-dm-card').style.borderColor = 'var(--purple)';
+  }
+  saveToLocalStorage();
+  renderAll();
+  autoRecommendPlan();
+}
+
+function toggleUsage(el, val) {
+  const idx = state.usage_types.indexOf(val);
+  if (idx >= 0) { state.usage_types.splice(idx, 1); el.classList.remove('multi-selected'); }
+  else { state.usage_types.push(val); el.classList.add('multi-selected'); }
+  document.getElementById('q5-card').classList.add('answered');
+  saveToLocalStorage();
+  renderAll();
+  autoRecommendPlan();
+}
+
+function setPriority(val) {
+  state.priority_preference = val;
+  setActivePill(event.target);
+  document.getElementById('q6-card').classList.add('answered');
+  saveToLocalStorage();
+  renderAll();
+  autoRecommendPlan();
+}
+
+function setTrigger(val) {
+  state.switch_trigger = val;
+  setActivePill(event.target);
+  document.getElementById('q7-card').classList.add('answered');
+  saveToLocalStorage();
+  renderAll();
+}
+
+function setDecisionMaker(val) {
+  state.decision_maker = val;
+  setActivePill(event.target);
+  document.getElementById('spouse-feeling-row').classList.toggle('hidden', val !== 'spouse');
+  saveToLocalStorage();
+}
+
+function selectPlan(planId, noScroll) {
+  state.recommended_plan = planId;
+  const plan = plans[planId];
+  state.plan_price = plan.price;
+  state.plan_speed = plan.speed;
+  state.plan_upload = plan.upload;
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected','recommended'));
+  document.querySelectorAll('.plan-card').forEach((c, i) => {
+    const ids = ['starter','standard','premium'];
+    if (ids[i] === planId) { c.classList.add('selected'); }
+  });
+  checkState.rec = 'completed';
+  saveToLocalStorage();
+  renderAll();
+}
+
+function autoRecommendPlan() {
+  // Auto-recommend based on household + usage + priority
+  let rec = 'standard';
+  if (state.household_size >= 5 || state.usage_types.includes('gaming') || state.usage_types.includes('wfh')) {
+    rec = 'premium';
+  } else if (state.household_size <= 2 && state.priority_preference === 'price') {
+    rec = 'starter';
+  }
+  // Mark recommended visually
+  document.querySelectorAll('.plan-card').forEach((c, i) => {
+    const ids = ['starter','standard','premium'];
+    c.classList.toggle('recommended', ids[i] === rec);
+  });
+}
+
+function setTrialClose(response) {
+  state.close1_response = response;
+  setActiveResp(event.target);
+  checkState.close1 = 'completed';
+  if (response === 'objection') openObjectionPanel();
+  saveToLocalStorage();
+  updateChecklist();
+  setTimeout(() => scrollToSection('sec-close2'), 500);
+}
+
+function setClose2(response) {
+  state.close2_response = response;
+  setActiveResp(event.target);
+  checkState.close2 = 'completed';
+  if (response === 'objection') openObjectionPanel();
+  if (response === 'scheduled') {
+    checkState.close3 = 'completed'; // skip close 3
+    setTimeout(() => scrollToSection('sec-referral'), 500);
+  } else {
+    setTimeout(() => scrollToSection('sec-close3'), 500);
+  }
+  saveToLocalStorage();
+  updateChecklist();
+}
+
+function setClose3(response) {
+  state.close3_response = response;
+  setActiveResp(event.target);
+  checkState.close3 = 'completed';
+  saveToLocalStorage();
+  updateChecklist();
+  setTimeout(() => scrollToSection('sec-referral'), 500);
+}
+
+function setReferral(val) {
+  state.referral_asked = val;
+  setActiveResp(event.target);
+  checkState.referral = 'completed';
+  document.getElementById('referral-name-row').classList.toggle('hidden', val !== 'got_name');
+  document.getElementById('referral-no-row').classList.toggle('hidden', val !== 'not_now' && val !== 'skip');
+  saveToLocalStorage();
+  updateChecklist();
+  if (val !== 'got_name') setTimeout(() => scrollToSection('sec-house'), 500);
+}
+
+function setTimeSlot(slot) {
+  if (slot === 'morning') {
+    document.getElementById('inp-install-time').value = '9:00 - 10:00 AM';
+    state.install_time = '9:00 - 10:00 AM';
+  } else {
+    document.getElementById('inp-install-time').value = '1:00 - 3:00 PM';
+    state.install_time = '1:00 - 3:00 PM';
+  }
+  setActivePill(event.target);
+  saveToLocalStorage();
+  renderAll();
+}
+
+function setProperty(el, key, val) {
+  state[key] = val;
+  setActivePill(el);
+  saveToLocalStorage();
+  // Check housekeeping
+  if (state.home_type || state.roof_type || state.ownership) {
+    checkState.house = 'completed';
+    updateChecklist();
+  }
+}
+
+function markComplete() {
+  state.call_complete = true;
+  checkState.wrapup = 'completed';
+  saveToLocalStorage();
+  updateChecklist();
+  // Export to JSON
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `ping-call-${state.lead_name || 'unknown'}-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  document.querySelector('.complete-btn').textContent = 'Call Complete!';
+  document.querySelector('.complete-btn').style.background = 'var(--text-muted)';
+}
+
+// ===== PILL/BUTTON HELPERS =====
+function setActivePill(el) {
+  if (!el) return;
+  const group = el.parentElement;
+  if (!group) return;
+  group.querySelectorAll('.pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function setActiveResp(el) {
+  if (!el) return;
+  const group = el.parentElement;
+  if (!group) return;
+  group.querySelectorAll('.resp-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ===== SCROLLING =====
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    const top = el.offsetTop - parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) - 16;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+}
+
+// ===== CHECKLIST =====
+function updateChecklist() {
+  // Auto-check logic
+  if (state.lead_name && state.lead_address) checkState.opening = 'completed';
+  if (state.satisfaction_score) checkState.score = 'completed';
+  if (state.pain_type && state.pain_impact) checkState.pain = 'completed';
+  // Must-ask seven: count answered
+  let answered = 0;
+  if (state.current_provider) answered++;
+  if (state.current_price) answered++;
+  if (state.current_speed) answered++;
+  if (state.household_size) answered++;
+  if (state.usage_types.length) answered++;
+  if (state.priority_preference) answered++;
+  if (state.switch_trigger || state.switch_trigger_text) answered++;
+  if (answered >= 5) checkState.seven = 'completed';
+  else if (answered > 0) checkState.seven = 'in-progress';
+
+  // Q card styling
+  if (state.current_provider) document.getElementById('q1-card').classList.add('answered');
+  if (state.current_price) document.getElementById('q2-card').classList.add('answered');
+  if (state.current_speed) document.getElementById('q3-card').classList.add('answered');
+
+  // Render checklist
+  const container = document.getElementById('checklist');
+  let completedCount = 0;
+  container.innerHTML = checkItems.map(item => {
+    const s = checkState[item.id];
+    if (s === 'completed') completedCount++;
+    const cls = s === 'completed' ? 'completed' : s === 'in-progress' ? 'in-progress' : '';
+    const icon = s === 'completed' ? '&#10003;' : s === 'in-progress' ? '&#9679;' : '';
+    return `<div class="check-item ${cls}" onclick="scrollToSection('${item.section}')">
+      <div class="check-icon">${icon}</div>
+      <span>${item.label}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('progress-text').textContent = `${completedCount} / ${checkItems.length} complete`;
+}
+
+// ===== PAIN TILES RENDERING =====
+function buildPainTiles() {
+  const grid = document.getElementById('pain-tiles');
+  const subContainer = document.getElementById('pain-sub-container');
+  grid.innerHTML = '';
+  subContainer.innerHTML = '';
+
+  Object.entries(painTree).forEach(([type, data]) => {
+    // Tile
+    const tile = document.createElement('div');
+    tile.className = 'pain-tile';
+    tile.dataset.type = type;
+    tile.innerHTML = `<strong>${data.label}</strong><div class="freq">${data.freq}</div>`;
+    tile.onclick = () => selectPainTile(type);
+    grid.appendChild(tile);
+
+    // Sub-options panel
+    if (data.subs.length) {
+      const subPanel = document.createElement('div');
+      subPanel.className = 'pain-sub-options';
+      subPanel.dataset.type = type;
+      subPanel.innerHTML = '<p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">What specifically?</p>';
+      data.subs.forEach(sub => {
+        const opt = document.createElement('div');
+        opt.className = 'sub-option';
+        opt.dataset.impact = sub.id;
+        opt.innerHTML = `<strong>${sub.label}</strong>${sub.quote ? `<span class="quote">${sub.quote}</span>` : ''}`;
+        opt.onclick = () => selectPainSub(type, sub.id);
+        subPanel.appendChild(opt);
+      });
+      subContainer.appendChild(subPanel);
+    }
+  });
+}
+
+// ===== OBJECTION PANEL =====
+function buildObjectionTiles() {
+  const container = document.getElementById('objection-tiles');
+  container.innerHTML = objections.map(obj =>
+    `<div class="obj-tile" data-id="${obj.id}" onclick="showObjection('${obj.id}')">${obj.label}</div>`
+  ).join('');
+}
+
+function showObjection(id) {
+  const obj = objections.find(o => o.id === id);
+  if (!obj) return;
+  document.querySelectorAll('.obj-tile').forEach(t => t.classList.toggle('active', t.dataset.id === id));
+  const detail = document.getElementById('objection-detail');
+  const validate = typeof obj.validate === 'function' ? obj.validate() : obj.validate;
+  const isolate = typeof obj.isolate === 'function' ? obj.isolate() : obj.isolate;
+  const reframe = typeof obj.reframe === 'function' ? obj.reframe() : obj.reframe;
+  const reclose = typeof obj.reclose === 'function' ? obj.reclose() : obj.reclose;
+  detail.innerHTML = `
+    <div class="obj-step"><div class="obj-step-label validate">1. VALIDATE</div><div class="script-block">${validate}</div></div>
+    <div class="obj-step"><div class="obj-step-label isolate">2. ISOLATE</div><div class="script-block" style="border-left-color:var(--warning)">${isolate}</div></div>
+    <div class="obj-step"><div class="obj-step-label reframe">3. REFRAME</div><div class="script-block" style="border-left-color:var(--success)">${reframe}</div></div>
+    <div class="obj-step"><div class="obj-step-label reclose">4. RE-CLOSE</div><div class="script-block" style="border-left-color:var(--purple)">${reclose}</div></div>
+    <div class="coach-note">Two-attempt rule: Try to resolve twice. If still firm, set a specific callback date. A warm callback beats a burned bridge.</div>
+    <div class="script-block" style="border-left-color:var(--text-muted)"><strong>The 30-Day Safety Net:</strong><br>"Don't cancel ${state.current_provider||'them'} yet. Let us install, run both side by side for 30 days, and see which one you want to keep. If we're not everything I said, you get every penny back. You literally can't lose."</div>
+  `;
+  detail.classList.add('open');
+}
+
+function openObjectionPanel() {
+  document.getElementById('objection-overlay').classList.add('open');
+  document.getElementById('backdrop').classList.add('open');
+}
+
+function closeAllPanels() {
+  document.getElementById('objection-overlay').classList.remove('open');
+  document.getElementById('competitor-overlay').classList.remove('open');
+  document.getElementById('backdrop').classList.remove('open');
+}
+
+// ===== COMPETITOR PANEL =====
+function findCompetitor(name) {
+  const lower = name.toLowerCase().trim();
+  for (const [key, comp] of Object.entries(competitors)) {
+    if (comp.match.some(m => lower.includes(m))) return comp;
+  }
+  return null;
+}
+
+function openCompetitorPanel() {
+  const comp = findCompetitor(state.current_provider);
+  const body = document.getElementById('competitor-body');
+  if (!comp) {
+    body.innerHTML = '<p style="color:var(--text-muted)">No specific intel for this provider. Use the universal closer:</p><div class="script-block">"I\'m not going to tell you they\'re terrible — they work fine for a lot of people. With us, the price is locked, there\'s no contract, no data cap, and no surprises. 30 days to prove it. If we\'re not better, every penny back. Zero risk in trying."</div>';
+  } else {
+    let tableHTML = '<table class="comp-table"><tr><th></th><th>' + comp.name + '</th><th>Ping Broadband</th></tr>';
+    comp.table.forEach(row => {
+      tableHTML += `<tr><td style="color:var(--text-muted);font-weight:600">${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td></tr>`;
+    });
+    tableHTML += '</table>';
+
+    body.innerHTML = `
+      <h3 style="color:var(--warning);font-size:15px;margin-bottom:12px">${comp.name}</h3>
+      <div style="margin-bottom:16px">
+        <div class="obj-step-label" style="color:var(--danger)">KILLER QUESTION</div>
+        <div class="script-block" style="border-left-color:var(--danger)">${comp.killer}</div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="obj-step-label" style="color:var(--accent)">YOUR RESPONSE</div>
+        <div class="script-block">${comp.response}</div>
+      </div>
+      <div class="obj-step-label" style="color:var(--warning)">SIDE-BY-SIDE COMPARISON</div>
+      ${tableHTML}
+      <div class="script-block" style="border-left-color:var(--success);margin-top:16px"><strong>Universal Closer:</strong><br>"Look, I'm not going to tell you ${comp.name} is terrible. What I can tell you is: price locked, no contract, no data cap, no surprises. 30 days to prove it. If we're not better, every penny back."</div>
+    `;
+  }
+  document.getElementById('competitor-overlay').classList.add('open');
+  document.getElementById('backdrop').classList.add('open');
+}
+
+// ===== INTERSECTION OBSERVER (auto-check on scroll past) =====
+function setupScrollObserver() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.dataset.check;
+        if (id && ['value','future','roi'].includes(id) && checkState[id] === 'pending') {
+          checkState[id] = 'completed';
+          updateChecklist();
+        }
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.section[data-check]').forEach(sec => observer.observe(sec));
+}
+
+// ===== ACTIVE SECTION TRACKING =====
+function setupActiveTracking() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const sectionId = entry.target.id;
+        document.querySelectorAll('.check-item').forEach(item => item.classList.remove('active'));
+        const checkItem = checkItems.find(c => c.section === sectionId);
+        if (checkItem) {
+          const idx = checkItems.indexOf(checkItem);
+          const items = document.querySelectorAll('.check-item');
+          if (items[idx]) items[idx].classList.add('active');
+        }
+      }
+    });
+  }, { threshold: 0.3, rootMargin: '-20% 0px -60% 0px' });
+  document.querySelectorAll('.section').forEach(sec => observer.observe(sec));
+}
+
+// ===== NEW CALL =====
+function newCall() {
+  if (!confirm('Start a new call? This will clear all current data.')) return;
+  localStorage.removeItem('ping_sales_state');
+  location.reload();
+}
+
+// ===== KEYBOARD SHORTCUT =====
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeAllPanels();
+  if (e.key === 'o' && e.ctrlKey) { e.preventDefault(); openObjectionPanel(); }
+});
+
+// ===== INIT =====
+function init() {
+  // Clear previous session on load — fresh form every time
+  localStorage.removeItem('ping_sales_state');
+  buildPainTiles();
+  buildObjectionTiles();
+  updateChecklist();
+  setupScrollObserver();
+  setupActiveTracking();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
