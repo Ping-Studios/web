@@ -3751,10 +3751,13 @@ function setScore(n) {
   saveToLocalStorage();
   renderAll();
   // Auto-scroll so score buttons sit at the top of the viewport
-  setTimeout(function() {
-    var scoreGroup = document.querySelector('.score-group');
-    if (scoreGroup) scoreGroup.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 300);
+  // Use requestAnimationFrame to wait for DOM updates from renderAll() to paint
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      var scoreGroup = document.querySelector('.score-group');
+      if (scoreGroup) scoreGroup.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
 }
 
 // v4.2: Multi-select pain tiles
