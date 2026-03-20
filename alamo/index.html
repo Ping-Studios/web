@@ -3751,13 +3751,15 @@ function setScore(n) {
   saveToLocalStorage();
   renderAll();
   // Auto-scroll so score buttons sit at the top of the viewport
-  // Use requestAnimationFrame to wait for DOM updates from renderAll() to paint
-  requestAnimationFrame(function() {
-    requestAnimationFrame(function() {
-      var scoreGroup = document.querySelector('.score-group');
-      if (scoreGroup) scoreGroup.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
+  setTimeout(function() {
+    var scoreGroup = document.querySelector('.score-group');
+    if (scoreGroup) {
+      var rect = scoreGroup.getBoundingClientRect();
+      var scrollMargin = parseInt(getComputedStyle(scoreGroup).scrollMarginTop) || 0;
+      var targetY = window.pageYOffset + rect.top - scrollMargin;
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
+    }
+  }, 100);
 }
 
 // v4.2: Multi-select pain tiles
