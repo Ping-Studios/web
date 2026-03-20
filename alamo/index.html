@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alamo Broadband — Sales Intelligence v5.2.1</title>
 <style>
+/* ===== THEMES ===== */
 :root {
   --bg-primary: #0f1724;
   --bg-secondary: #1a2332;
@@ -102,6 +103,7 @@
   --danger: #c45a5a; --danger-dim: rgba(196,90,90,0.12);
   --purple: #7a5ec4; --shadow: 0 4px 24px rgba(0,0,0,0.06);
 }
+/* ===== LAYOUT (Header, Sidebar, Main) ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
@@ -215,6 +217,7 @@ body {
   font-size: 12px; font-weight: 700; margin-top: 1px; transition: all .2s;
 }
 .benefit-hint { font-size: 11px; color: var(--text-secondary); font-style: italic; }
+/* ===== COMPONENTS (Pills, Buttons, Inputs, Cards) ===== */
 input[type="text"], input[type="number"], input[type="date"], input[type="email"], input[type="tel"] {
   background: var(--bg-input); border: 1px solid var(--border); color: var(--text-primary);
   padding: 8px 14px; border-radius: var(--radius); font-size: 14px; outline: none; transition: border .2s; width: 100%;
@@ -251,6 +254,7 @@ input.referral-filled { border: 2px solid var(--success) !important; background:
 .score-btn.s-low { border-color: var(--danger); background: var(--danger-dim); color: var(--danger); }
 .score-btn.s-mid { border-color: var(--warning); background: var(--warning-dim); color: var(--warning); }
 .score-btn.s-high { border-color: var(--success); background: var(--success-dim); color: var(--success); }
+/* ===== SCORE & PAIN FLOW ===== */
 /* v4.2: Pain tiles — horizontal wrap */
 .pain-grid {
   display: flex; flex-wrap: wrap; gap: 6px; margin: 0;
@@ -370,6 +374,7 @@ input.referral-filled { border: 2px solid var(--success) !important; background:
 .resp-btn.positive.selected { background: var(--success); color: #fff; }
 .resp-btn.neutral.selected { background: var(--warning); color: #000; }
 .resp-btn.objection.selected { background: var(--danger); color: #fff; }
+/* ===== OVERLAYS & PANELS ===== */
 #objection-overlay {
   position: fixed; top: 0; right: -480px; bottom: 0; width: 480px; z-index: 200;
   background: var(--bg-secondary); border-left: 1px solid var(--border);
@@ -430,6 +435,7 @@ input.referral-filled { border: 2px solid var(--success) !important; background:
   border-radius: var(--radius); cursor: pointer; font-size: 13px; font-weight: 600; transition: background .2s;
 }
 .next-btn:hover { background: var(--accent-hover); }
+/* ===== ANIMATIONS ===== */
 @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes flash { 0%,100% { border-color: var(--border); } 50% { border-color: var(--accent); box-shadow: 0 0 16px rgba(74,158,255,0.2); } }
 .flash-update { animation: flash .6s ease; }
@@ -513,29 +519,6 @@ textarea:focus { border-color: var(--accent); }
 .quantifier-btn:hover { border-color: var(--accent); color: var(--text-primary); background: var(--bg-card-hover); }
 .quantifier-btn.active { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
 .quantifier-btn .q-stat { font-size: 10px; color: var(--success); display: inline; margin-left: 6px; }
-/* v4.0: Confidence gate */
-.confidence-gate { background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin: 16px 0; }
-.confidence-check {
-  display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 13px;
-  color: var(--text-secondary); cursor: pointer; transition: color .2s;
-}
-.confidence-check.checked { color: var(--success); }
-.confidence-check .conf-box {
-  width: 22px; height: 22px; border: 2px solid var(--border); border-radius: 4px;
-  display: flex; align-items: center; justify-content: center; font-size: 14px;
-  transition: all .2s; flex-shrink: 0;
-}
-.confidence-check.checked .conf-box { border-color: var(--success); background: var(--success); color: #fff; }
-.schedule-locked {
-  opacity: 0.4; pointer-events: none; position: relative;
-}
-.schedule-locked::before {
-  content: 'Complete confidence checklist to unlock scheduling';
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-  background: var(--bg-card); padding: 12px 24px; border-radius: var(--radius);
-  border: 1px solid var(--warning); color: var(--warning); font-size: 13px;
-  font-weight: 600; z-index: 10; white-space: nowrap;
-}
 /* v4.8: Mode buttons */
 .mode-btn {
   padding: 3px 8px; border-radius: calc(var(--radius) - 2px); font-size: 11px; cursor: pointer;
@@ -595,7 +578,7 @@ textarea:focus { border-color: var(--accent); }
 .deepener-pill { font-size: 10px !important; padding: 4px 10px !important; white-space: nowrap; }
 /* v4.8: Objection tiles collapse */
 .obj-tile.collapsed { display: none; }
-/* Mode system */
+/* ===== MODE SYSTEM (Standard / Mining) ===== */
 .mode-mining .standard-only { display: none !important; }
 .mode-standard .mining-only { display: none !important; }
 /* Mining mode badge */
@@ -646,6 +629,7 @@ textarea:focus { border-color: var(--accent); }
 #sched-install-btn.selected, #sched-survey-btn.selected {
   border-color: var(--accent); background: var(--accent-dim);
 }
+/* ===== RESPONSIVE ===== */
 @media (max-width:1024px) {
   .split { grid-template-columns: 1fr; }
   .plan-grid { grid-template-columns: 1fr; }
@@ -798,7 +782,7 @@ textarea:focus { border-color: var(--accent); }
   <div class="form-grid">
     <div class="input-row" style="margin:0">
       <label>Name</label>
-      <input type="text" id="inp-name" placeholder="Full name" value="Evan Galvin" oninput="updateState('lead_name',this.value)">
+      <input type="text" id="inp-name" placeholder="Full name" oninput="updateState('lead_name',this.value)">
     </div>
     <div class="input-row" style="margin:0">
       <label>Phone</label>
@@ -810,7 +794,7 @@ textarea:focus { border-color: var(--accent); }
     </div>
     <div class="input-row" style="margin:0">
       <label>Address</label>
-      <input type="text" id="inp-address" placeholder="Street address" value="123 Main Street" oninput="updateState('lead_address',this.value)">
+      <input type="text" id="inp-address" placeholder="Street address" oninput="updateState('lead_address',this.value)">
     </div>
     <div class="input-row" style="margin:0">
       <label>City</label>
@@ -1941,33 +1925,15 @@ textarea:focus { border-color: var(--accent); }
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px">
       <div class="form-group" style="margin:0">
         <label>Objection 1</label>
-        <select onchange="updateState('objection_1',this.value)">
-          <option value="">None</option>
-          <optgroup label="Cost"><option value="COST - Plan too expensive">Plan too expensive</option><option value="COST - Installation cost too high">Installation cost too high</option><option value="COST - Cannot afford / out of budget">Cannot afford / out of budget</option></optgroup>
-          <optgroup label="Contract"><option value="CONTRACT - Doesn't want a contract">Doesn't want a contract</option><option value="CONTRACT - Currently in another contract">Currently in another contract</option></optgroup>
-          <optgroup label="Service"><option value="SERVICE - Speed too slow / insufficient">Speed too slow / insufficient</option><option value="SERVICE - Technology / feature not available">Technology / feature not available</option><option value="SERVICE - Coverage / signal issues">Coverage / signal issues</option></optgroup>
-          <optgroup label="Other"><option value="PROPERTY - Installation restrictions">Property - Installation restrictions</option><option value="PROVIDER - Happy with current provider">Happy with current provider</option><option value="TIMING - Not moving in yet">Timing - Not moving in yet</option><option value="TIMING - Will call back when ready">Timing - Will call back when ready</option><option value="TIMING - Needs to consult someone">Timing - Needs to consult someone</option><option value="INDECISION - Undecided / shopping around">Indecision - Shopping around</option><option value="INDECISION - Will think about it">Indecision - Will think about it</option><option value="NOT INTERESTED - Not looking for service">Not interested - Not looking</option><option value="NOT INTERESTED - Not changing providers">Not interested - Not changing</option><option value="NO OBJECTIONS">No objections</option></optgroup>
-        </select>
+        <select id="objection-select-1" onchange="updateState('objection_1',this.value)"></select>
       </div>
       <div class="form-group" style="margin:0">
         <label>Objection 2</label>
-        <select onchange="updateState('objection_2',this.value)">
-          <option value="">None</option>
-          <optgroup label="Cost"><option value="COST - Plan too expensive">Plan too expensive</option><option value="COST - Installation cost too high">Installation cost too high</option><option value="COST - Cannot afford / out of budget">Cannot afford / out of budget</option></optgroup>
-          <optgroup label="Contract"><option value="CONTRACT - Doesn't want a contract">Doesn't want a contract</option><option value="CONTRACT - Currently in another contract">Currently in another contract</option></optgroup>
-          <optgroup label="Service"><option value="SERVICE - Speed too slow / insufficient">Speed too slow / insufficient</option><option value="SERVICE - Technology / feature not available">Technology / feature not available</option><option value="SERVICE - Coverage / signal issues">Coverage / signal issues</option></optgroup>
-          <optgroup label="Other"><option value="PROPERTY - Installation restrictions">Property - Installation restrictions</option><option value="PROVIDER - Happy with current provider">Happy with current provider</option><option value="TIMING - Not moving in yet">Timing - Not moving in yet</option><option value="TIMING - Will call back when ready">Timing - Will call back when ready</option><option value="TIMING - Needs to consult someone">Timing - Needs to consult someone</option><option value="INDECISION - Undecided / shopping around">Indecision - Shopping around</option><option value="INDECISION - Will think about it">Indecision - Will think about it</option><option value="NOT INTERESTED - Not looking for service">Not interested - Not looking</option><option value="NOT INTERESTED - Not changing providers">Not interested - Not changing</option><option value="NO OBJECTIONS">No objections</option></optgroup>
-        </select>
+        <select id="objection-select-2" onchange="updateState('objection_2',this.value)"></select>
       </div>
       <div class="form-group" style="margin:0">
         <label>Objection 3</label>
-        <select onchange="updateState('objection_3',this.value)">
-          <option value="">None</option>
-          <optgroup label="Cost"><option value="COST - Plan too expensive">Plan too expensive</option><option value="COST - Installation cost too high">Installation cost too high</option><option value="COST - Cannot afford / out of budget">Cannot afford / out of budget</option></optgroup>
-          <optgroup label="Contract"><option value="CONTRACT - Doesn't want a contract">Doesn't want a contract</option><option value="CONTRACT - Currently in another contract">Currently in another contract</option></optgroup>
-          <optgroup label="Service"><option value="SERVICE - Speed too slow / insufficient">Speed too slow / insufficient</option><option value="SERVICE - Technology / feature not available">Technology / feature not available</option><option value="SERVICE - Coverage / signal issues">Coverage / signal issues</option></optgroup>
-          <optgroup label="Other"><option value="PROPERTY - Installation restrictions">Property - Installation restrictions</option><option value="PROVIDER - Happy with current provider">Happy with current provider</option><option value="TIMING - Not moving in yet">Timing - Not moving in yet</option><option value="TIMING - Will call back when ready">Timing - Will call back when ready</option><option value="TIMING - Needs to consult someone">Timing - Needs to consult someone</option><option value="INDECISION - Undecided / shopping around">Indecision - Shopping around</option><option value="INDECISION - Will think about it">Indecision - Will think about it</option><option value="NOT INTERESTED - Not looking for service">Not interested - Not looking</option><option value="NOT INTERESTED - Not changing providers">Not interested - Not changing</option><option value="NO OBJECTIONS">No objections</option></optgroup>
-        </select>
+        <select id="objection-select-3" onchange="updateState('objection_3',this.value)"></select>
       </div>
     </div>
   </div>
@@ -2088,23 +2054,23 @@ textarea:focus { border-color: var(--accent); }
 
 <!-- ==================== JAVASCRIPT ==================== -->
 <script>
+// ===== STATE & DATA =====
+
 // ===== STATE =====
 const state = {
   call_type: 'outbound',
   team_member: '',
-  lead_name: 'Evan Galvin', lead_address: '123 Main Street', lead_phone: '', lead_email: '', lead_city: '', lead_state: 'TX', lead_zip: '',
-  lead_source: '',
-  satisfaction_score: 0, score_branch: '',
+  lead_name: '', lead_address: '', lead_phone: '', lead_email: '', lead_city: '', lead_state: 'TX', lead_zip: '',
+  satisfaction_score: 0,
   pain_types: [], // v4.0: multi-select pain
   pain_type: '', // primary pain (first selected)
   pain_impact: '', pain_impacts: [], // v4.0: multi-select impacts
   pain_frequency: '', pain_duration: '', provider_tried_fix: '',
-  current_provider: '', current_price: 0, current_speed: '',
+  current_provider: '', current_price: 0,
   household_size: 0, usage_types: [], priority_preference: '', switch_trigger: '', switch_trigger_text: '',
   decision_maker: '', spouse_feeling: '', spouse_name: '',
-  lead_sources: [], referral_first: '', referral_last: '',
-  recommended_plan: '', plan_price: 0, plan_speed: '', plan_upload: '',
-  close1_response: '', close2_response: '', close3_response: '',
+  recommended_plan: '', plan_price: 0,
+  close1_response: '', close2_response: '',
   install_date: '', install_time: '',
   referral_asked: '', referral_name: '', referral_phone: '', install_fee: '', landlord_approval: '', benefits_mentioned: {},
   home_type: '', roof_type: '', stories: '', ownership: '', dogs: '',
@@ -2112,12 +2078,10 @@ const state = {
   disposition: '', disposition_reason: '',
   objection_1: '', objection_2: '', objection_3: '',
   lead_outcome_notes: '',
-  confidence_checks: { risk_free: false, no_contract: false, side_by_side: false, verbal_interest: false },
   call_path: '',
   call_complete: false,
   provider_type: '',
   bundle_type: '',
-  situation_tags: [],
   schedule_type: 'install',
   mode: 'standard',
   mining_interest: '',
@@ -2392,6 +2356,104 @@ const futureStates = {
   new_to_area: '"Welcome home! You\'ve got reliable internet set up from day one — one less thing to worry about."',
   no_service_yet: '"You go from no internet to unlimited internet — price locked, no contract, 30-day guarantee."',
   previous_provider_unavailable: '"Your old provider may not serve here, but we do. And we\'re better — price locked, unlimited data, local support."'
+};
+
+// ===== REFLECT & FLIP MAPS (used by renderValueMatch) =====
+const REFLECT_MAP = {
+  price_hikes: function() {
+    var price = state.current_price;
+    var impacts = state.pain_impacts || [];
+    var r = 'the bill keeps going up';
+    if (price > 0) r = 'you\'re paying $' + price + '/month and the bill keeps climbing';
+    if (impacts.includes('promo_expired')) r = 'your promo expired and now you\'re paying way more than you signed up for';
+    else if (impacts.includes('hidden_fees')) r = 'hidden fees keep adding up on your bill';
+    else if (impacts.includes('loyal_customer_penalty')) r = 'new customers get better deals while you\'re paying full price';
+    return r;
+  },
+  unreliable_connection: function() {
+    var impacts = state.pain_impacts || [];
+    var r = 'the internet keeps dropping on you';
+    if (impacts.includes('daily_drops')) r = 'the internet drops on you at least once a day';
+    else if (impacts.includes('evening_slowdown')) r = 'it slows way down every evening';
+    else if (impacts.includes('random_outages')) r = 'you\'re dealing with random outages that last hours';
+    else if (impacts.includes('att_air_drops')) r = 'your AT&T Air keeps cutting out';
+    return r;
+  },
+  slow_speeds: function() {
+    var impacts = state.pain_impacts || [];
+    var r = 'everything is running slow';
+    if (impacts.includes('speed_fraction')) r = 'you\'re not getting anywhere near the speed you\'re paying for';
+    else if (impacts.includes('upload_terrible')) r = 'your upload speed is terrible';
+    else if (impacts.includes('multiple_devices_slow')) r = 'it crawls when everyone gets online';
+    else if (impacts.includes('wfh_struggles')) r = 'you can\'t even work from home reliably';
+    return r;
+  },
+  weather_issues: function() {
+    var impacts = state.pain_impacts || [];
+    var r = 'you lose internet every time it storms';
+    if (impacts.includes('rain_outages')) r = 'your internet dies every time it rains';
+    else if (impacts.includes('storm_hours_down')) r = 'it takes hours to come back after storms';
+    return r;
+  },
+  ip_rotation: function() {
+    var impacts = state.pain_impacts || [];
+    var r = 'your streaming thinks you\'re in a different city';
+    if (impacts.includes('hulu_location')) r = 'Hulu keeps showing you Houston channels instead of San Antonio';
+    else if (impacts.includes('netflix_vpn')) r = 'Netflix thinks you\'re using a VPN';
+    return r;
+  },
+  no_other_options: function() {
+    var impacts = state.pain_impacts || [];
+    var r = 'you don\'t have any good internet options in your area';
+    if (impacts.includes('only_satellite')) r = 'satellite is your only option right now';
+    else if (impacts.includes('been_searching')) r = 'you\'ve been searching for something better for years';
+    return r;
+  },
+  data_caps: function() {
+    var impacts = state.pain_impacts || [];
+    var r = 'you\'re hitting the data cap';
+    if (impacts.includes('overage_charges')) r = 'you\'re getting hit with overage fees';
+    else if (impacts.includes('hotspot_as_primary')) r = 'you\'re stuck using your phone as your internet';
+    else if (impacts.includes('cant_stream')) r = 'you can\'t even stream without worrying about the cap';
+    return r;
+  },
+  bad_customer_service: function() {
+    var impacts = state.pain_impacts || [];
+    var r = 'you can\'t get help when something goes wrong';
+    if (impacts.includes('long_hold_times')) r = 'you\'re sitting on hold for hours when you call';
+    else if (impacts.includes('no_resolution')) r = 'they keep sending you in circles and never fix anything';
+    else if (impacts.includes('overseas_support')) r = 'you can\'t understand the support team';
+    return r;
+  },
+  expensive_satellite: function() {
+    var impacts = state.pain_impacts || [];
+    var r = 'you\'re paying way too much for satellite internet';
+    if (impacts.includes('hundred_plus')) r = 'you\'re paying over $100 a month for slow satellite';
+    else if (impacts.includes('locked_in_satellite')) r = 'you\'re stuck in a satellite contract';
+    return r;
+  },
+  contract_locked: function() {
+    var impacts = state.pain_impacts || [];
+    var r = 'you\'re stuck in a contract';
+    if (impacts.includes('etf_fear')) r = 'the early termination fee is keeping you stuck';
+    else if (impacts.includes('auto_renewed')) r = 'your contract auto-renewed without you knowing';
+    return r;
+  },
+  just_moved: function() { return 'you just moved and need to get internet set up'; }
+};
+
+const FLIP_MAP = {
+  price_hikes: 'the price I quote you today is locked in — it never goes up, no surprise fees',
+  unreliable_connection: 'that just stops happening — your internet stays on, period. 99.99% uptime',
+  slow_speeds: 'your speed stays consistent whether it\'s noon or 8 PM with the whole family on',
+  weather_issues: 'your internet works in the rain — our towers are local, not 22,000 miles in space',
+  ip_rotation: 'your streaming shows your San Antonio channels, Netflix works, no more VPN errors',
+  no_other_options: 'you finally have real internet — unlimited data, low latency, and it works',
+  data_caps: 'there\'s no cap — use as much as you want, it never slows down on you',
+  bad_customer_service: 'when you call us, a real person picks up — local team right here in San Antonio',
+  expensive_satellite: 'you\'re paying half the price for internet that actually works — with free TV included',
+  contract_locked: 'there\'s no contract — ever. Month-to-month, price locked, cancel anytime',
+  just_moved: 'we get you set up right from day one — price locked, no contract'
 };
 
 // ===== OBJECTION DATA (16 Alamo-specific handlers — V/I/R/RC framework) =====
@@ -2672,6 +2734,8 @@ const triggerResponses = {
   contract_ending: '"Smart — that\'s the perfect time to look around and see what else is out there before you get locked in again."'
 };
 
+// ===== UTILITIES =====
+
 // ===== UTILITY FUNCTIONS =====
 function getPainLabel() {
   if (!state.pain_type) return '[their pain]';
@@ -2712,6 +2776,8 @@ function saveToLocalStorage() {
   if (state.lead_name || state.lead_phone) saveSession();
 }
 
+// ===== RENDER FUNCTIONS =====
+
 // ===== RENDER EVERYTHING =====
 function renderAll() {
   renderBreadcrumbs();
@@ -2722,7 +2788,6 @@ function renderAll() {
   renderValueMatch();
   renderFutureStateInValue();
   renderROI();
-  // renderPriceCompare(); // removed v1.1
   renderRecScript();
   renderAnchorClose();
   renderSpouseCallback();
@@ -2731,7 +2796,6 @@ function renderAll() {
   renderCompetitorBtn();
   renderSummary();
   renderCallPathSuggestion();
-  renderSituationNotes();
   renderMiningProviderCoach();
   renderCloseSavings();
   renderSpouseScheduleNote();
@@ -3142,7 +3206,7 @@ function toggleBenefitCheck(el, key) {
   var count = Object.keys(state.benefits_mentioned).filter(function(k) { return state.benefits_mentioned[k]; }).length;
   var prog = document.getElementById('benefit-progress');
   if (count === 7) prog.innerHTML = '<span style="color:var(--success);font-weight:700">\u2713 All 7 benefits covered!</span>';
-  else prog.textContent = count + ' / 8 mentioned';
+  else prog.textContent = count + ' / 7 mentioned';
   saveToLocalStorage();
 }
 
@@ -3155,106 +3219,16 @@ function renderValueMatch() {
 
   var pains = state.pain_types;
   var provider = state.current_provider || 'your current provider';
-  var price = state.current_price;
-  var impacts = state.pain_impacts || [];
   var name = state.lead_name ? state.lead_name.split(' ')[0] : '';
 
   // Build reflect phrases from their specific sub-options
   var reflectParts = [];
   var flipParts = [];
 
-  // Reflect map — what we say back to them based on pain type + their subs
-  var reflectMap = {
-    price_hikes: function() {
-      var r = 'the bill keeps going up';
-      if (price > 0) r = 'you\'re paying $' + price + '/month and the bill keeps climbing';
-      if (impacts.includes('promo_expired')) r = 'your promo expired and now you\'re paying way more than you signed up for';
-      else if (impacts.includes('hidden_fees')) r = 'hidden fees keep adding up on your bill';
-      else if (impacts.includes('loyal_customer_penalty')) r = 'new customers get better deals while you\'re paying full price';
-      return r;
-    },
-    unreliable_connection: function() {
-      var r = 'the internet keeps dropping on you';
-      if (impacts.includes('daily_drops')) r = 'the internet drops on you at least once a day';
-      else if (impacts.includes('evening_slowdown')) r = 'it slows way down every evening';
-      else if (impacts.includes('random_outages')) r = 'you\'re dealing with random outages that last hours';
-      else if (impacts.includes('att_air_drops')) r = 'your AT&T Air keeps cutting out';
-      return r;
-    },
-    slow_speeds: function() {
-      var r = 'everything is running slow';
-      if (impacts.includes('speed_fraction')) r = 'you\'re not getting anywhere near the speed you\'re paying for';
-      else if (impacts.includes('upload_terrible')) r = 'your upload speed is terrible';
-      else if (impacts.includes('multiple_devices_slow')) r = 'it crawls when everyone gets online';
-      else if (impacts.includes('wfh_struggles')) r = 'you can\'t even work from home reliably';
-      return r;
-    },
-    weather_issues: function() {
-      var r = 'you lose internet every time it storms';
-      if (impacts.includes('rain_outages')) r = 'your internet dies every time it rains';
-      else if (impacts.includes('storm_hours_down')) r = 'it takes hours to come back after storms';
-      return r;
-    },
-    ip_rotation: function() {
-      var r = 'your streaming thinks you\'re in a different city';
-      if (impacts.includes('hulu_location')) r = 'Hulu keeps showing you Houston channels instead of San Antonio';
-      else if (impacts.includes('netflix_vpn')) r = 'Netflix thinks you\'re using a VPN';
-      return r;
-    },
-    no_other_options: function() {
-      var r = 'you don\'t have any good internet options in your area';
-      if (impacts.includes('only_satellite')) r = 'satellite is your only option right now';
-      else if (impacts.includes('been_searching')) r = 'you\'ve been searching for something better for years';
-      return r;
-    },
-    data_caps: function() {
-      var r = 'you\'re hitting the data cap';
-      if (impacts.includes('overage_charges')) r = 'you\'re getting hit with overage fees';
-      else if (impacts.includes('hotspot_as_primary')) r = 'you\'re stuck using your phone as your internet';
-      else if (impacts.includes('cant_stream')) r = 'you can\'t even stream without worrying about the cap';
-      return r;
-    },
-    bad_customer_service: function() {
-      var r = 'you can\'t get help when something goes wrong';
-      if (impacts.includes('long_hold_times')) r = 'you\'re sitting on hold for hours when you call';
-      else if (impacts.includes('no_resolution')) r = 'they keep sending you in circles and never fix anything';
-      else if (impacts.includes('overseas_support')) r = 'you can\'t understand the support team';
-      return r;
-    },
-    expensive_satellite: function() {
-      var r = 'you\'re paying way too much for satellite internet';
-      if (impacts.includes('hundred_plus')) r = 'you\'re paying over $100 a month for slow satellite';
-      else if (impacts.includes('locked_in_satellite')) r = 'you\'re stuck in a satellite contract';
-      return r;
-    },
-    contract_locked: function() {
-      var r = 'you\'re stuck in a contract';
-      if (impacts.includes('etf_fear')) r = 'the early termination fee is keeping you stuck';
-      else if (impacts.includes('auto_renewed')) r = 'your contract auto-renewed without you knowing';
-      return r;
-    },
-    just_moved: function() { return 'you just moved and need to get internet set up'; }
-  };
-
-  // Flip map — one outcome-focused solution line per pain
-  var flipMap = {
-    price_hikes: 'the price I quote you today is locked in — it never goes up, no surprise fees',
-    unreliable_connection: 'that just stops happening — your internet stays on, period. 99.99% uptime',
-    slow_speeds: 'your speed stays consistent whether it\'s noon or 8 PM with the whole family on',
-    weather_issues: 'your internet works in the rain — our towers are local, not 22,000 miles in space',
-    ip_rotation: 'your streaming shows your San Antonio channels, Netflix works, no more VPN errors',
-    no_other_options: 'you finally have real internet — unlimited data, low latency, and it works',
-    data_caps: 'there\'s no cap — use as much as you want, it never slows down on you',
-    bad_customer_service: 'when you call us, a real person picks up — local team right here in San Antonio',
-    expensive_satellite: 'you\'re paying half the price for internet that actually works — with free TV included',
-    contract_locked: 'there\'s no contract — ever. Month-to-month, price locked, cancel anytime',
-    just_moved: 'we get you set up right from day one — price locked, no contract'
-  };
-
-  // Build the parts
+  // Build the parts from top-level REFLECT_MAP / FLIP_MAP
   pains.forEach(function(p) {
-    if (reflectMap[p]) reflectParts.push(reflectMap[p]());
-    if (flipMap[p]) flipParts.push(flipMap[p]);
+    if (REFLECT_MAP[p]) reflectParts.push(REFLECT_MAP[p]());
+    if (FLIP_MAP[p]) flipParts.push(FLIP_MAP[p]);
   });
 
   var html = '';
@@ -3347,18 +3321,6 @@ function togglePaintThePicture() {
   } else {
     el.classList.add('hidden');
     if (icon) icon.style.transform = 'rotate(0deg)';
-  }
-}
-
-function toggleBusinessPlans() {
-  var el = document.getElementById('business-plans');
-  var btn = document.getElementById('business-plans-toggle');
-  if (el.classList.contains('hidden')) {
-    el.classList.remove('hidden');
-    btn.textContent = 'Hide Business Plans';
-  } else {
-    el.classList.add('hidden');
-    btn.textContent = 'Show Business Plans';
   }
 }
 
@@ -3722,6 +3684,8 @@ function renderSessionManager() {
   container.innerHTML = html;
 }
 
+// ===== USER ACTIONS =====
+
 // ===== EVENT HANDLERS =====
 function setCallType(type) {
   state.call_type = type;
@@ -3735,7 +3699,6 @@ function setCallType(type) {
 
 function setScore(n) {
   state.satisfaction_score = n;
-  state.score_branch = n <= 4 ? 'in_pain' : n <= 7 ? 'dissatisfied' : 'mostly_happy';
   document.querySelectorAll('.score-btn').forEach(function(b) {
     var val = parseInt(b.textContent);
     b.classList.remove('selected','s-low','s-mid','s-high');
@@ -3744,7 +3707,6 @@ function setScore(n) {
       b.classList.add(n <= 4 ? 's-low' : n <= 7 ? 's-mid' : 's-high');
     }
   });
-  checkState.score = 'completed';
   // Mining mode: show score routing
   var miningBranch = document.getElementById('mining-score-branch');
   var miningLow = document.getElementById('mining-score-low');
@@ -3937,8 +3899,6 @@ function selectPlan(planId) {
   state.recommended_plan = planId;
   var plan = plans[planId];
   state.plan_price = plan.price;
-  state.plan_speed = plan.speed;
-  state.plan_upload = plan.upload;
   document.querySelectorAll('.plan-card').forEach(function(c) { c.classList.remove('selected','recommended'); });
   var ids = ['unfiber50','unfiber100','unfiber300'];
   document.querySelectorAll('#plan-grid .plan-card').forEach(function(c, i) {
@@ -3987,54 +3947,15 @@ function setTimeSlot(el, slot) {
   renderAll();
 }
 
-// v4.9: Multi-select lead source with numbered badges
-function toggleLeadSource(el, val) {
-  if (!state.lead_sources) state.lead_sources = [];
-  var idx = state.lead_sources.indexOf(val);
-  if (idx >= 0) {
-    state.lead_sources.splice(idx, 1);
-    el.classList.remove('active');
-  } else {
-    state.lead_sources.push(val);
-    el.classList.add('active');
-  }
-  // Keep lead_source as primary (first selected) for backward compat
-  state.lead_source = state.lead_sources[0] || '';
-  // Update numbered badges on all lead source pills
-  document.querySelectorAll('#lead-source-pills .pill').forEach(function(p) {
-    var badge = p.querySelector('.pill-badge');
-    if (badge) badge.remove();
-    var pillVal = p.getAttribute('onclick').match(/'([^']+)'\)$/);
-    if (pillVal) {
-      var order = state.lead_sources.indexOf(pillVal[1]);
-      if (order >= 0) {
-        var b = document.createElement('span');
-        b.className = 'pill-badge';
-        b.textContent = order + 1;
-        p.appendChild(b);
-      }
-    }
-  });
-  // Show/hide referral name fields
-  var refRow = document.getElementById('lead-source-referral-row');
-  var showRef = state.lead_sources.includes('referral');
-  refRow.style.display = showRef ? 'block' : 'none';
-  if (showRef) highlightReferralInputs();
-  // Show follow-up question after first selection
-  var followup = document.getElementById('lead-source-followup');
-  followup.style.display = state.lead_sources.length > 0 ? 'block' : 'none';
-  saveToLocalStorage();
-}
-
-function highlightReferralInputs() {
-  var first = document.getElementById('inp-referral-first');
-  var last = document.getElementById('inp-referral-last');
-  [first, last].forEach(function(el) {
-    var filled = !!el.value.trim();
-    el.classList.toggle('referral-filled', filled);
-    el.classList.toggle('referral-highlight', !filled);
-  });
-}
+// ===== PROVIDER COACH CONFIG (shared by selectProvider + renderMiningProviderCoach) =====
+const PROVIDER_COACH_CONFIG = {
+  satellite: { bg:'var(--success-dim)', border:'var(--success)', color:'var(--success)', badge:'HIGH PRIORITY LEAD', note:'Easy win. Lead with speed difference. Their signal: 22,000 miles. Ours: a few miles.', html:'<strong>HIGH PRIORITY:</strong> Easy win. Their signal travels 22,000 miles, ours: a few miles. No weather issues, no data caps, low latency for video calls and gaming.' },
+  cellular: { bg:'rgba(74,158,255,0.12)', border:'var(--accent)', color:'var(--accent)', badge:'CELLULAR LEAD', note:'Lead with RELIABILITY and fixed IP. They likely have streaming location issues and drops.', html:'<strong>LEAD WITH RELIABILITY:</strong> Fixed IP &mdash; they likely have streaming location issues. Dedicated connection, not deprioritized. Consistent speeds all day.' },
+  cable: { bg:'var(--warning-dim)', border:'var(--warning)', color:'var(--warning)', badge:'CABLE LEAD', note:'Lead with PRICE LOCK. Their promo rate will expire. Emphasize no surprises.', html:'<strong>LEAD WITH PRICE LOCK:</strong> Their promo rate will expire. Our price is locked from day one &mdash; no surprise increases. Plus unlimited data and no contract.' },
+  fiber: { bg:'var(--danger-dim)', border:'var(--danger)', color:'var(--danger)', badge:'HARD SELL', note:'If they have fiber and it works well, be honest. Lead with free TV + local support.', html:'<strong>HARD SELL:</strong> If they have fiber and it works well, be honest. Lead with free TV service ($30-50 value) + local support. If score is 8+, plant the seed.' },
+  fwa: { bg:'rgba(167,139,250,0.12)', border:'var(--purple)', color:'var(--purple)', badge:'DIRECT COMPETITOR', note:'Direct competitor. Lead with equipment quality, tower ownership, and local support.', html:'<strong>DIRECT COMPETITOR:</strong> Lead with equipment quality, tower ownership, and local support. We own our towers.' },
+  none: { bg:'var(--success-dim)', border:'var(--success)', color:'var(--success)', badge:'NO CURRENT PROVIDER', note:'They just need internet. Easy conversation.', html:'<strong>NO CURRENT PROVIDER:</strong> They just need internet. Easy conversation. Focus on value and getting them set up.' }
+};
 
 // v5.3: Provider type classification
 var providerTypes = {
@@ -4057,28 +3978,18 @@ function classifyProvider(name) {
 // v4.8: Provider pill selection
 function selectProvider(el, name) {
   state.current_provider = name;
-  document.querySelectorAll('#provider-pills .pill, #mining-provider-pills .pill, #provider-pills-opening .pill').forEach(function(p) { p.classList.remove('active'); p.classList.remove('selected'); });
+  document.querySelectorAll('#provider-pills-opening .pill').forEach(function(p) { p.classList.remove('active'); p.classList.remove('selected'); });
   el.classList.add('active');
-  // Sync all provider inputs
-  var inpProvider = document.getElementById('inp-provider');
+  // Sync provider input
   var inpProviderOpening = document.getElementById('inp-provider-opening');
-  if (inpProvider) inpProvider.value = name;
   if (inpProviderOpening) inpProviderOpening.value = name;
 
   // Auto-classify provider type and show coach note with colored badge
   var type = classifyProvider(name);
   state.provider_type = type;
-  var providerCoachConfig = {
-    satellite: { bg:'var(--success-dim)', border:'var(--success)', color:'var(--success)', badge:'HIGH PRIORITY LEAD', note:'Easy win. Lead with speed difference. Their signal: 22,000 miles. Ours: a few miles.' },
-    cellular: { bg:'rgba(74,158,255,0.12)', border:'var(--accent)', color:'var(--accent)', badge:'CELLULAR LEAD', note:'Lead with RELIABILITY and fixed IP. They likely have streaming location issues and drops.' },
-    cable: { bg:'var(--warning-dim)', border:'var(--warning)', color:'var(--warning)', badge:'CABLE LEAD', note:'Lead with PRICE LOCK. Their promo rate will expire. Emphasize no surprises.' },
-    fiber: { bg:'var(--danger-dim)', border:'var(--danger)', color:'var(--danger)', badge:'HARD SELL', note:'If they have fiber and it works well, be honest. Lead with free TV + local support.' },
-    fwa: { bg:'rgba(167,139,250,0.12)', border:'var(--purple)', color:'var(--purple)', badge:'DIRECT COMPETITOR', note:'Direct competitor. Lead with equipment quality, tower ownership, and local support.' },
-    none: { bg:'var(--success-dim)', border:'var(--success)', color:'var(--success)', badge:'NO CURRENT PROVIDER', note:'They just need internet. Easy conversation.' }
-  };
-  var cfg = providerCoachConfig[type];
-  // Show coach note in both opening and discovery locations
-  ['provider-coach-note', 'provider-coach-note-opening'].forEach(function(elId) {
+  var cfg = PROVIDER_COACH_CONFIG[type];
+  // Show coach note in opening location
+  ['provider-coach-note-opening'].forEach(function(elId) {
     var coachEl = document.getElementById(elId);
     if (!coachEl) return;
     if (cfg) {
@@ -4091,8 +4002,8 @@ function selectProvider(el, name) {
       coachEl.classList.add('hidden');
     }
   });
-  // Show intel hint in both locations
-  ['provider-intel-hint', 'provider-intel-hint-opening'].forEach(function(elId) {
+  // Show intel hint in opening location
+  ['provider-intel-hint-opening'].forEach(function(elId) {
     var hintEl = document.getElementById(elId);
     if (!hintEl) return;
     if (findCompetitor(name)) {
@@ -4122,51 +4033,6 @@ function setBundleType(el, type) {
   }
   saveToLocalStorage();
   renderAll();
-}
-
-// v5.3: Situation tags
-var situationCoachNotes = {
-  senior: 'SENIOR / ELDERLY: Slower pace. Emphasize local support \u2014 they can call (210) 587-7201 and talk to a real person. Avoid jargon.',
-  price_shopper: 'PRICE SHOPPER: Lead with savings math. Have their current price ready. Show the annual savings number.',
-  rural_no_options: 'RURAL / NO OPTIONS: Emphasize availability \u2014 "We can reach you." They\'re often excited just to have an option. Easy close.',
-  technical: 'TECHNICAL BUYER: They want details. Tower distance, latency (20ms), 99.99% uptime, equipment specs. Don\'t oversimplify.',
-  renter: 'RENTER: Address landlord approval early. Offer tripod mount (no penetration). Offer site survey for landlord to see.',
-  former_customer: 'FORMER CUSTOMER: Reconnect flow. They know the service. Ask what changed and if we can address it.'
-};
-
-function toggleSituationTag(el, tag) {
-  if (!state.situation_tags) state.situation_tags = [];
-  var idx = state.situation_tags.indexOf(tag);
-  if (idx >= 0) {
-    state.situation_tags.splice(idx, 1);
-    el.classList.remove('active');
-  } else {
-    if (state.situation_tags.length >= 2) {
-      // Remove the first tag
-      var firstTag = state.situation_tags.shift();
-      document.querySelectorAll('#situation-tag-pills .pill').forEach(function(p) {
-        var pillTag = p.getAttribute('onclick').match(/'([^']+)'\)/);
-        if (pillTag && pillTag[1] === firstTag) p.classList.remove('active');
-      });
-    }
-    state.situation_tags.push(tag);
-    el.classList.add('active');
-  }
-  renderSituationNotes();
-  saveToLocalStorage();
-}
-
-function renderSituationNotes() {
-  var el = document.getElementById('situation-coach-notes');
-  if (!el) return;
-  if (!state.situation_tags || !state.situation_tags.length) {
-    el.classList.add('hidden');
-    return;
-  }
-  el.classList.remove('hidden');
-  el.innerHTML = state.situation_tags.map(function(tag) {
-    return '<div style="margin-bottom:4px">' + (situationCoachNotes[tag] || '') + '</div>';
-  }).join('');
 }
 
 // v4.8: Mode button toggle
@@ -4657,6 +4523,55 @@ function buildPainTiles() {
   });
 }
 
+// ===== OBJECTION SELECT BUILDER =====
+var OBJECTION_SELECT_OPTIONS = [
+  { group: 'Cost', items: [
+    { value: 'COST - Plan too expensive', label: 'Plan too expensive' },
+    { value: 'COST - Installation cost too high', label: 'Installation cost too high' },
+    { value: 'COST - Cannot afford / out of budget', label: 'Cannot afford / out of budget' }
+  ]},
+  { group: 'Contract', items: [
+    { value: "CONTRACT - Doesn't want a contract", label: "Doesn't want a contract" },
+    { value: 'CONTRACT - Currently in another contract', label: 'Currently in another contract' }
+  ]},
+  { group: 'Service', items: [
+    { value: 'SERVICE - Speed too slow / insufficient', label: 'Speed too slow / insufficient' },
+    { value: 'SERVICE - Technology / feature not available', label: 'Technology / feature not available' },
+    { value: 'SERVICE - Coverage / signal issues', label: 'Coverage / signal issues' }
+  ]},
+  { group: 'Other', items: [
+    { value: 'PROPERTY - Installation restrictions', label: 'Property - Installation restrictions' },
+    { value: 'PROVIDER - Happy with current provider', label: 'Happy with current provider' },
+    { value: 'TIMING - Not moving in yet', label: 'Timing - Not moving in yet' },
+    { value: 'TIMING - Will call back when ready', label: 'Timing - Will call back when ready' },
+    { value: 'TIMING - Needs to consult someone', label: 'Timing - Needs to consult someone' },
+    { value: 'INDECISION - Undecided / shopping around', label: 'Indecision - Shopping around' },
+    { value: 'INDECISION - Will think about it', label: 'Indecision - Will think about it' },
+    { value: 'NOT INTERESTED - Not looking for service', label: 'Not interested - Not looking' },
+    { value: 'NOT INTERESTED - Not changing providers', label: 'Not interested - Not changing' },
+    { value: 'NO OBJECTIONS', label: 'No objections' }
+  ]}
+];
+
+function buildObjectionSelects() {
+  [1, 2, 3].forEach(function(n) {
+    var sel = document.getElementById('objection-select-' + n);
+    if (!sel) return;
+    var html = '<option value="">None</option>';
+    OBJECTION_SELECT_OPTIONS.forEach(function(group) {
+      html += '<optgroup label="' + group.group + '">';
+      group.items.forEach(function(item) {
+        html += '<option value="' + item.value.replace(/"/g, '&quot;') + '">' + item.label + '</option>';
+      });
+      html += '</optgroup>';
+    });
+    sel.innerHTML = html;
+    // Restore saved value
+    var saved = state['objection_' + n];
+    if (saved) sel.value = saved;
+  });
+}
+
 // ===== OBJECTION PANEL =====
 function buildObjectionTiles() {
   var container = document.getElementById('objection-tiles');
@@ -4818,7 +4733,6 @@ function resetForm() {
   state.mode = keepMode || 'standard';
   state.call_type = 'outbound';
   state.schedule_type = 'install';
-  state.confidence_checks = { risk_free: false, no_contract: false, side_by_side: false, verbal_interest: false };
   // Reset all checkState
   Object.keys(checkState).forEach(function(k) { checkState[k] = 'pending'; });
   // Rebuild UI
@@ -4848,10 +4762,7 @@ function resetForm() {
   var prog = document.getElementById('benefit-progress');
   if (prog) prog.textContent = '0 / 7 mentioned';
   // Hide conditional sections
-  document.querySelectorAll('#score-branch, #dm-trap-inline, #rent-notice-discovery, #spouse-feeling-row, #spouse-name-row, #landlord-yes, #landlord-no, #anchor-close-section, #spouse-ammunition, #provider-intel-hint, #provider-intel-hint-opening, #provider-coach-note, #provider-coach-note-opening, #lead-source-referral-row, #paint-the-picture').forEach(function(el) { if(el) el.classList.add('hidden'); });
-  // Reset lead source followup
-  var followup = document.getElementById('lead-source-followup');
-  if (followup) followup.style.display = 'none';
+  document.querySelectorAll('#score-branch, #dm-trap-inline, #rent-notice-discovery, #spouse-feeling-row, #spouse-name-row, #landlord-yes, #landlord-no, #anchor-close-section, #spouse-ammunition, #provider-intel-hint-opening, #provider-coach-note-opening, #paint-the-picture').forEach(function(el) { if(el) el.classList.add('hidden'); });
   // Re-render
   saveToLocalStorage();
   renderAll();
@@ -4958,10 +4869,6 @@ function fetchCalendarEvents() {
   });
 }
 
-function setTheme(theme) {
-  setThemeFromPanel(theme);
-}
-
 function setMode(mode) {
   state.mode = mode;
   document.body.classList.remove('mode-standard', 'mode-mining');
@@ -4999,15 +4906,7 @@ function renderMiningProviderCoach() {
     return;
   }
   el.classList.remove('hidden');
-  var mpc = {
-    satellite: { bg:'var(--success-dim)', border:'var(--success)', color:'var(--success)', html:'<strong>HIGH PRIORITY:</strong> Easy win. Their signal travels 22,000 miles, ours: a few miles. No weather issues, no data caps, low latency for video calls and gaming.' },
-    cellular: { bg:'rgba(74,158,255,0.12)', border:'var(--accent)', color:'var(--accent)', html:'<strong>LEAD WITH RELIABILITY:</strong> Fixed IP &mdash; they likely have streaming location issues. Dedicated connection, not deprioritized. Consistent speeds all day.' },
-    cable: { bg:'var(--warning-dim)', border:'var(--warning)', color:'var(--warning)', html:'<strong>LEAD WITH PRICE LOCK:</strong> Their promo rate will expire. Our price is locked from day one &mdash; no surprise increases. Plus unlimited data and no contract.' },
-    fiber: { bg:'var(--danger-dim)', border:'var(--danger)', color:'var(--danger)', html:'<strong>HARD SELL:</strong> If they have fiber and it works well, be honest. Lead with free TV service ($30-50 value) + local support. If score is 8+, plant the seed.' },
-    fwa: { bg:'rgba(167,139,250,0.12)', border:'var(--purple)', color:'var(--purple)', html:'<strong>DIRECT COMPETITOR:</strong> Lead with equipment quality, tower ownership, and local support. We own our towers.' },
-    none: { bg:'var(--success-dim)', border:'var(--success)', color:'var(--success)', html:'<strong>NO CURRENT PROVIDER:</strong> They just need internet. Easy conversation. Focus on value and getting them set up.' }
-  };
-  var cfg = mpc[type];
+  var cfg = PROVIDER_COACH_CONFIG[type];
   if (cfg) {
     el.style.background = cfg.bg;
     el.style.border = '1px solid ' + cfg.border;
@@ -5116,7 +5015,8 @@ function renderCloseSavings() {
   }
 }
 
-// ===== INIT =====
+// ===== INITIALIZATION =====
+
 function init() {
   var savedTheme = localStorage.getItem('alamo_theme') || 'cream';
   document.documentElement.setAttribute('data-theme', savedTheme);
@@ -5145,6 +5045,7 @@ function init() {
 
   buildPainTiles();
   buildObjectionTiles();
+  buildObjectionSelects();
   initCalendar();
 
   // v5.1: Restore visual state for pain tiles after build
@@ -5164,7 +5065,7 @@ function init() {
 
   // v5.1: Restore visual state for usage pills after build
   if (state.usage_types.length > 0) {
-    document.querySelectorAll('#usage-pills .pill, #mining-usage-pills .pill').forEach(function(p) {
+    document.querySelectorAll('#usage-pills .pill').forEach(function(p) {
       var match = p.getAttribute('onclick').match(/'([^']+)'/);
       if (match) {
         var val = match[1];
@@ -5216,9 +5117,9 @@ function init() {
     var sel = document.getElementById('team-member-select');
     if (sel) sel.value = state.team_member;
   }
-  // Provider pills
+  // Provider pills (opening)
   if (state.current_provider) {
-    document.querySelectorAll('#provider-pills .pill, #mining-provider-pills .pill').forEach(function(p) {
+    document.querySelectorAll('#provider-pills-opening .pill').forEach(function(p) {
       var match = p.getAttribute('onclick').match(/'([^']+)'/);
       if (match && match[1] === state.current_provider) p.classList.add('active');
     });
@@ -5228,18 +5129,6 @@ function init() {
     document.querySelectorAll('#q2-card .pill').forEach(function(p) {
       var match = p.getAttribute('onclick').match(/,(\d+)/);
       if (match && parseInt(match[1]) === state.household_size) p.classList.add('selected');
-    });
-  }
-  // Lead source pills
-  if (state.lead_sources && state.lead_sources.length) {
-    document.querySelectorAll('#lead-source-pills .pill').forEach(function(p) {
-      var match = p.getAttribute('onclick').match(/'([^']+)'/);
-      if (match && state.lead_sources.includes(match[1])) {
-        p.classList.add('active');
-        var idx = state.lead_sources.indexOf(match[1]);
-        var b = document.createElement('span'); b.className = 'pill-badge'; b.textContent = idx + 1;
-        p.appendChild(b);
-      }
     });
   }
   // Plan card selection
