@@ -1631,104 +1631,87 @@ textarea:focus { border-color: var(--accent); }
 <div class="section" id="sec-house" data-check="house">
   <div class="section-label">Section 10</div>
   <div class="section-title">Post-Close Details</div>
-  <div class="script-block">"Great, just a few quick things for the install team."</div>
+  <div class="script-block">
+    "Great, just a few quick things so the install team knows what to expect. Do you own or rent your place?"
+  </div>
+  <div class="pill-group" style="margin-top:8px">
+    <div class="pill" onclick="setOwnership(this,'own')">Own</div>
+    <div class="pill" onclick="setOwnership(this,'rent')">Rent</div>
+  </div>
 
-  <!-- Own or Rent — moved from Section 3 -->
-  <div id="q3-card" style="margin-top:16px">
-    <div class="section-label">Own or Rent</div>
-    <div class="q-script">"And do you own or rent your place?"</div>
-    <div class="pill-group">
-      <div class="pill" onclick="setOwnership(this,'own')">Own</div>
-      <div class="pill" onclick="setOwnership(this,'rent')">Rent</div>
+  <!-- Rent path — lightweight reassurance -->
+  <div id="rent-notice-discovery" class="hidden" style="margin-top:8px">
+    <div class="script-block" style="border-left-color:var(--warning);margin:0 0 8px 0;font-size:13px">
+      "No problem. Most landlords are totally fine with it since we're not drilling into the roof or making permanent changes. We'll send you a quick template you can forward to them before the install date."
     </div>
-    <div id="rent-notice-discovery" class="hidden" style="margin-top:8px">
-      <div class="script-block" style="border-left-color:var(--warning);font-size:13px;margin:0 0 8px 0">
-        "Since you're renting &mdash; do you have your landlord's approval already?"
-      </div>
-      <div class="pill-group" style="margin-bottom:8px">
-        <div class="pill" onclick="setLandlordApproval(this,'yes')">Yes</div>
-        <div class="pill" onclick="setLandlordApproval(this,'no')">No</div>
-      </div>
-      <div id="landlord-yes" class="hidden" style="margin-top:6px">
-        <div class="script-block" style="border-left-color:var(--success);margin:0">"Great! Verbal approval is fine. Let's continue."</div>
-      </div>
-      <div id="landlord-no" class="hidden" style="margin-top:6px">
-        <div class="script-block" style="border-left-color:var(--warning);font-size:13px;margin:0 0 8px 0">
-          "No worries &mdash; I'll send you the template so you can forward it to your landlord. Most landlords are totally fine with it."
-        </div>
-        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px"><strong>Send template to lead (they'll forward to landlord):</strong></div>
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">Landlord contact: <strong>info@alamobroadband.com</strong></div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <input type="tel" id="inp-landlord-phone" placeholder="Lead's phone #" style="flex:1;min-width:140px;font-size:12px">
-          <button class="pill active" style="cursor:pointer" onclick="sendLandlordSMS()">Send SMS</button>
-          <input type="email" id="inp-landlord-email" placeholder="Lead's email" style="flex:1;min-width:140px;font-size:12px">
-          <button class="pill active" style="cursor:pointer" onclick="sendLandlordEmail()">Send Email</button>
-        </div>
-        <div style="font-size:10px;color:var(--text-muted);margin-top:4px">Sends the landlord approval template to the lead so they can copy/paste or forward to their landlord.</div>
-        <div id="landlord-send-status" style="font-size:11px;color:var(--success);margin-top:4px;display:none"></div>
-      </div>
+    <div class="coach-note" style="margin:0">
+      Rep: Note "renter" for install team. Landlord template will be sent automatically with the confirmation email. If landlord is a known blocker, offer the site survey instead so the landlord can see the equipment first.
     </div>
-    <!-- Renter Decision Tree -->
-    <div id="renter-decision-tree" class="hidden" style="margin-top:10px;padding:12px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius)">
-      <div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:6px">RENTER DECISION TREE</div>
-      <div style="font-size:12px;color:var(--text-secondary);line-height:1.7">
-        <strong>Rented House</strong> &mdash; Landlord approval usually easy. Offer site survey for landlord to see equipment.<br>
-        <strong>Rented Mobile Home</strong> &mdash; Tripod mount available &mdash; no drilling required. Still need lot owner OK.<br>
-        <strong>Apartment Complex</strong> &mdash; Check with property management. We need roof/exterior access. If denied, may not be serviceable.<br>
-        <strong>RV / Temporary</strong> &mdash; Tripod mount, no contract needed. Month-to-month is perfect.
+    <!-- Renter details — collapsed, for edge cases only -->
+    <div style="margin-top:8px">
+      <span style="font-size:11px;color:var(--text-muted);cursor:pointer;text-decoration:underline" onclick="this.nextElementSibling.classList.toggle('hidden')">Renter details (apartment, mobile home, etc.)</span>
+      <div class="hidden" style="margin-top:6px;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text-secondary);line-height:1.7">
+        <strong>House</strong> &mdash; Landlord approval usually easy. Most say yes.<br>
+        <strong>Mobile Home</strong> &mdash; Tripod mount, no drilling. Still need lot owner OK.<br>
+        <strong>Apartment</strong> &mdash; Need roof/exterior access from property management. May not be serviceable if denied.<br>
+        <strong>RV / Temporary</strong> &mdash; Tripod mount, month-to-month is perfect.
       </div>
     </div>
   </div>
 
+  <!-- Property details — conversational flow -->
   <div style="margin-top:16px">
-    <div class="section-label">Property Details</div>
-    <div class="form-grid" style="margin-top:8px">
-      <div class="form-group">
-        <label>Home Type</label>
-        <div class="pill-group">
-          <div class="pill" onclick="setProperty(this,'home_type','single')">Single Family</div>
-          <div class="pill" onclick="setProperty(this,'home_type','mobile')">Mobile/Mfg</div>
-          <div class="pill" onclick="setProperty(this,'home_type','apartment')">Apartment</div>
-          <div class="pill" onclick="setProperty(this,'home_type','townhouse')">Townhouse</div>
-          <div class="pill" onclick="setProperty(this,'home_type','other')">Other</div>
-        </div>
+    <div class="script-block" style="font-size:13px">
+      "Is that a house, mobile home, or apartment?"
+    </div>
+    <div class="pill-group" style="margin-top:6px">
+      <div class="pill" onclick="setProperty(this,'home_type','single')">House</div>
+      <div class="pill" onclick="setProperty(this,'home_type','mobile')">Mobile Home</div>
+      <div class="pill" onclick="setProperty(this,'home_type','apartment')">Apartment</div>
+      <div class="pill" onclick="setProperty(this,'home_type','townhouse')">Townhouse</div>
+    </div>
+
+    <div style="margin-top:12px">
+      <div class="script-block" style="font-size:13px">
+        "One story or two?"
       </div>
-      <div class="form-group">
-        <label>Roof Type</label>
-        <div class="pill-group">
+      <div class="pill-group" style="margin-top:6px">
+        <div class="pill" onclick="setProperty(this,'stories','1')">1</div>
+        <div class="pill" onclick="setProperty(this,'stories','2')">2</div>
+        <div class="pill" onclick="setProperty(this,'stories','3+')">3+</div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <div class="script-block" style="font-size:13px">
+        "Any dogs the tech should know about, or a gate code to get in?"
+      </div>
+      <div style="display:flex;gap:12px;margin-top:6px;align-items:center">
+        <div class="pill-group" style="margin:0">
+          <div class="pill" onclick="setProperty(this,'dogs','yes')">Dogs</div>
+          <div class="pill" onclick="setProperty(this,'dogs','no')">No dogs</div>
+        </div>
+        <input type="text" placeholder="Gate code" oninput="updateState('gate_code',this.value)" style="flex:1;max-width:160px">
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <input type="text" placeholder="Special instructions or hazards for the tech..." oninput="updateState('install_notes',this.value)" style="width:100%">
+    </div>
+
+    <!-- Roof type — collapsed, for edge cases -->
+    <div style="margin-top:8px">
+      <span style="font-size:11px;color:var(--text-muted);cursor:pointer;text-decoration:underline" onclick="this.nextElementSibling.classList.toggle('hidden')">Add roof type or other details</span>
+      <div class="hidden" style="margin-top:6px">
+        <label style="font-size:12px;color:var(--text-secondary)">Roof Type</label>
+        <div class="pill-group" style="margin-top:4px">
           <div class="pill" onclick="setProperty(this,'roof_type','shingle')">Shingle</div>
           <div class="pill" onclick="setProperty(this,'roof_type','metal')">Metal</div>
           <div class="pill" onclick="setProperty(this,'roof_type','tile')">Tile</div>
-          <div class="pill" onclick="setProperty(this,'roof_type','slate')">Slate</div>
-          <div class="pill" onclick="setProperty(this,'roof_type','concrete')">Concrete</div>
-          <div class="pill" onclick="setProperty(this,'roof_type','flat')">Flat/TPO</div>
+          <div class="pill" onclick="setProperty(this,'roof_type','flat')">Flat</div>
+          <div class="pill" onclick="setProperty(this,'roof_type','other')">Other</div>
         </div>
       </div>
-      <div class="form-group">
-        <label>Stories</label>
-        <div class="pill-group">
-          <div class="pill" onclick="setProperty(this,'stories','1')">1</div>
-          <div class="pill" onclick="setProperty(this,'stories','2')">2</div>
-          <div class="pill" onclick="setProperty(this,'stories','3+')">3+</div>
-        </div>
-      </div>
-    </div>
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Gate Code</label>
-        <input type="text" placeholder="If applicable" oninput="updateState('gate_code',this.value)">
-      </div>
-      <div class="form-group">
-        <label>Dogs?</label>
-        <div class="pill-group">
-          <div class="pill" onclick="setProperty(this,'dogs','yes')">Yes &mdash; call first</div>
-          <div class="pill" onclick="setProperty(this,'dogs','no')">No</div>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Special Instructions / Hazards</label>
-      <input type="text" placeholder="Notes for the tech..." oninput="updateState('install_notes',this.value)">
     </div>
   </div>
   <button class="next-btn" onclick="scrollToSection('sec-wrapup')">Continue to Wrap-Up &darr;</button>
@@ -4066,33 +4049,6 @@ function setOwnership(el, val) {
   var renterTree = document.getElementById('renter-decision-tree');
   if (renterTree) renterTree.classList.toggle('hidden', val !== 'rent');
   saveToLocalStorage();
-}
-
-// v4.9: Landlord approval flow
-function setLandlordApproval(el, val) {
-  setActivePill(el);
-  document.getElementById('landlord-yes').classList.toggle('hidden', val !== 'yes');
-  document.getElementById('landlord-no').classList.toggle('hidden', val !== 'no');
-  state.landlord_approval = val;
-  saveToLocalStorage();
-}
-
-// v4.8: Landlord approval send stubs
-function sendLandlordSMS() {
-  var phone = document.getElementById('inp-landlord-phone').value;
-  if (!phone) { alert('Enter lead\'s phone number first'); return; }
-  var status = document.getElementById('landlord-send-status');
-  status.style.display = 'block';
-  status.textContent = 'Landlord approval template sent via SMS to ' + phone;
-  status.style.color = 'var(--success)';
-}
-function sendLandlordEmail() {
-  var email = document.getElementById('inp-landlord-email').value;
-  if (!email) { alert('Enter lead\'s email first'); return; }
-  var status = document.getElementById('landlord-send-status');
-  status.style.display = 'block';
-  status.textContent = 'Landlord approval template sent via email to ' + email;
-  status.style.color = 'var(--success)';
 }
 
 // v4.8.2: Settings panel
