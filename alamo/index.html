@@ -1009,13 +1009,20 @@ textarea:focus { border-color: var(--accent); }
     <div class="q-card standard-only" id="q1-card">
       <div class="q-num">Q1 &mdash; TRIGGER</div>
       <div class="q-script">"So... what finally made you start looking? Did something happen, or you just got fed up?"</div>
-      <div class="pill-group">
-        <div class="pill" onclick="setTrigger(this,'price_hike')">Price went up</div>
-        <div class="pill" onclick="setTrigger(this,'outage')">Big outage</div>
-        <div class="pill" onclick="setTrigger(this,'fed_up_slow')">Fed up with slowness</div>
+      <div class="pill-group" style="flex-wrap:wrap;gap:6px">
+        <div class="pill" onclick="setTrigger(this,'fed_up')">Fed up</div>
+        <div class="pill" onclick="setTrigger(this,'too_slow')">Too slow</div>
+        <div class="pill" onclick="setTrigger(this,'too_expensive')">Too expensive</div>
+        <div class="pill" onclick="setTrigger(this,'keeps_dropping')">Keeps dropping</div>
+        <div class="pill" onclick="setTrigger(this,'bill_went_up')">Bill went up</div>
+        <div class="pill" onclick="setTrigger(this,'bad_service')">Bad customer service</div>
+        <div class="pill" onclick="setTrigger(this,'data_caps')">Data caps</div>
+        <div class="pill" onclick="setTrigger(this,'wfh')">Work from home now</div>
+        <div class="pill" onclick="setTrigger(this,'just_moved')">Just moved</div>
+        <div class="pill" onclick="setTrigger(this,'family_complaining')">Spouse/family complaining</div>
         <div class="pill" onclick="setTrigger(this,'saw_ad')">Saw an ad</div>
         <div class="pill" onclick="setTrigger(this,'referral')">Neighbor/friend referred</div>
-        <div class="pill" onclick="setTrigger(this,'moving')">Moving / new home</div>
+        <div class="pill" onclick="setTrigger(this,'saw_truck')">Saw your truck</div>
         <div class="pill" onclick="setTrigger(this,'contract_ending')">Contract ending</div>
       </div>
       <div id="trigger-response" class="hidden script-block" style="margin-top:8px;border-left-color:var(--success)"></div>
