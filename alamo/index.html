@@ -3759,15 +3759,10 @@ function setScore(n) {
   }
   saveToLocalStorage();
   renderAll();
-  // Auto-scroll to show score response + next section
+  // Auto-scroll so score buttons sit at the top of the viewport
   setTimeout(function() {
-    var branch = document.getElementById('score-branch');
-    if (branch && !branch.classList.contains('hidden')) {
-      branch.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      var scoreGroup = document.querySelector('.score-group');
-      if (scoreGroup) scoreGroup.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    var scoreGroup = document.querySelector('.score-group');
+    if (scoreGroup) scoreGroup.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 300);
 }
 
