@@ -4048,7 +4048,8 @@ function setModeBtn(el, mode) {
 function setOwnership(el, val) {
   state.ownership = val;
   setActivePill(el);
-  document.getElementById('q3-card').classList.add('answered');
+  var q3 = document.getElementById('q3-card');
+  if (q3) q3.classList.add('answered');
   var rentNotice = document.getElementById('rent-notice-discovery');
   if (rentNotice) rentNotice.classList.toggle('hidden', val !== 'rent');
   var renterTree = document.getElementById('renter-decision-tree');
