@@ -1639,11 +1639,20 @@ textarea:focus { border-color: var(--accent); }
     <div class="script-block" style="border-left-color:var(--warning);margin:0 0 8px 0;font-size:13px">
       "No problem. I'll send you a quick message you can forward to your landlord. They just need to reply with an approval and we're good to go."
     </div>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="pill active" style="cursor:pointer" onclick="sendLandlordSMS()">Send SMS to Lead</button>
-      <button class="pill active" style="cursor:pointer" onclick="sendLandlordEmail()">Send Email to Lead</button>
+    <div style="display:flex;gap:8px;margin-top:8px;align-items:flex-start;flex-wrap:wrap">
+      <div>
+        <div style="display:flex;gap:8px;margin-bottom:6px">
+          <button class="pill active" style="cursor:pointer" onclick="sendLandlordSMS()">Send SMS to Lead</button>
+          <button class="pill active" style="cursor:pointer" onclick="sendLandlordEmail()">Send Email to Lead</button>
+        </div>
+        <div id="landlord-send-status" style="font-size:11px;color:var(--success);margin-top:4px;display:none"></div>
+      </div>
+      <!-- Template preview sticky note -->
+      <div style="flex:1;min-width:260px;padding:10px 12px;background:rgba(251,191,36,0.08);border:1px dashed rgba(251,191,36,0.4);border-radius:var(--radius);font-size:11px;color:var(--text-secondary);line-height:1.5">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--warning);margin-bottom:4px">&#128203; What the landlord receives:</div>
+        <em>"Hi, I'm getting internet service set up at <span class="var" data-var="lead_address">[Address]</span>. The provider (Alamo Broadband) just needs a quick approval. Please reply to approval@alamobroadband.com saying: 'I approve Alamo Broadband to install internet service at <span class="var" data-var="lead_address">[Address]</span> for <span class="var" data-var="lead_name">[Name]</span>.'"</em>
+      </div>
     </div>
-    <div id="landlord-send-status" style="font-size:11px;color:var(--success);margin-top:6px;display:none"></div>
     <div class="coach-note" style="margin-top:8px">
       If landlord is a known blocker, offer the site survey instead so the landlord can see the equipment first.
     </div>
