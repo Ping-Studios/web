@@ -1312,7 +1312,14 @@ textarea:focus { border-color: var(--accent); }
   <div class="section-title">ROI / Savings Math + Plan</div>
   <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px">Winning reps do this 4x more often than losing reps. This is not optional.</p>
 
-  <div class="coach-note">Click on the recommended plan based on their usage and household size. The RECOMMENDED badge shows your best suggestion.</div>
+  <div class="coach-note" id="plan-coach-note">Click on the recommended plan based on their usage and household size. The RECOMMENDED badge shows your best suggestion.</div>
+  <div id="plan-summary-bar" class="hidden" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--accent-dim);border:1px solid var(--accent);border-radius:var(--radius);margin-bottom:16px;cursor:pointer" onclick="expandPlanCards()">
+    <div>
+      <span style="font-weight:700;font-size:15px" id="plan-summary-name"></span>
+      <span style="margin-left:8px;font-size:14px;color:var(--text-secondary)" id="plan-summary-details"></span>
+    </div>
+    <span style="font-size:12px;color:var(--accent);text-decoration:underline">Change Plan</span>
+  </div>
   <div class="plan-grid" id="plan-grid">
     <div class="plan-card" onclick="selectPlan('unfiber50')">
       <div class="plan-name">UnFiber Essentials</div>
@@ -1340,18 +1347,6 @@ textarea:focus { border-color: var(--accent); }
     </div>
   </div>
 
-
-  <div style="margin-bottom:12px">
-    <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Is their current price for internet only, or bundled with TV/phone?</div>
-    <div class="pill-group">
-      <div class="pill" onclick="setBundleType(this,'internet_only')">Internet Only</div>
-      <div class="pill" onclick="setBundleType(this,'bundled')">Bundled (TV + Internet)</div>
-    </div>
-    <div id="bundle-helper" class="hidden" style="margin-top:8px;padding:8px 12px;background:var(--warning-dim);border:1px solid var(--warning);border-radius:var(--radius);font-size:12px;color:var(--text-secondary)">
-      <strong>Bundle Breakout:</strong> Ask them: "Do you know what just the internet portion is?" If not, estimate: most cable bundles are roughly 40-50% internet. So if they're paying $<span id="bundle-total">0</span>/mo bundled, their internet is probably around <strong>$<span id="bundle-internet-est">0</span>/mo</strong>.<br>
-      <span style="font-size:11px;color:var(--text-muted);margin-top:4px;display:block">ROI math below will use the estimated internet-only cost for comparison.</span>
-    </div>
-  </div>
 
   <div id="roi-content">
     <div id="roi-needs-data" style="color:var(--text-muted);font-size:13px;padding:16px;text-align:center;background:var(--bg-input);border-radius:var(--radius);border:1px dashed var(--border)">
@@ -3332,11 +3327,6 @@ function togglePaintThePicture() {
 function renderROI() {
   var plan = plans[state.recommended_plan];
   var cp = parseFloat(state.current_price) || 0;
-  // If bundled, estimate internet-only cost
-  var effectivePrice = cp;
-  if (state.bundle_type === 'bundled' && cp > 0) {
-    effectivePrice = Math.round(cp * 0.45);
-  }
   if (!plan || !cp) {
     document.getElementById('roi-needs-data').classList.remove('hidden');
     document.getElementById('roi-calculated').classList.add('hidden');
@@ -3349,7 +3339,8 @@ function renderROI() {
   document.getElementById('roi-needs-data').classList.add('hidden');
   document.getElementById('roi-calculated').classList.remove('hidden');
   var pp = plan.price;
-  var diff = effectivePrice - pp;
+  var displayPrice = Math.round(pp); // 99.95 → 100 for spoken scripts
+  var diff = cp - displayPrice; // use rounded price for clean math
   var monthlyAbs = Math.abs(diff);
   var annual = Math.abs(diff * 12);
   var roiMonthly = document.getElementById('roi-monthly');
@@ -3392,7 +3383,8 @@ function renderROI() {
   }
   if (!painText) painText = 'the issues you\'ve been having';
 
-  var personalCallback = '"So based on everything you told me \u2014 the ' + usageText + ', ' + householdText + ', and ' + painText + ' \u2014 I\'d put you on our <strong>' + plan.name + '</strong> at <strong>$' + pp.toFixed(0) + '/month</strong>. ';
+  var providerName = state.current_provider || 'your current provider';
+  var personalCallback = '"So based on everything you told me \u2014 the ' + usageText + ', ' + householdText + ', and ' + painText + ' \u2014 I\'d put you on our <strong>' + plan.name + '</strong> at <strong>$' + displayPrice + '/month</strong>. ';
 
   // Show dont-cancel block
   var dontCancel = document.getElementById('dont-cancel-block');
@@ -3407,8 +3399,7 @@ function renderROI() {
     [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--success-dim)'; b.style.borderColor='var(--success)'; });
     roiMonthly.style.color = 'var(--success)';
     roiAnnual.style.color = 'var(--success)';
-    var bundleNote = state.bundle_type === 'bundled' ? ' (estimated internet-only: $' + effectivePrice.toFixed(0) + ')' : '';
-    roiScript.innerHTML = personalCallback + 'Right now you\'re paying $' + effectivePrice.toFixed(0) + ' a month' + bundleNote + ', so that\'s <strong>$' + diff.toFixed(0) + ' back in your pocket every month, $' + annual.toFixed(0) + ' a year</strong>. Unlimited data, no throttling, and the price is locked forever. Better internet for less money."';
+    roiScript.innerHTML = personalCallback + 'Right now you\'re paying $' + cp.toFixed(0) + ' a month, so that\'s <strong>$' + diff.toFixed(0) + ' back in your pocket every month, $' + annual.toFixed(0) + ' a year</strong>. Unlimited data, no throttling, and that price is locked \u2014 so it never goes up on you like it did with ' + providerName + '."';
 
   } else if (diff === 0) {
     // Same price
@@ -3419,7 +3410,7 @@ function renderROI() {
     [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--accent-dim)'; b.style.borderColor='var(--accent)'; });
     roiMonthly.style.color = 'var(--accent)';
     roiAnnual.style.color = 'var(--accent)';
-    roiScript.innerHTML = personalCallback + 'Same price as what you\'re paying now, but you\'re getting unlimited data, free TV service, and a 30-day money-back guarantee. And our price is locked \u2014 it never goes up."';
+    roiScript.innerHTML = personalCallback + 'Same price as what you\'re paying now, but you\'re getting unlimited data, free TV service, and a 30-day money-back guarantee. And our price is locked, so while ' + providerName + ' keeps raising theirs, yours stays the same."';
 
   } else {
     // Alamo is more expensive
@@ -3432,13 +3423,13 @@ function renderROI() {
       [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--accent-dim)'; b.style.borderColor='var(--accent)'; });
       roiMonthly.style.color = 'var(--accent)';
       roiAnnual.style.color = 'var(--accent)';
-      roiScript.innerHTML = personalCallback + 'For just $' + monthlyAbs.toFixed(0) + ' more a month, you get unlimited data, free TV service, and local support. And our price is locked \u2014 when ' + (state.current_provider || 'they') + ' raises yours, you\'ll be glad you switched."';
+      roiScript.innerHTML = personalCallback + 'For just $' + monthlyAbs.toFixed(0) + ' more a month, you get unlimited data, free TV service, and local support. And when ' + providerName + ' raises your rate \u2014 and they will \u2014 you\'ll be glad you locked this in."';
 
     } else if (monthlyAbs <= 30) {
       [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--warning-dim)'; b.style.borderColor='var(--warning)'; });
       roiMonthly.style.color = 'var(--warning)';
       roiAnnual.style.color = 'var(--warning)';
-      roiScript.innerHTML = personalCallback + 'The value difference is the free TV service \u2014 that\'s a $30-50 value on its own \u2014 plus unlimited data, reliable connection, and price lock. When you factor in the TV service, you\'re actually coming out ahead."';
+      roiScript.innerHTML = personalCallback + 'The value difference is the free TV service \u2014 that\'s a $30-50 value on its own \u2014 plus unlimited data, reliable connection, and price lock. And when ' + providerName + ' raises your rate, you\'ll still be paying the same."';
 
     } else {
       [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--warning-dim)'; b.style.borderColor='var(--warning)'; });
@@ -3958,9 +3949,25 @@ function selectPlan(planId) {
   document.querySelectorAll('#plan-grid .plan-card').forEach(function(c, i) {
     if (ids[i] === planId) c.classList.add('selected');
   });
+  // Collapse plan cards into compact summary bar
+  if (plan) {
+    document.getElementById('plan-grid').classList.add('hidden');
+    document.getElementById('plan-summary-bar').classList.remove('hidden');
+    document.getElementById('plan-summary-name').textContent = plan.name + ' \u2014 $' + plan.price.toFixed(2) + '/mo';
+    document.getElementById('plan-summary-details').textContent = 'Unlimited Data, Free TV Service + Router Included';
+    var coachNote = document.getElementById('plan-coach-note');
+    if (coachNote) coachNote.classList.add('hidden');
+  }
   checkState.roi = 'completed';
   saveToLocalStorage();
   renderAll();
+}
+
+function expandPlanCards() {
+  document.getElementById('plan-grid').classList.remove('hidden');
+  document.getElementById('plan-summary-bar').classList.add('hidden');
+  var coachNote = document.getElementById('plan-coach-note');
+  if (coachNote) coachNote.classList.remove('hidden');
 }
 
 function autoRecommendPlan() {
@@ -4073,22 +4080,6 @@ function selectProvider(el, name) {
 }
 
 // v5.3: Bundle type toggle
-function setBundleType(el, type) {
-  state.bundle_type = type;
-  setActivePill(el);
-  var helper = document.getElementById('bundle-helper');
-  if (type === 'bundled' && helper) {
-    helper.classList.remove('hidden');
-    var total = state.current_price || 0;
-    document.getElementById('bundle-total').textContent = total.toFixed(0);
-    document.getElementById('bundle-internet-est').textContent = Math.round(total * 0.45).toFixed(0);
-  } else if (helper) {
-    helper.classList.add('hidden');
-  }
-  saveToLocalStorage();
-  renderAll();
-}
-
 // v4.8: Mode button toggle
 function setModeBtn(el, mode) {
   document.querySelectorAll('.mode-btn').forEach(function(b) { b.classList.remove('active'); });
@@ -5194,6 +5185,16 @@ function init() {
     document.querySelectorAll('#plan-grid .plan-card').forEach(function(c, i) {
       if (ids[i] === state.recommended_plan) c.classList.add('selected');
     });
+    // Collapse to summary bar on restore
+    var restoredPlan = plans[state.recommended_plan];
+    if (restoredPlan) {
+      document.getElementById('plan-grid').classList.add('hidden');
+      document.getElementById('plan-summary-bar').classList.remove('hidden');
+      document.getElementById('plan-summary-name').textContent = restoredPlan.name + ' \u2014 $' + restoredPlan.price.toFixed(2) + '/mo';
+      document.getElementById('plan-summary-details').textContent = 'Unlimited Data, Free TV Service + Router Included';
+      var cn = document.getElementById('plan-coach-note');
+      if (cn) cn.classList.add('hidden');
+    }
   }
   // Pain sub-options
   if (state.pain_impacts && state.pain_impacts.length) {
