@@ -1135,52 +1135,6 @@ textarea:focus { border-color: var(--accent); }
     </div>
   </div>
 
-  <div class="q-card standard-only" id="q3-card">
-    <div class="q-num">Q3 &mdash; OWN OR RENT</div>
-    <div class="q-script">"And do you own or rent your place?"</div>
-    <div class="pill-group">
-      <div class="pill" onclick="setOwnership(this,'own')">Own</div>
-      <div class="pill" onclick="setOwnership(this,'rent')">Rent</div>
-    </div>
-    <div id="rent-notice-discovery" class="hidden" style="margin-top:8px">
-      <div class="script-block" style="border-left-color:var(--warning);font-size:13px;margin:0 0 8px 0">
-        "Since you're renting &mdash; do you have your landlord's approval already?"
-      </div>
-      <div class="pill-group" style="margin-bottom:8px">
-        <div class="pill" onclick="setLandlordApproval(this,'yes')">Yes</div>
-        <div class="pill" onclick="setLandlordApproval(this,'no')">No</div>
-      </div>
-      <div id="landlord-yes" class="hidden" style="margin-top:6px">
-        <div class="script-block" style="border-left-color:var(--success);margin:0">"Great! Verbal approval is fine. Let's continue."</div>
-      </div>
-      <div id="landlord-no" class="hidden" style="margin-top:6px">
-        <div class="script-block" style="border-left-color:var(--warning);font-size:13px;margin:0 0 8px 0">
-          "No worries &mdash; I'll send you the template so you can forward it to your landlord. Most landlords are totally fine with it."
-        </div>
-        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px"><strong>Send template to lead (they'll forward to landlord):</strong></div>
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">Landlord contact: <strong>info@alamobroadband.com</strong></div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <input type="tel" id="inp-landlord-phone" placeholder="Lead's phone #" style="flex:1;min-width:140px;font-size:12px">
-          <button class="pill active" style="cursor:pointer" onclick="sendLandlordSMS()">Send SMS</button>
-          <input type="email" id="inp-landlord-email" placeholder="Lead's email" style="flex:1;min-width:140px;font-size:12px">
-          <button class="pill active" style="cursor:pointer" onclick="sendLandlordEmail()">Send Email</button>
-        </div>
-        <div style="font-size:10px;color:var(--text-muted);margin-top:4px">Sends the landlord approval template to the lead so they can copy/paste or forward to their landlord.</div>
-        <div id="landlord-send-status" style="font-size:11px;color:var(--success);margin-top:4px;display:none"></div>
-      </div>
-    </div>
-    <!-- Card 3: Renter Decision Tree -->
-    <div id="renter-decision-tree" class="hidden" style="margin-top:10px;padding:12px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius)">
-      <div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:6px">RENTER DECISION TREE</div>
-      <div style="font-size:12px;color:var(--text-secondary);line-height:1.7">
-        <strong>Rented House</strong> &mdash; Landlord approval usually easy. Offer site survey for landlord to see equipment.<br>
-        <strong>Rented Mobile Home</strong> &mdash; Tripod mount available &mdash; no drilling required. Still need lot owner OK.<br>
-        <strong>Apartment Complex</strong> &mdash; Check with property management. We need roof/exterior access. If denied, may not be serviceable.<br>
-        <strong>RV / Temporary</strong> &mdash; Tripod mount, no contract needed. Month-to-month is perfect.
-      </div>
-    </div>
-  </div>
-
   <button class="next-btn standard-only" onclick="scrollToSection('sec-value')">Continue to Value Match &darr;</button>
 
   <!-- ===== MINING INTEREST CHECK ===== -->
@@ -1678,6 +1632,53 @@ textarea:focus { border-color: var(--accent); }
   <div class="section-label">Section 10</div>
   <div class="section-title">Post-Close Details</div>
   <div class="script-block">"Great, just a few quick things for the install team."</div>
+
+  <!-- Own or Rent — moved from Section 3 -->
+  <div id="q3-card" style="margin-top:16px">
+    <div class="section-label">Own or Rent</div>
+    <div class="q-script">"And do you own or rent your place?"</div>
+    <div class="pill-group">
+      <div class="pill" onclick="setOwnership(this,'own')">Own</div>
+      <div class="pill" onclick="setOwnership(this,'rent')">Rent</div>
+    </div>
+    <div id="rent-notice-discovery" class="hidden" style="margin-top:8px">
+      <div class="script-block" style="border-left-color:var(--warning);font-size:13px;margin:0 0 8px 0">
+        "Since you're renting &mdash; do you have your landlord's approval already?"
+      </div>
+      <div class="pill-group" style="margin-bottom:8px">
+        <div class="pill" onclick="setLandlordApproval(this,'yes')">Yes</div>
+        <div class="pill" onclick="setLandlordApproval(this,'no')">No</div>
+      </div>
+      <div id="landlord-yes" class="hidden" style="margin-top:6px">
+        <div class="script-block" style="border-left-color:var(--success);margin:0">"Great! Verbal approval is fine. Let's continue."</div>
+      </div>
+      <div id="landlord-no" class="hidden" style="margin-top:6px">
+        <div class="script-block" style="border-left-color:var(--warning);font-size:13px;margin:0 0 8px 0">
+          "No worries &mdash; I'll send you the template so you can forward it to your landlord. Most landlords are totally fine with it."
+        </div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px"><strong>Send template to lead (they'll forward to landlord):</strong></div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">Landlord contact: <strong>info@alamobroadband.com</strong></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <input type="tel" id="inp-landlord-phone" placeholder="Lead's phone #" style="flex:1;min-width:140px;font-size:12px">
+          <button class="pill active" style="cursor:pointer" onclick="sendLandlordSMS()">Send SMS</button>
+          <input type="email" id="inp-landlord-email" placeholder="Lead's email" style="flex:1;min-width:140px;font-size:12px">
+          <button class="pill active" style="cursor:pointer" onclick="sendLandlordEmail()">Send Email</button>
+        </div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:4px">Sends the landlord approval template to the lead so they can copy/paste or forward to their landlord.</div>
+        <div id="landlord-send-status" style="font-size:11px;color:var(--success);margin-top:4px;display:none"></div>
+      </div>
+    </div>
+    <!-- Renter Decision Tree -->
+    <div id="renter-decision-tree" class="hidden" style="margin-top:10px;padding:12px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius)">
+      <div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:6px">RENTER DECISION TREE</div>
+      <div style="font-size:12px;color:var(--text-secondary);line-height:1.7">
+        <strong>Rented House</strong> &mdash; Landlord approval usually easy. Offer site survey for landlord to see equipment.<br>
+        <strong>Rented Mobile Home</strong> &mdash; Tripod mount available &mdash; no drilling required. Still need lot owner OK.<br>
+        <strong>Apartment Complex</strong> &mdash; Check with property management. We need roof/exterior access. If denied, may not be serviceable.<br>
+        <strong>RV / Temporary</strong> &mdash; Tripod mount, no contract needed. Month-to-month is perfect.
+      </div>
+    </div>
+  </div>
 
   <div style="margin-top:16px">
     <div class="section-label">Property Details</div>
