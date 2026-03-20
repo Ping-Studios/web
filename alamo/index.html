@@ -914,44 +914,6 @@ textarea:focus { border-color: var(--accent); }
     </div>
   </div>
 
-  <!-- Lead Source (moved down from top) -->
-  <div style="margin-top:12px">
-    <div class="section-label">Lead Source <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--text-muted)">(select all that apply)</span></div>
-    <div class="pill-group" id="lead-source-pills">
-      <div class="pill" onclick="toggleLeadSource(this,'facebook')">Facebook</div>
-      <div class="pill" onclick="toggleLeadSource(this,'google')">Google</div>
-      <div class="pill" onclick="toggleLeadSource(this,'referral')">Referral</div>
-      <div class="pill" onclick="toggleLeadSource(this,'door_knock')">Door Knock</div>
-      <div class="pill" onclick="toggleLeadSource(this,'website')">Website</div>
-      <div class="pill" onclick="toggleLeadSource(this,'inbound_call')">Inbound Call</div>
-      <div class="pill" onclick="toggleLeadSource(this,'other')">Other</div>
-    </div>
-    <div id="lead-source-referral-row" style="margin-top:8px;display:none">
-      <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Who referred them? (Full name)</div>
-      <div style="display:flex;gap:8px">
-        <input type="text" id="inp-referral-first" placeholder="First name" oninput="updateState('referral_first',this.value);highlightReferralInputs()" style="flex:1">
-        <input type="text" id="inp-referral-last" placeholder="Last name" oninput="updateState('referral_last',this.value);highlightReferralInputs()" style="flex:1">
-      </div>
-    </div>
-    <div id="lead-source-followup" style="display:none;margin-top:8px">
-      <div class="script-block" style="font-size:12px;margin:0">"Did you hear about us from anybody else or anywhere else?"</div>
-    </div>
-  </div>
-
-  <!-- Situation Tags -->
-  <div style="margin-top:12px">
-    <div class="section-label">Situation Tags <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--text-muted)">(select up to 2)</span></div>
-    <div class="pill-group" id="situation-tag-pills">
-      <div class="pill" onclick="toggleSituationTag(this,'senior')">&#128116; Senior / Elderly</div>
-      <div class="pill" onclick="toggleSituationTag(this,'price_shopper')">&#128176; Price Shopper</div>
-      <div class="pill" onclick="toggleSituationTag(this,'rural_no_options')">&#127758; Rural / No Options</div>
-      <div class="pill" onclick="toggleSituationTag(this,'technical')">&#128295; Technical Buyer</div>
-      <div class="pill" onclick="toggleSituationTag(this,'renter')">&#127968; Renter</div>
-      <div class="pill" onclick="toggleSituationTag(this,'former_customer')">&#128260; Former Customer</div>
-    </div>
-    <div id="situation-coach-notes" class="hidden" style="margin-top:8px;padding:10px 12px;background:linear-gradient(135deg,rgba(74,158,255,0.08),rgba(74,158,255,0.02));border:1px solid rgba(74,158,255,0.2);border-radius:var(--radius);font-size:11px;color:var(--text-secondary);line-height:1.6"></div>
-  </div>
-
   <!-- USAGE: First real question, baked into opening (Standard mode) -->
   <div class="standard-only" style="margin-top:16px">
     <div class="section-label">Usage <span style="color:var(--success);font-size:9px;letter-spacing:0">&mdash; 95% of sold calls ask this</span></div>
