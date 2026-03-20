@@ -3751,8 +3751,13 @@ function setScore(n) {
   saveToLocalStorage();
   renderAll();
   // Auto-scroll so score buttons sit at the top of the viewport
+  // Find the VISIBLE score-group (there are two: mining + standard)
   setTimeout(function() {
-    var scoreGroup = document.querySelector('.score-group');
+    var groups = document.querySelectorAll('.score-group');
+    var scoreGroup = null;
+    groups.forEach(function(g) {
+      if (g.offsetParent !== null) scoreGroup = g;
+    });
     if (scoreGroup) {
       var rect = scoreGroup.getBoundingClientRect();
       var scrollMargin = parseInt(getComputedStyle(scoreGroup).scrollMarginTop) || 0;
