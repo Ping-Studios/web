@@ -629,6 +629,8 @@ textarea:focus { border-color: var(--accent); }
 #sched-install-btn.selected, #sched-survey-btn.selected {
   border-color: var(--accent); background: var(--accent-dim);
 }
+/* ===== PAIN-TRIGGERED BENEFIT WEAVES ===== */
+.pain-benefit-weave { animation: fadeIn 0.5s ease; margin-top: 10px; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 /* ===== RESPONSIVE ===== */
 @media (max-width:1024px) {
@@ -990,6 +992,14 @@ textarea:focus { border-color: var(--accent); }
     <div id="pain-deepener-script"></div>
   </div>
 
+  <!-- WEAVE: Local San Antonio Support — drop after "nobody's been able to fix it" -->
+  <div class="standard-only" id="weave-local-support" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(74,158,255,0.08),rgba(74,158,255,0.02));border:1px solid rgba(74,158,255,0.25);border-radius:var(--radius)">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);margin-bottom:4px">WEAVE: Local San Antonio Support</div>
+    <div class="script-block" style="border-left-color:var(--accent);margin:0;font-size:12px">
+      "Yeah, that's the thing &mdash; we're a local company right here in San Antonio. When you call us, a real person picks up. 4.6 stars on Google. If something goes wrong, we actually fix it. Sound good?"
+    </div>
+  </div>
+
   <!-- Step 4: Trigger — moved from Section 3 -->
   <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
@@ -1070,6 +1080,14 @@ textarea:focus { border-color: var(--accent); }
       "And what are you paying a month for that?"
     </div>
     <input type="number" id="inp-price-opening" placeholder="e.g. 90" oninput="updateState('current_price',parseFloat(this.value)||0)">
+  </div>
+
+  <!-- WEAVE: Price Lock — drop after they tell you what they're paying -->
+  <div class="standard-only" id="weave-price-lock" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(76,175,80,0.08),rgba(76,175,80,0.02));border:1px solid rgba(76,175,80,0.25);border-radius:var(--radius)">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--success);margin-bottom:4px">WEAVE: Price Lock</div>
+    <div class="script-block" style="border-left-color:var(--success);margin:0;font-size:12px">
+      "Yeah, so one thing that's different with us &mdash; the price I quote you today is the price you keep. It's locked in. It never goes up. Does that make sense?"
+    </div>
   </div>
 
   <!-- Mining mode: coach note for quick discovery -->
@@ -1287,9 +1305,16 @@ textarea:focus { border-color: var(--accent); }
         <span class="benefit-box"></span>
         <div><strong>Local San Antonio Support</strong><br><span class="benefit-hint">"We're a local company right here in San Antonio. 4.6-star Google rating. When you call, a real person picks up."</span></div>
       </div>
-      <!-- Unlimited Data and Free TV removed — these are plan features, not value phrases -->
+      <div class="benefit-check" onclick="toggleBenefitCheck(this,'unlimited_data')">
+        <span class="benefit-box"></span>
+        <div><strong>Unlimited Data</strong><br><span class="benefit-hint">"Unlimited means unlimited. No caps, no throttling. Stream all day, game all night."</span></div>
+      </div>
+      <div class="benefit-check" onclick="toggleBenefitCheck(this,'free_tv')">
+        <span class="benefit-box"></span>
+        <div><strong>Free TV Service</strong><br><span class="benefit-hint">"You also get free TV service included with every plan. No separate subscription needed."</span></div>
+      </div>
     </div>
-    <div id="benefit-progress" style="margin-top:8px;font-size:11px;color:var(--text-muted)">0 / 4 mentioned</div>
+    <div id="benefit-progress" style="margin-top:8px;font-size:11px;color:var(--text-muted)">0 / 6 mentioned</div>
     <div class="coach-note">TRIAL CLOSE after each benefit &mdash; "Does that make sense?" / "That's really what you need, right?" Wait for confirmation before moving on.</div>
   </div>
 
@@ -1421,6 +1446,15 @@ textarea:focus { border-color: var(--accent); }
       </div>
     </div>
     <div id="autopay-price-note" class="hidden" style="margin-top:6px;padding:6px 12px;background:var(--success-dim);border:1px solid var(--success);border-radius:var(--radius);font-size:12px;color:var(--success);font-weight:600"></div>
+  </div>
+
+  <!-- WEAVE: No Contract + 30-Day Guarantee — moved from Section 4 -->
+  <div class="coach-note" style="margin-bottom:8px">These are risk reducers, not features. Drop them right before the close to remove last-second hesitation.</div>
+  <div class="standard-only" id="weave-guarantee" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(167,139,250,0.02));border:1px solid rgba(167,139,250,0.25);border-radius:var(--radius)">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--purple);margin-bottom:4px">WEAVE: No Contract + 30-Day Guarantee</div>
+    <div class="script-block" style="border-left-color:var(--purple);margin:0;font-size:12px">
+      "And just so you know &mdash; there's no contract. It's month-to-month, cancel anytime. And you've got a full 30-day money-back guarantee. If you don't love it, we come get the equipment and refund every penny. Sound good?"
+    </div>
   </div>
 
   <!-- Trial Close -->
@@ -3157,6 +3191,24 @@ function renderPainDeepener() {
     );
   }
 
+  // Pain-triggered benefit weaves — show after Step 3 when dig deeper is completed
+  var painBenefitWeaves = {
+    data_caps: { label: 'BENEFIT: Unlimited Data', script: '"And just so you know — with us, there are no data caps. It\'s unlimited. Stream, download, game, whatever you want. No throttling, no overage charges."' },
+    ip_rotation: { label: 'BENEFIT: Free TV Service', script: '"We actually include a free TV service with every plan — over 100 channels through your browser or a Roku. So not only is your internet unlimited, you might be able to drop your streaming subscriptions too."' }
+  };
+  var hasDeepenerAnswers = state.pain_frequency || state.pain_duration || state.provider_tried_fix;
+  if (hasDeepenerAnswers) {
+    state.pain_types.forEach(function(type) {
+      var weave = painBenefitWeaves[type];
+      if (weave) {
+        html += '<div class="pain-benefit-weave" style="padding:10px 14px;background:linear-gradient(135deg,rgba(52,211,153,0.08),rgba(52,211,153,0.02));border:1px solid rgba(52,211,153,0.25);border-radius:var(--radius)">';
+        html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--success);margin-bottom:4px">' + weave.label + '</div>';
+        html += '<div class="script-block" style="border-left-color:var(--success);margin:0;font-size:12px">' + weave.script + '</div>';
+        html += '</div>';
+      }
+    });
+  }
+
   script.innerHTML = html;
 }
 
@@ -3195,8 +3247,8 @@ function toggleBenefitCheck(el, key) {
   // Update progress
   var count = Object.keys(state.benefits_mentioned).filter(function(k) { return state.benefits_mentioned[k]; }).length;
   var prog = document.getElementById('benefit-progress');
-  if (count === 4) prog.innerHTML = '<span style="color:var(--success);font-weight:700">\u2713 All 4 benefits covered!</span>';
-  else prog.textContent = count + ' / 4 mentioned';
+  if (count === 6) prog.innerHTML = '<span style="color:var(--success);font-weight:700">\u2713 All 6 benefits covered!</span>';
+  else prog.textContent = count + ' / 6 mentioned';
   saveToLocalStorage();
 }
 
@@ -4787,7 +4839,7 @@ function resetForm() {
     if (box) box.textContent = '';
   });
   var prog = document.getElementById('benefit-progress');
-  if (prog) prog.textContent = '0 / 4 mentioned';
+  if (prog) prog.textContent = '0 / 6 mentioned';
   // Hide conditional sections
   document.querySelectorAll('#score-branch, #dm-trap-inline, #rent-notice-discovery, #spouse-feeling-row, #spouse-name-row, #landlord-yes, #landlord-no, #anchor-close-section, #spouse-ammunition, #provider-intel-hint-opening, #provider-coach-note-opening, #paint-the-picture').forEach(function(el) { if(el) el.classList.add('hidden'); });
   // Re-render
