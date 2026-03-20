@@ -1384,15 +1384,15 @@ textarea:focus { border-color: var(--accent); }
   <div class="section-label">Section 6</div>
   <div class="section-title">Setup Fee + Close</div>
   <div class="script-block">
-    "So normally there is a $99 setup fee with a 2-year agreement, but for anyone signing up on the call today, the <strong style="color:var(--success)">installation is free</strong> and it's month-to-month &mdash; no commitment, no contract."
+    "So normally there is a $99 setup fee with a 2-year agreement, but for anyone signing up on the call today, the <strong style="color:var(--success)">installation is free</strong>."
   </div>
-  <div class="coach-note" style="margin-top:6px">Installation IS free for same-day signups. Month-to-month, no commitment. We accept card, cash, and check &mdash; due at time of installation.</div>
-  <div style="margin-top:8px;padding:8px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);font-size:11px;color:var(--text-secondary)">
-    <strong>Pole Fees (if applicable):</strong> 20ft pole: +$50 | 30ft pole: +$100 | Tripod: included
+  <div class="coach-note" style="margin-top:6px">Installation is free for same-day signups. We accept card, cash, and check &mdash; due at time of installation.</div>
+  <div style="margin-top:6px">
+    <span style="font-size:11px;color:var(--text-muted);cursor:pointer;text-decoration:underline" onclick="this.nextElementSibling.classList.toggle('hidden')">Pole fees?</span>
+    <div class="hidden" style="margin-top:4px;padding:6px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);font-size:11px;color:var(--text-secondary)">
+      20ft pole: +$50 | 30ft pole: +$100 | Tripod: included
+    </div>
   </div>
-
-  <!-- WEAVE: No Contract + 30-Day Guarantee — moved from Section 4 -->
-  <div class="coach-note" style="margin-bottom:8px">These are risk reducers, not features. Drop them right before the close to remove last-second hesitation.</div>
   <div class="standard-only" id="weave-guarantee" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(167,139,250,0.02));border:1px solid rgba(167,139,250,0.25);border-radius:var(--radius)">
     <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--purple);margin-bottom:4px">WEAVE: No Contract + 30-Day Guarantee</div>
     <div class="script-block" style="border-left-color:var(--purple);margin:0;font-size:12px">
