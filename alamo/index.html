@@ -1345,10 +1345,10 @@ textarea:focus { border-color: var(--accent); }
     </div>
   </div>
 
-  <!-- Spouse Ammunition (shown when DM = spouse) -->
+  <!-- Spouse Close (shown when DM = spouse) -->
   <div id="spouse-ammunition" class="hidden" style="margin-top:16px;padding:14px;background:linear-gradient(135deg,rgba(167,139,250,0.12),rgba(167,139,250,0.04));border:1px solid rgba(167,139,250,0.3);border-radius:var(--radius-lg)">
-    <div class="section-label" style="color:var(--purple);margin-bottom:6px">Spouse Ammunition</div>
-    <p style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Give them talking points for the absent decision-maker.</p>
+    <div class="section-label" style="color:var(--purple);margin-bottom:6px">Spouse &mdash; Close on the Call</div>
+    <p style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Don't let them leave to "talk it over." Use what you already know to close now.</p>
     <div class="script-block" id="spouse-ammo-script" style="border-left-color:var(--purple)"></div>
   </div>
 
@@ -1543,7 +1543,7 @@ textarea:focus { border-color: var(--accent); }
       <div style="margin-bottom:12px">
         <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:4px">3. 30-DAY GUARANTEE</div>
         <div class="script-block" style="border-left-color:var(--purple)">
-          "You have 30 days to test everything out. Don't cancel <span class="var" data-var="current_provider">[Provider]</span> &mdash; keep them running. Run both side by side and YOU decide which one you want to keep. If we don't blow them away, we come get the equipment and refund every penny. You literally can't lose."
+          "You have 30 days to test everything out. Run both side by side and YOU decide which one you want to keep. If we don't blow them away, we come get the equipment and refund every penny. You literally can't lose."
         </div>
         <div class="coach-note" style="margin-top:4px">Best for: hesitant leads, risk-averse buyers. Reframes install as TEST not SWITCH.</div>
       </div>
@@ -1829,7 +1829,6 @@ textarea:focus { border-color: var(--accent); }
   </div>
   <div class="script-block" style="margin-top:8px">
     "We're all scheduled! You've got 30 days money-back if for any reason you're not happy, no contracts so you're never locked in."<br><br>
-    "And remember &mdash; don't cancel <span class="var" data-var="current_provider">[Provider]</span> yet. Keep them running until we're set up."<br><br>
     "If you have any questions later, you're welcome to give us a call at <strong style="color:var(--accent)">(210) 587-7201</strong> &mdash; open <strong>9AM-5PM, Monday through Friday</strong>. You can also visit us at <strong>alamobroadband.com</strong>."<br><br>
     "Welcome to Alamo Broadband, <span class="var" data-var="lead_name">[Name]</span>. I think you're going to notice a huge difference. Have a great <span id="sum-daypart">day</span>!"
   </div>
@@ -5056,21 +5055,19 @@ function renderSpouseAmmo() {
   var price = plan ? '$' + plan.price : 'our plan';
 
   var lines = [];
-  lines.push('"When you talk to ' + spouseName + ', here\'s what I\'d focus on:"');
 
-  if (feeling === 'frustrated') {
-    lines.push('"They\'re frustrated too — so lead with: we found something that fixes ' + pain + ', and we can try it for 30 days risk-free."');
-  } else if (feeling === 'happy' || feeling === 'doesnt_care') {
-    lines.push('"Since they\'re not as bothered, lead with the PRICE: ' + price + ', locked in forever, no contract. If they don\'t notice a difference — great, you\'re paying less."');
-  } else if (feeling === 'unaware') {
-    lines.push('"They might not realize how bad it\'s gotten. Lead with: I found better internet at ' + price + ', locked price, and we can try it risk-free for 30 days."');
-  } else if (feeling === 'on_board') {
-    lines.push('"They\'re already on board — just confirm the details: ' + price + '/month, price locked, 30-day guarantee, no contract."');
+  if (feeling === 'frustrated' || feeling === 'on_board') {
+    lines.push('"You mentioned earlier that ' + spouseName + ' is ' + (feeling === 'frustrated' ? 'frustrated with the internet too' : 'on board to switch') + '. So really, you\'d both be getting what you want here."');
+    lines.push('"And with the 30-day money-back guarantee, you\'re not making a permanent decision &mdash; you\'re just testing it. If either of you doesn\'t love it, we come get the equipment and refund every penny. You\'re not even canceling ' + (state.current_provider || 'your current provider') + ' &mdash; you run both side by side and decide."');
+    lines.push('"So let\'s get you on the calendar &mdash; what works better, mornings or afternoons?"');
+  } else if (feeling === 'happy' || feeling === 'doesnt_care' || feeling === 'unaware') {
+    lines.push('"Here\'s the thing &mdash; you don\'t need ' + spouseName + '\'s permission to TEST something. This is a 30-day trial. No contract, no commitment. If either of you doesn\'t like it, full refund."');
+    lines.push('"And at ' + price + '/month with the price locked forever, the worst case is you tried something better and it didn\'t work out. That\'s it."');
+    lines.push('"I\'ve got a morning and an afternoon slot open &mdash; which one works?"');
   } else {
-    lines.push('"Key points: ' + price + '/month, price locked forever, no contract, 30-day money-back guarantee. Zero risk to try."');
+    lines.push('"With the 30-day money-back guarantee, you\'re not committing to anything. You\'re just testing it. If it doesn\'t work for both of you, full refund, no questions asked."');
+    lines.push('"Let\'s get you on the calendar tentatively &mdash; mornings or afternoons?"');
   }
-
-  lines.push('"And remind them — don\'t cancel ' + (state.current_provider || 'the current provider') + ' yet. We run both side by side for 30 days. If we don\'t blow them away, every penny back."');
 
   script.innerHTML = lines.join('<br><br>');
 }
