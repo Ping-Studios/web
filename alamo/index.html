@@ -1373,17 +1373,12 @@ textarea:focus { border-color: var(--accent); }
       <div class="script-block" id="roi-script"></div>
     </div>
   </div>
-  <!-- Recommendation Script (moved here from Section 7) -->
-  <div id="rec-script" class="hidden" style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
-    <div class="section-label" style="color:var(--danger)">Recommendation</div>
-    <div class="script-block" id="rec-script-text"></div>
+  <!-- Don't Cancel — shown when a plan is selected -->
+  <div id="dont-cancel-block" class="hidden" style="margin-top:12px">
     <div class="script-block" style="border-left-color:var(--warning)">
       <strong>"Don't Cancel" Positioning:</strong><br>
       "And by the way &mdash; don't cancel <span class="var" data-var="current_provider">[Provider]</span> yet. Keep them running. Let us get you set up, try them both side by side for 30 days, and see which one you like better. You've got 30 days &mdash; if we don't blow them away, you get every penny back and nothing changes for you."
     </div>
-  </div>
-  <div id="rec-no-plan" style="margin-top:16px;color:var(--text-muted);font-size:14px;padding:20px;text-align:center">
-    Select a plan above to generate the recommendation script.
   </div>
 
   <button class="next-btn" onclick="scrollToSection('sec-payment')">Continue to Setup Fee &darr;</button>
@@ -3378,6 +3373,31 @@ function renderROI() {
   var monthlyBox = roiMonthly.parentElement;
   var annualBox = roiAnnual.parentElement;
 
+  // Build personal callback for combined script
+  var usageLabelsMap = { streaming: 'streaming', gaming: 'gaming', wfh: 'working from home', browsing: 'browsing', smart_home: 'smart home devices', school: 'school' };
+  var usageText = state.usage_types.length ? state.usage_types.map(function(u) { return usageLabelsMap[u] || u; }).join(', ') : 'your usage';
+  var householdText = state.household_size ? state.household_size + ' people in the house' : 'your household';
+
+  // Use subPhrases for natural pain language instead of getPainLabel() tile labels
+  var painText = '';
+  if (state.pain_impacts && state.pain_impacts.length > 0) {
+    var firstImpact = state.pain_impacts[0];
+    if (subPhrases[firstImpact] && subPhrases[firstImpact].issue) {
+      painText = subPhrases[firstImpact].issue;
+    }
+  }
+  if (!painText && state.pain_types && state.pain_types.length > 0) {
+    var tree = painTree[state.pain_types[0]];
+    if (tree) painText = tree.label.toLowerCase();
+  }
+  if (!painText) painText = 'the issues you\'ve been having';
+
+  var personalCallback = '"So based on everything you told me \u2014 the ' + usageText + ', ' + householdText + ', and ' + painText + ' \u2014 I\'d put you on our <strong>' + plan.name + '</strong> at <strong>$' + pp.toFixed(0) + '/month</strong>. ';
+
+  // Show dont-cancel block
+  var dontCancel = document.getElementById('dont-cancel-block');
+  if (dontCancel) dontCancel.classList.remove('hidden');
+
   if (diff > 0) {
     // Alamo is cheaper
     roiMonthly.textContent = '$' + diff.toFixed(0);
@@ -3387,8 +3407,8 @@ function renderROI() {
     [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--success-dim)'; b.style.borderColor='var(--success)'; });
     roiMonthly.style.color = 'var(--success)';
     roiAnnual.style.color = 'var(--success)';
-    var bundleNote = state.bundle_type === 'bundled' ? ' (using estimated internet-only cost of $' + effectivePrice.toFixed(0) + ')' : '';
-    roiScript.innerHTML = '"Right now you\'re paying $' + effectivePrice.toFixed(0) + ' a month' + bundleNote + ' \u2014 that\'s $' + (effectivePrice*12).toFixed(0) + ' a year. With our ' + plan.name + ', you\'d be at $' + pp.toFixed(0) + ' a month \u2014 that\'s <strong>$' + diff.toFixed(0) + ' savings every month, $' + annual.toFixed(0) + ' per year</strong>. AND you\'re going from a ' + (state.satisfaction_score||'__') + ' to a 10. Better internet, less money. The price is locked forever. Win-win."';
+    var bundleNote = state.bundle_type === 'bundled' ? ' (estimated internet-only: $' + effectivePrice.toFixed(0) + ')' : '';
+    roiScript.innerHTML = personalCallback + 'Right now you\'re paying $' + effectivePrice.toFixed(0) + ' a month' + bundleNote + ', so that\'s <strong>$' + diff.toFixed(0) + ' back in your pocket every month, $' + annual.toFixed(0) + ' a year</strong>. Unlimited data, no throttling, and the price is locked forever. Better internet for less money."';
 
   } else if (diff === 0) {
     // Same price
@@ -3399,7 +3419,7 @@ function renderROI() {
     [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--accent-dim)'; b.style.borderColor='var(--accent)'; });
     roiMonthly.style.color = 'var(--accent)';
     roiAnnual.style.color = 'var(--accent)';
-    roiScript.innerHTML = '"Same price \u2014 but you\'re getting unlimited data, free TV service, and a 30-day money-back guarantee. Same money, way more value. And our price is locked \u2014 it never goes up."';
+    roiScript.innerHTML = personalCallback + 'Same price as what you\'re paying now, but you\'re getting unlimited data, free TV service, and a 30-day money-back guarantee. And our price is locked \u2014 it never goes up."';
 
   } else {
     // Alamo is more expensive
@@ -3409,26 +3429,22 @@ function renderROI() {
     roiAnnualLabel.textContent = 'more per year';
 
     if (monthlyAbs <= 15) {
-      // $1-15 more
       [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--accent-dim)'; b.style.borderColor='var(--accent)'; });
       roiMonthly.style.color = 'var(--accent)';
       roiAnnual.style.color = 'var(--accent)';
-      roiScript.innerHTML = '"For just $' + monthlyAbs.toFixed(0) + ' more a month, you get unlimited data, free TV service, and local support. And our price is locked \u2014 when ' + (state.current_provider || 'they') + ' raises yours, you\'ll be glad you switched."';
+      roiScript.innerHTML = personalCallback + 'For just $' + monthlyAbs.toFixed(0) + ' more a month, you get unlimited data, free TV service, and local support. And our price is locked \u2014 when ' + (state.current_provider || 'they') + ' raises yours, you\'ll be glad you switched."';
 
     } else if (monthlyAbs <= 30) {
-      // $16-30 more
       [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--warning-dim)'; b.style.borderColor='var(--warning)'; });
       roiMonthly.style.color = 'var(--warning)';
       roiAnnual.style.color = 'var(--warning)';
-      roiScript.innerHTML = '"The value difference is the free TV service \u2014 that\'s a $30-50 value on its own \u2014 plus unlimited data, reliable connection, and price lock. When you factor in the TV service, you\'re actually coming out ahead."';
+      roiScript.innerHTML = personalCallback + 'The value difference is the free TV service \u2014 that\'s a $30-50 value on its own \u2014 plus unlimited data, reliable connection, and price lock. When you factor in the TV service, you\'re actually coming out ahead."';
 
     } else {
-      // $31+ more — VALUE PLAY
       [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--warning-dim)'; b.style.borderColor='var(--warning)'; });
       roiMonthly.style.color = 'var(--warning)';
       roiAnnual.style.color = 'var(--warning)';
-      roiScript.innerHTML = '"I\'ll be honest with you \u2014 on price alone, we\'re more right now. But here\'s what I want you to consider..."';
-      // Show VALUE PLAY amber box
+      roiScript.innerHTML = personalCallback + 'I\'ll be honest with you \u2014 on price alone, we\'re more right now. But here\'s what I want you to consider..."';
       valuePlayBox.classList.remove('hidden');
       valuePlayBox.innerHTML = '<div style="padding:14px;background:var(--warning-dim);border:2px solid var(--warning);border-radius:var(--radius-lg)">' +
         '<div style="font-size:13px;font-weight:700;color:var(--warning);margin-bottom:6px">VALUE PLAY</div>' +
@@ -3442,18 +3458,10 @@ function renderROI() {
 }
 
 function renderRecScript() {
+  // Recommendation is now baked into renderROI(). This just toggles Don't Cancel visibility.
   var plan = plans[state.recommended_plan];
-  if (!plan) {
-    document.getElementById('rec-script').classList.add('hidden');
-    document.getElementById('rec-no-plan').classList.remove('hidden');
-    return;
-  }
-  document.getElementById('rec-script').classList.remove('hidden');
-  document.getElementById('rec-no-plan').classList.add('hidden');
-  var usageLabelsMap = { streaming: 'streaming', gaming: 'gaming', wfh: 'working from home', browsing: 'browsing', smart_home: 'smart home devices', school: 'school' };
-  var usageText = state.usage_types.length ? state.usage_types.map(function(u) { return usageLabelsMap[u] || u; }).join(', ') : 'your usage';
-  document.getElementById('rec-script-text').innerHTML =
-    '"So based on everything you told me \u2014 the ' + usageText + ', ' + (state.household_size||'your') + ' people in the house, and wanting to fix ' + getPainLabel() + ' \u2014 I\'d put you on our <strong>' + plan.name + '</strong> at <strong>$' + plan.price + '/month</strong>. Unlimited data, no contracts, no throttling, and the price is locked."';
+  var dontCancel = document.getElementById('dont-cancel-block');
+  if (dontCancel) dontCancel.classList.toggle('hidden', !plan);
 }
 
 function renderAnchorClose() {
