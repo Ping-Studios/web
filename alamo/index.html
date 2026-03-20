@@ -3123,13 +3123,26 @@ function renderPainDeepener() {
   });
 
   // Build the opening question combining all pains
+  // Price-only pains don't have a "day to day" experience — use price-specific opener
+  var isPriceOnly = state.pain_types.every(function(t) {
+    return t === 'price_hikes' || t === 'expensive_satellite';
+  });
+
   if (allIssues.length) {
-    openingQ = '"So ' + allIssues.slice(0, 3).join(', and ') + ' — what does that actually look like day to day?"';
+    if (isPriceOnly) {
+      openingQ = '"So ' + allIssues.slice(0, 3).join(', and ') + ' — how many times has the price gone up since you first signed up?"';
+    } else {
+      openingQ = '"So ' + allIssues.slice(0, 3).join(', and ') + ' — what does that actually look like day to day?"';
+    }
   } else if (painLabels.length === 1) {
     var tree = painTree[state.pain_types[0]];
     openingQ = tree && tree.deepener && tree.deepener[0] ? tree.deepener[0] : '';
   } else {
-    openingQ = '"So you\'re dealing with ' + painLabels.join(' and ') + ' — walk me through what that looks like on a typical day."';
+    if (isPriceOnly) {
+      openingQ = '"So you\'re dealing with ' + painLabels.join(' and ') + ' — how much has the price gone up since you started?"';
+    } else {
+      openingQ = '"So you\'re dealing with ' + painLabels.join(' and ') + ' — walk me through what that looks like on a typical day."';
+    }
   }
 
   var html = '';
@@ -3170,9 +3183,6 @@ function renderPainDeepener() {
       '<div class="pill deepener-pill' + (state.provider_tried_fix === 'multiple_times' ? ' active' : '') + '" onclick="setProviderFix(this,\'multiple_times\')">Called multiple times</div>'
     );
   }
-
-  // Closing question
-  html += makeDeepenerRow('"And nobody\'s been able to fix it this whole time?"', '');
 
   // Pain-triggered benefit weaves — show after Step 3 when dig deeper is completed
   var painBenefitWeaves = {
@@ -3842,6 +3852,31 @@ function setProviderFix(el, val) {
   state.provider_tried_fix = val;
   saveToLocalStorage();
   renderPainDeepener();
+
+  // Dynamic empathy closer based on Q3 response
+  var existing = document.getElementById('provider-fix-closer');
+  if (existing) existing.remove();
+
+  var duration = state.pain_duration;
+  var durationLabel = duration === 'weeks' ? 'weeks' : duration === 'months' ? 'months' : duration === '6_months' ? 'over six months' : duration === 'years' ? 'years' : 'all this time';
+
+  var closerText = '';
+  if (val === 'yes_no_help' || val === 'multiple_times') {
+    closerText = '"So you\'ve been dealing with this for ' + durationLabel + ' and they still can\'t get it right..."';
+  } else if (val === 'no') {
+    closerText = '"Yeah... at some point it\'s not even worth the call."';
+  } else if (val === 'yes_temp_fix') {
+    closerText = '"So it just keeps coming back..."';
+  }
+
+  if (closerText) {
+    var closerDiv = document.createElement('div');
+    closerDiv.id = 'provider-fix-closer';
+    closerDiv.style.cssText = 'margin-top:4px;margin-bottom:6px;padding:6px 10px;font-size:12px;font-style:italic;color:var(--purple);border-left:3px solid var(--purple);border-radius:0 var(--radius) var(--radius) 0;background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(167,139,250,0.02));animation:slideDown .3s ease';
+    closerDiv.innerHTML = closerText;
+    var deepenerScript = document.getElementById('pain-deepener-script');
+    if (deepenerScript) deepenerScript.appendChild(closerDiv);
+  }
 }
 
 // v4.9: Inline quantifier triggers
