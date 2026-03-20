@@ -629,6 +629,9 @@ textarea:focus { border-color: var(--accent); }
 #sched-install-btn.selected, #sched-survey-btn.selected {
   border-color: var(--accent); background: var(--accent-dim);
 }
+/* ===== PAIN-TRIGGERED BENEFIT WEAVES ===== */
+.pain-benefit-weave { animation: fadeIn 0.5s ease; margin-top: 10px; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 /* ===== RESPONSIVE ===== */
 @media (max-width:1024px) {
   .split { grid-template-columns: 1fr; }
@@ -937,50 +940,6 @@ textarea:focus { border-color: var(--accent); }
     <div class="script-block" id="score-branch-script"></div>
   </div>
 
-  <!-- PROVIDER: Asked right after score, before pain — so rating isn't influenced by brand loyalty -->
-  <div class="standard-only" style="margin-top:16px">
-    <div class="script-block">
-      "And who is that with?"
-    </div>
-    <div class="pill-group" style="flex-wrap:wrap;gap:4px;margin-top:6px;margin-bottom:6px" id="provider-pills-opening">
-      <div class="pill" onclick="selectProvider(this,'AT&amp;T')">AT&amp;T</div>
-      <div class="pill" onclick="selectProvider(this,'AT&amp;T Air')">AT&amp;T Air</div>
-      <div class="pill" onclick="selectProvider(this,'AT&amp;T Fiber')">AT&amp;T Fiber</div>
-      <div class="pill" onclick="selectProvider(this,'CenturyLink')">CenturyLink</div>
-      <div class="pill" onclick="selectProvider(this,'Frontier')">Frontier</div>
-      <div class="pill" onclick="selectProvider(this,'GVEC')">GVEC</div>
-      <div class="pill" onclick="selectProvider(this,'HughesNet')">HughesNet</div>
-      <div class="pill" onclick="selectProvider(this,'Rise Broadband')">Rise Broadband</div>
-      <div class="pill" onclick="selectProvider(this,'Spectrum')">Spectrum</div>
-      <div class="pill" onclick="selectProvider(this,'Starlink')">Starlink</div>
-      <div class="pill" onclick="selectProvider(this,'T-Mobile')">T-Mobile</div>
-      <div class="pill" onclick="selectProvider(this,'Verizon')">Verizon</div>
-      <div class="pill" onclick="selectProvider(this,'Viasat')">Viasat</div>
-      <div class="pill" onclick="selectProvider(this,'Xfinity')">Xfinity</div>
-      <div class="pill" onclick="selectProvider(this,'None')">None / First Time</div>
-      <div class="pill" onclick="selectProvider(this,'Other')">Other</div>
-    </div>
-    <input type="text" id="inp-provider-opening" placeholder="Other provider &mdash; type here..." oninput="updateState('current_provider',this.value)" style="font-size:12px">
-    <div id="provider-intel-hint-opening" class="hidden" style="margin-top:6px;font-size:12px;color:var(--warning);cursor:pointer" onclick="openCompetitorPanel()">Competitor intel available &rarr;</div>
-    <div id="provider-coach-note-opening" class="hidden" style="margin-top:8px;padding:8px 12px;border-left:3px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;font-size:11px;color:var(--text-secondary);background:var(--bg-input);line-height:1.5"></div>
-  </div>
-
-  <!-- BILLING: Right after provider -->
-  <div class="standard-only" style="margin-top:12px">
-    <div class="script-block">
-      "And what are you paying a month for that?"
-    </div>
-    <input type="number" id="inp-price-opening" placeholder="e.g. 90" oninput="updateState('current_price',parseFloat(this.value)||0)">
-  </div>
-
-  <!-- WEAVE: Price Lock — drop after they tell you what they're paying -->
-  <div class="standard-only" id="weave-price-lock" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(76,175,80,0.08),rgba(76,175,80,0.02));border:1px solid rgba(76,175,80,0.25);border-radius:var(--radius)">
-    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--success);margin-bottom:4px">WEAVE: Price Lock</div>
-    <div class="script-block" style="border-left-color:var(--success);margin:0;font-size:12px">
-      "Yeah, so one thing that's different with us &mdash; the price I quote you today is the price you keep. It's locked in. It never goes up. Does that make sense?"
-    </div>
-  </div>
-
   <button class="next-btn" onclick="scrollToSection('sec-pain')">Continue to Pain Discovery &darr;</button>
 </div>
 
@@ -1041,42 +1000,93 @@ textarea:focus { border-color: var(--accent); }
     </div>
   </div>
 
-  <button class="next-btn" onclick="scrollToSection('sec-discovery')">Continue to Discovery &darr;</button>
+  <!-- Step 4: Trigger — moved from Section 3 -->
+  <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--accent)">Step 4 &mdash; Trigger: The Breaking Point</div>
+    </div>
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">They've told you what's wrong. Now find out why they're finally doing something about it.</div>
+    <div class="q-card standard-only" id="q1-card">
+      <div class="q-num">Q1 &mdash; TRIGGER</div>
+      <div class="q-script">"So... what finally made you start looking? Did something happen, or you just got fed up?"</div>
+      <div class="pill-group">
+        <div class="pill" onclick="setTrigger(this,'price_hike')">Price went up</div>
+        <div class="pill" onclick="setTrigger(this,'outage')">Big outage</div>
+        <div class="pill" onclick="setTrigger(this,'fed_up_slow')">Fed up with slowness</div>
+        <div class="pill" onclick="setTrigger(this,'saw_ad')">Saw an ad</div>
+        <div class="pill" onclick="setTrigger(this,'referral')">Neighbor/friend referred</div>
+        <div class="pill" onclick="setTrigger(this,'moving')">Moving / new home</div>
+        <div class="pill" onclick="setTrigger(this,'contract_ending')">Contract ending</div>
+      </div>
+      <div id="trigger-response" class="hidden script-block" style="margin-top:8px;border-left-color:var(--success)"></div>
+      <input type="text" id="inp-trigger-text" placeholder="Other trigger..." style="margin-top:8px" oninput="updateState('switch_trigger_text',this.value)">
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);margin-bottom:6px">And are you looking for...</div>
+        <div class="pill-group" id="q6-card">
+          <div class="pill" onclick="setPriority(this,'reliability')">Best Reliability</div>
+          <div class="pill" onclick="setPriority(this,'price')">Lowest Price</div>
+          <div class="pill" onclick="setPriority(this,'mix')">Mix of Both</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="scrollToSection('sec-discovery')">Continue to Qualifying &darr;</button>
 </div>
 
 <!-- ==================== SECTION 3: DISCOVERY ==================== -->
 <div class="section" id="sec-discovery" data-check="discovery">
   <div class="section-label">Section 3</div>
-  <div class="section-title">Discovery Questions</div>
+  <div class="section-title">Qualifying + Data Collection</div>
+
+  <!-- PROVIDER: Moved from Section 1 -->
+  <div class="standard-only" style="margin-top:16px">
+    <div class="script-block">
+      "And who is that with?"
+    </div>
+    <div class="pill-group" style="flex-wrap:wrap;gap:4px;margin-top:6px;margin-bottom:6px" id="provider-pills-opening">
+      <div class="pill" onclick="selectProvider(this,'AT&amp;T')">AT&amp;T</div>
+      <div class="pill" onclick="selectProvider(this,'AT&amp;T Air')">AT&amp;T Air</div>
+      <div class="pill" onclick="selectProvider(this,'AT&amp;T Fiber')">AT&amp;T Fiber</div>
+      <div class="pill" onclick="selectProvider(this,'CenturyLink')">CenturyLink</div>
+      <div class="pill" onclick="selectProvider(this,'Frontier')">Frontier</div>
+      <div class="pill" onclick="selectProvider(this,'GVEC')">GVEC</div>
+      <div class="pill" onclick="selectProvider(this,'HughesNet')">HughesNet</div>
+      <div class="pill" onclick="selectProvider(this,'Rise Broadband')">Rise Broadband</div>
+      <div class="pill" onclick="selectProvider(this,'Spectrum')">Spectrum</div>
+      <div class="pill" onclick="selectProvider(this,'Starlink')">Starlink</div>
+      <div class="pill" onclick="selectProvider(this,'T-Mobile')">T-Mobile</div>
+      <div class="pill" onclick="selectProvider(this,'Verizon')">Verizon</div>
+      <div class="pill" onclick="selectProvider(this,'Viasat')">Viasat</div>
+      <div class="pill" onclick="selectProvider(this,'Xfinity')">Xfinity</div>
+      <div class="pill" onclick="selectProvider(this,'None')">None / First Time</div>
+      <div class="pill" onclick="selectProvider(this,'Other')">Other</div>
+    </div>
+    <input type="text" id="inp-provider-opening" placeholder="Other provider &mdash; type here..." oninput="updateState('current_provider',this.value)" style="font-size:12px">
+    <div id="provider-intel-hint-opening" class="hidden" style="margin-top:6px;font-size:12px;color:var(--warning);cursor:pointer" onclick="openCompetitorPanel()">Competitor intel available &rarr;</div>
+    <div id="provider-coach-note-opening" class="hidden" style="margin-top:8px;padding:8px 12px;border-left:3px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;font-size:11px;color:var(--text-secondary);background:var(--bg-input);line-height:1.5"></div>
+  </div>
+
+  <!-- BILLING: Right after provider -->
+  <div class="standard-only" style="margin-top:12px">
+    <div class="script-block">
+      "And what are you paying a month for that?"
+    </div>
+    <input type="number" id="inp-price-opening" placeholder="e.g. 90" oninput="updateState('current_price',parseFloat(this.value)||0)">
+  </div>
+
+  <!-- WEAVE: Price Lock — drop after they tell you what they're paying -->
+  <div class="standard-only" id="weave-price-lock" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(76,175,80,0.08),rgba(76,175,80,0.02));border:1px solid rgba(76,175,80,0.25);border-radius:var(--radius)">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--success);margin-bottom:4px">WEAVE: Price Lock</div>
+    <div class="script-block" style="border-left-color:var(--success);margin:0;font-size:12px">
+      "Yeah, so one thing that's different with us &mdash; the price I quote you today is the price you keep. It's locked in. It never goes up. Does that make sense?"
+    </div>
+  </div>
 
   <!-- Mining mode: coach note for quick discovery -->
   <div class="mining-only">
     <div class="mining-coach-note">Keep it quick. 60-90 seconds max for discovery on cold calls.</div>
     <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">Mining discovery is handled in the Opening section above. Use this section to capture any additional details.</p>
-  </div>
-
-  <div class="q-card standard-only" id="q1-card">
-    <div class="q-num">Q1 &mdash; TRIGGER</div>
-    <div class="q-script">"So... what finally made you start looking? Did something happen, or you just got fed up?"</div>
-    <div class="pill-group">
-      <div class="pill" onclick="setTrigger(this,'price_hike')">Price went up</div>
-      <div class="pill" onclick="setTrigger(this,'outage')">Big outage</div>
-      <div class="pill" onclick="setTrigger(this,'fed_up_slow')">Fed up with slowness</div>
-      <div class="pill" onclick="setTrigger(this,'saw_ad')">Saw an ad</div>
-      <div class="pill" onclick="setTrigger(this,'referral')">Neighbor/friend referred</div>
-      <div class="pill" onclick="setTrigger(this,'moving')">Moving / new home</div>
-      <div class="pill" onclick="setTrigger(this,'contract_ending')">Contract ending</div>
-    </div>
-    <div id="trigger-response" class="hidden script-block" style="margin-top:8px;border-left-color:var(--success)"></div>
-    <input type="text" id="inp-trigger-text" placeholder="Other trigger..." style="margin-top:8px" oninput="updateState('switch_trigger_text',this.value)">
-    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);margin-bottom:6px">And are you looking for...</div>
-      <div class="pill-group" id="q6-card">
-        <div class="pill" onclick="setPriority(this,'reliability')">Best Reliability</div>
-        <div class="pill" onclick="setPriority(this,'price')">Lowest Price</div>
-        <div class="pill" onclick="setPriority(this,'mix')">Mix of Both</div>
-      </div>
-    </div>
   </div>
 
   <div class="q-card standard-only" id="q2-card">
@@ -1296,12 +1306,8 @@ textarea:focus { border-color: var(--accent); }
         <span class="benefit-box"></span>
         <div><strong>Free TV Service</strong><br><span class="benefit-hint">"You also get free TV service included with every plan. No separate subscription needed."</span></div>
       </div>
-      <div class="benefit-check" onclick="toggleBenefitCheck(this,'own_towers')">
-        <span class="benefit-box"></span>
-        <div><strong>We Own Our Towers</strong><br><span class="benefit-hint">"We own our towers — we're not piggybacking off other providers. 99.99% uptime."</span></div>
-      </div>
     </div>
-    <div id="benefit-progress" style="margin-top:8px;font-size:11px;color:var(--text-muted)">0 / 7 mentioned</div>
+    <div id="benefit-progress" style="margin-top:8px;font-size:11px;color:var(--text-muted)">0 / 6 mentioned</div>
     <div class="coach-note">TRIAL CLOSE after each benefit &mdash; "Does that make sense?" / "That's really what you need, right?" Wait for confirmation before moving on.</div>
   </div>
 
@@ -1321,21 +1327,6 @@ textarea:focus { border-color: var(--accent); }
       </div>
       <div class="coach-note">MANDATORY TRIAL CLOSE: "That's really what you're looking for, right?"</div>
     </div>
-  </div>
-
-  <!-- WEAVE: No Contract + 30-Day Guarantee -->
-  <div class="standard-only" id="weave-guarantee" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(167,139,250,0.02));border:1px solid rgba(167,139,250,0.25);border-radius:var(--radius)">
-    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--purple);margin-bottom:4px">WEAVE: No Contract + 30-Day Guarantee</div>
-    <div class="script-block" style="border-left-color:var(--purple);margin:0;font-size:12px">
-      "And just so you know &mdash; there's no contract. It's month-to-month, cancel anytime. And you've got a full 30-day money-back guarantee. If you don't love it, we come get the equipment and refund every penny. Sound good?"
-    </div>
-  </div>
-
-  <!-- Spouse Close (shown when DM = spouse) -->
-  <div id="spouse-ammunition" class="hidden" style="margin-top:16px;padding:14px;background:linear-gradient(135deg,rgba(167,139,250,0.12),rgba(167,139,250,0.04));border:1px solid rgba(167,139,250,0.3);border-radius:var(--radius-lg)">
-    <div class="section-label" style="color:var(--purple);margin-bottom:6px">Spouse &mdash; Close on the Call</div>
-    <p style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Don't let them leave to "talk it over." Use what you already know to close now.</p>
-    <div class="script-block" id="spouse-ammo-script" style="border-left-color:var(--purple)"></div>
   </div>
 
   <button class="next-btn" onclick="scrollToSection('sec-roi')">Continue to ROI Math &darr;</button>
@@ -1450,6 +1441,15 @@ textarea:focus { border-color: var(--accent); }
     <div id="autopay-price-note" class="hidden" style="margin-top:6px;padding:6px 12px;background:var(--success-dim);border:1px solid var(--success);border-radius:var(--radius);font-size:12px;color:var(--success);font-weight:600"></div>
   </div>
 
+  <!-- WEAVE: No Contract + 30-Day Guarantee — moved from Section 4 -->
+  <div class="coach-note" style="margin-bottom:8px">These are risk reducers, not features. Drop them right before the close to remove last-second hesitation.</div>
+  <div class="standard-only" id="weave-guarantee" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(167,139,250,0.02));border:1px solid rgba(167,139,250,0.25);border-radius:var(--radius)">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--purple);margin-bottom:4px">WEAVE: No Contract + 30-Day Guarantee</div>
+    <div class="script-block" style="border-left-color:var(--purple);margin:0;font-size:12px">
+      "And just so you know &mdash; there's no contract. It's month-to-month, cancel anytime. And you've got a full 30-day money-back guarantee. If you don't love it, we come get the equipment and refund every penny. Sound good?"
+    </div>
+  </div>
+
   <!-- Trial Close -->
   <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
     <div class="script-block" style="border-left-color:var(--danger)">
@@ -1500,6 +1500,13 @@ textarea:focus { border-color: var(--accent); }
       <button class="resp-btn neutral" onclick="setAnchorResponse(this,'still_hesitant')">Still Hesitant</button>
       <button class="resp-btn objection" onclick="setAnchorResponse(this,'hard_no')">Hard No &mdash; Set Follow-Up</button>
     </div>
+  </div>
+
+  <!-- Spouse Close — conditional: shown when DM = spouse AND close1 = hesitant or objection -->
+  <div id="spouse-ammunition" class="hidden" style="margin-top:16px;padding:14px;background:linear-gradient(135deg,rgba(167,139,250,0.12),rgba(167,139,250,0.04));border:1px solid rgba(167,139,250,0.3);border-radius:var(--radius-lg)">
+    <div class="section-label" style="color:var(--purple);margin-bottom:6px">Spouse &mdash; Close on the Call</div>
+    <p style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Don't let them leave to "talk it over." Use what you already know to close now.</p>
+    <div class="script-block" id="spouse-ammo-script" style="border-left-color:var(--purple)"></div>
   </div>
 
   <!-- 8 Closing Techniques -->
@@ -2093,7 +2100,7 @@ const state = {
 const checkItemsStandard = [
   { id: 'opening', label: 'Opening + Usage + Score', section: 'sec-opening', icon: '\u{1F4DE}' },
   { id: 'pain', label: 'Pain Discovery', section: 'sec-pain', icon: '\u{1F494}' },
-  { id: 'discovery', label: 'Discovery', section: 'sec-discovery', icon: '\u{2753}' },
+  { id: 'discovery', label: 'Qualifying', section: 'sec-discovery', icon: '\u{2753}' },
   { id: 'value', label: 'Value Match', section: 'sec-value', icon: '\u{1F4A1}' },
   { id: 'roi', label: 'ROI + Plan', section: 'sec-roi', icon: '\u{1F4B0}' },
   { id: 'payment', label: 'Payment', section: 'sec-payment', icon: '\u{1F4B3}' },
@@ -2107,7 +2114,7 @@ const checkItemsStandard = [
 const checkItemsMining = [
   { id: 'opening', label: 'Permission Opener', section: 'sec-opening', icon: '\u{1F4DE}' },
   { id: 'pain', label: 'Pain Discovery', section: 'sec-pain', icon: '\u{1F494}' },
-  { id: 'discovery', label: 'Quick Discovery', section: 'sec-discovery', icon: '\u{2753}' },
+  { id: 'discovery', label: 'Quick Qualifying', section: 'sec-discovery', icon: '\u{2753}' },
   { id: 'value', label: 'Quick Pitch', section: 'sec-value', icon: '\u{1F4A1}' },
   { id: 'roi', label: 'Plan + Price', section: 'sec-roi', icon: '\u{1F4B0}' },
   { id: 'close', label: 'Close', section: 'sec-close', icon: '\u{1F91D}' },
@@ -3167,6 +3174,24 @@ function renderPainDeepener() {
   // Closing question
   html += makeDeepenerRow('"And nobody\'s been able to fix it this whole time?"', '');
 
+  // Pain-triggered benefit weaves — show after Step 3 when dig deeper is completed
+  var painBenefitWeaves = {
+    data_caps: { label: 'BENEFIT: Unlimited Data', script: '"And just so you know — with us, there are no data caps. It\'s unlimited. Stream, download, game, whatever you want. No throttling, no overage charges."' },
+    ip_rotation: { label: 'BENEFIT: Free TV Service', script: '"We actually include a free TV service with every plan — over 100 channels through your browser or a Roku. So not only is your internet unlimited, you might be able to drop your streaming subscriptions too."' }
+  };
+  var hasDeepenerAnswers = state.pain_frequency || state.pain_duration || state.provider_tried_fix;
+  if (hasDeepenerAnswers) {
+    state.pain_types.forEach(function(type) {
+      var weave = painBenefitWeaves[type];
+      if (weave) {
+        html += '<div class="pain-benefit-weave" style="padding:10px 14px;background:linear-gradient(135deg,rgba(52,211,153,0.08),rgba(52,211,153,0.02));border:1px solid rgba(52,211,153,0.25);border-radius:var(--radius)">';
+        html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--success);margin-bottom:4px">' + weave.label + '</div>';
+        html += '<div class="script-block" style="border-left-color:var(--success);margin:0;font-size:12px">' + weave.script + '</div>';
+        html += '</div>';
+      }
+    });
+  }
+
   script.innerHTML = html;
 }
 
@@ -3205,8 +3230,8 @@ function toggleBenefitCheck(el, key) {
   // Update progress
   var count = Object.keys(state.benefits_mentioned).filter(function(k) { return state.benefits_mentioned[k]; }).length;
   var prog = document.getElementById('benefit-progress');
-  if (count === 7) prog.innerHTML = '<span style="color:var(--success);font-weight:700">\u2713 All 7 benefits covered!</span>';
-  else prog.textContent = count + ' / 7 mentioned';
+  if (count === 6) prog.innerHTML = '<span style="color:var(--success);font-weight:700">\u2713 All 6 benefits covered!</span>';
+  else prog.textContent = count + ' / 6 mentioned';
   saveToLocalStorage();
 }
 
@@ -3552,9 +3577,11 @@ function setCloseResponse(el, response) {
   } else if (response === 'hesitant') {
     var anchor = document.getElementById('anchor-close-section');
     if (anchor) anchor.classList.remove('hidden');
+    renderSpouseAmmo();
     saveToLocalStorage();
   } else if (response === 'objection') {
     openObjectionPanel();
+    renderSpouseAmmo();
     saveToLocalStorage();
   }
 }
@@ -4760,7 +4787,7 @@ function resetForm() {
     if (box) box.textContent = '';
   });
   var prog = document.getElementById('benefit-progress');
-  if (prog) prog.textContent = '0 / 7 mentioned';
+  if (prog) prog.textContent = '0 / 6 mentioned';
   // Hide conditional sections
   document.querySelectorAll('#score-branch, #dm-trap-inline, #rent-notice-discovery, #spouse-feeling-row, #spouse-name-row, #landlord-yes, #landlord-no, #anchor-close-section, #spouse-ammunition, #provider-intel-hint-opening, #provider-coach-note-opening, #paint-the-picture').forEach(function(el) { if(el) el.classList.add('hidden'); });
   // Re-render
@@ -4941,7 +4968,10 @@ function renderSpouseAmmo() {
   var el = document.getElementById('spouse-ammunition');
   var script = document.getElementById('spouse-ammo-script');
   if (!el || !script) return;
-  if (state.decision_maker !== 'spouse') { el.classList.add('hidden'); return; }
+  // Show only when DM is spouse AND close1 response is hesitant or objection
+  var spouseCondition = state.decision_maker === 'spouse';
+  var closeCondition = state.close1_response === 'hesitant' || state.close1_response === 'objection';
+  if (!spouseCondition || !closeCondition) { el.classList.add('hidden'); return; }
   el.classList.remove('hidden');
 
   var spouseName = state.spouse_name || 'your spouse';
@@ -5018,7 +5048,7 @@ function renderCloseSavings() {
 // ===== INITIALIZATION =====
 
 function init() {
-  var savedTheme = localStorage.getItem('alamo_theme') || 'cream';
+  var savedTheme = localStorage.getItem('alamo_theme') || 'snow';
   document.documentElement.setAttribute('data-theme', savedTheme);
   document.querySelectorAll('.theme-swatch').forEach(function(s) {
     s.classList.toggle('active', s.dataset.theme === savedTheme);
