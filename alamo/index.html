@@ -1011,12 +1011,7 @@ textarea:focus { border-color: var(--accent); }
       <div class="q-script">"So... what finally made you start looking? Did something happen, or you just got fed up?"</div>
       <div class="pill-group" style="flex-wrap:wrap;gap:6px">
         <div class="pill" onclick="setTrigger(this,'fed_up')">Fed up</div>
-        <div class="pill" onclick="setTrigger(this,'too_slow')">Too slow</div>
-        <div class="pill" onclick="setTrigger(this,'too_expensive')">Too expensive</div>
-        <div class="pill" onclick="setTrigger(this,'keeps_dropping')">Keeps dropping</div>
         <div class="pill" onclick="setTrigger(this,'bill_went_up')">Bill went up</div>
-        <div class="pill" onclick="setTrigger(this,'bad_service')">Bad customer service</div>
-        <div class="pill" onclick="setTrigger(this,'data_caps')">Data caps</div>
         <div class="pill" onclick="setTrigger(this,'wfh')">Work from home now</div>
         <div class="pill" onclick="setTrigger(this,'just_moved')">Just moved</div>
         <div class="pill" onclick="setTrigger(this,'family_complaining')">Spouse/family complaining</div>
@@ -2063,22 +2058,25 @@ const plans = {
 
 // ===== PAIN TREE (11 Alamo-specific pain tiles based on transcript analysis) =====
 const painTree = {
-  price_hikes: {
-    label: 'Price keeps going up',
+  too_expensive: {
+    label: 'Too expensive',
     freq: '62%',
-    empathy: '"Price hikes are the worst — you sign up for one thing and end up paying way more. Let\'s see if we can fix that."',
+    empathy: '"You\'re paying too much for internet that doesn\'t even work right. That\'s frustrating."',
     subs: [
       { id:'promo_expired', label:'Promo rate expired', quote:'"They advertised $30, I\'m paying $75 now"' },
       { id:'hidden_fees', label:'Hidden fees & surcharges', quote:'"My bill has all these charges I never agreed to"' },
       { id:'bundle_confusion', label:'Bundle pricing confusion', quote:'"I can\'t tell what I\'m paying for internet vs. TV"' },
-      { id:'loyal_customer_penalty', label:'Loyal customer paying more', quote:'"New customers get a better deal than me"' }
+      { id:'loyal_customer_penalty', label:'Loyal customer paying more', quote:'"New customers get a better deal than me"' },
+      { id:'hundred_plus', label:'$100+ monthly for satellite', quote:'"I\'m paying $117 for HughesNet"' },
+      { id:'locked_in_satellite', label:'Locked in satellite contract', quote:'"I\'m stuck in a 2-year contract with Viasat"' },
+      { id:'satellite_not_worth', label:'Not worth what I pay', quote:'"For what I\'m paying I should have way better speeds"' }
     ],
     deepener: ['"When did you first notice the price going up?"', '"Have you called them about it?"', '"What are you paying now vs. what you signed up for?"']
   },
-  unreliable_connection: {
-    label: 'Drops out',
+  keeps_dropping: {
+    label: 'Keeps dropping',
     freq: '58%',
-    empathy: '"That\'s incredibly frustrating — especially when you\'re in the middle of something important. How often does it happen?"',
+    empathy: '"Nothing worse than your internet just cutting out on you in the middle of something."',
     subs: [
       { id:'daily_drops', label:'Drops daily', quote:'"It goes out at least once a day"' },
       { id:'evening_slowdown', label:'Slows down in evenings', quote:'"It\'s fine during the day but terrible at night"' },
@@ -2087,10 +2085,10 @@ const painTree = {
     ],
     deepener: ['"How often does it drop?"', '"What time of day is worst?"', '"Has your provider tried to fix it?"']
   },
-  slow_speeds: {
+  too_slow: {
     label: 'Too slow',
     freq: '48%',
-    empathy: '"You\'re paying for fast internet and getting slow internet — that\'s not right."',
+    empathy: '"You\'re paying for fast internet and getting slow internet. That\'s not right."',
     subs: [
       { id:'speed_fraction', label:'Getting fraction of promised', quote:'"They said 25 Mbps, I\'m getting 4"' },
       { id:'upload_terrible', label:'Upload speeds terrible', quote:'"I can\'t even do a video call"' },
@@ -2099,10 +2097,34 @@ const painTree = {
     ],
     deepener: ['"What speeds were you promised?"', '"Have you run a speed test recently?"', '"How many devices are usually connected?"']
   },
-  weather_issues: {
+  buffering: {
+    label: 'Buffering',
+    freq: '40%',
+    empathy: '"That spinning wheel in the middle of a show is the worst. You shouldn\'t have to deal with that."',
+    subs: [
+      { id:'streaming_buffer', label:'Shows keep buffering' },
+      { id:'quality_drops', label:'Video quality drops to blurry' },
+      { id:'music_skips', label:'Music/audio cuts out' },
+      { id:'loading_forever', label:'Pages take forever to load' }
+    ],
+    deepener: ['"How often does the buffering happen?"', '"Is it worse at certain times?"']
+  },
+  bill_keeps_changing: {
+    label: 'Bill keeps changing',
+    freq: '35%',
+    empathy: '"You signed up for one price and now it\'s something different every month. That\'s not fair."',
+    subs: [
+      { id:'promo_expired', label:'Promo price expired' },
+      { id:'surprise_fees', label:'Surprise fees on bill' },
+      { id:'rate_creep', label:'Rate goes up every year' },
+      { id:'bundle_confusion', label:'Bundled pricing is confusing' }
+    ],
+    deepener: ['"How many times has the price changed?"', '"Do you even know what you\'re paying for at this point?"']
+  },
+  storms: {
     label: 'Goes out in storms',
     freq: '35%',
-    empathy: '"Satellite internet and storms just don\'t mix. I hear this from a lot of folks switching from HughesNet or Viasat."',
+    empathy: '"Losing internet every time it rains isn\'t acceptable. You need something reliable."',
     subs: [
       { id:'rain_outages', label:'Goes out in any rain', quote:'"Every time it rains, internet dies"' },
       { id:'storm_hours_down', label:'Hours down after storms', quote:'"After a storm it takes hours to come back"' },
@@ -2110,22 +2132,10 @@ const painTree = {
     ],
     deepener: ['"How long does it typically take to come back?"', '"Is this with satellite service?"', '"Does it happen with light rain too?"']
   },
-  ip_rotation: {
-    label: 'Streaming issues',
-    freq: '25%',
-    empathy: '"That\'s the IP rotation problem — really common with T-Mobile and AT&T Air. Your streaming services think you\'re in a different city."',
-    subs: [
-      { id:'hulu_location', label:'Hulu thinks I\'m in Houston', quote:'"Hulu keeps showing me Houston channels"' },
-      { id:'netflix_vpn', label:'Netflix VPN errors', quote:'"Netflix thinks I\'m using a VPN"' },
-      { id:'streaming_blocks', label:'Streaming apps won\'t load', quote:'"Some apps just refuse to work"' },
-      { id:'location_services', label:'Location services wrong', quote:'"Everything thinks I\'m somewhere else"' }
-    ],
-    deepener: ['"Which streaming services are affected?"', '"How often does this happen?"', '"Is this with T-Mobile or AT&T?"']
-  },
-  no_other_options: {
+  no_options: {
     label: 'No options out here',
     freq: '30%',
-    empathy: '"Living in a rural area shouldn\'t mean you\'re stuck with terrible internet. That\'s exactly why we\'re here."',
+    empathy: '"A lot of folks out here feel stuck. That\'s actually why we built our network in this area."',
     subs: [
       { id:'only_satellite', label:'Only option is satellite', quote:'"Out here it\'s either HughesNet or nothing"' },
       { id:'no_cable_fiber', label:'No cable or fiber available', quote:'"Spectrum/AT&T says they don\'t serve my address"' },
@@ -2136,7 +2146,7 @@ const painTree = {
   data_caps: {
     label: 'Data caps',
     freq: '28%',
-    empathy: '"Data caps are terrible — you shouldn\'t have to ration your own internet."',
+    empathy: '"Unlimited should mean unlimited. You shouldn\'t have to watch your usage like a meter."',
     subs: [
       { id:'throttled_after_limit', label:'Throttled after limit', quote:'"After 20 GB it slows to a crawl"' },
       { id:'overage_charges', label:'Overage charges', quote:'"I got charged $50 extra for going over"' },
@@ -2145,10 +2155,22 @@ const painTree = {
     ],
     deepener: ['"What\'s your data cap?"', '"How quickly do you hit it?"', '"How much are overage fees?"']
   },
-  bad_customer_service: {
+  laggy: {
+    label: 'Laggy',
+    freq: '22%',
+    empathy: '"When everything\'s delayed by half a second, it makes the whole internet feel broken."',
+    subs: [
+      { id:'gaming_lag', label:'Gaming lag/high ping' },
+      { id:'video_call_freeze', label:'Video calls freeze' },
+      { id:'smart_home_delay', label:'Smart devices respond slow' },
+      { id:'general_latency', label:'Everything feels delayed' }
+    ],
+    deepener: ['"What are you noticing the lag on most?"', '"How bad is it — like unusable or just annoying?"']
+  },
+  bad_service: {
     label: 'Bad service',
     freq: '22%',
-    empathy: '"There\'s nothing worse than paying for a service and not being able to reach anyone when something goes wrong."',
+    empathy: '"You shouldn\'t have to fight just to get someone on the phone who can help."',
     subs: [
       { id:'long_hold_times', label:'Hours on hold', quote:'"I waited 2 hours on hold"' },
       { id:'no_resolution', label:'Never resolve the issue', quote:'"They keep sending me in circles"' },
@@ -2156,65 +2178,36 @@ const painTree = {
       { id:'broken_promises', label:'Broken promises', quote:'"They said a tech would come and never showed"' }
     ],
     deepener: ['"When was the last time you called them?"', '"What happened?"', '"Have they tried to fix the issue?"']
-  },
-  expensive_satellite: {
-    label: 'Satellite too expensive',
-    freq: '20%',
-    empathy: '"Paying over $100 a month for slow satellite internet is rough. A lot of our customers were in the same boat."',
-    subs: [
-      { id:'hundred_plus', label:'$100+ monthly for satellite', quote:'"I\'m paying $117 for HughesNet"' },
-      { id:'locked_in_satellite', label:'Locked in satellite contract', quote:'"I\'m stuck in a 2-year contract with Viasat"' },
-      { id:'satellite_not_worth', label:'Not worth what I pay', quote:'"For what I\'m paying I should have way better speeds"' }
-    ],
-    deepener: ['"How much are you paying exactly?"', '"How long have you been with them?"', '"What speeds are you actually getting?"']
-  },
-  contract_locked: {
-    label: 'Stuck in contract',
-    freq: '15%',
-    empathy: '"Being locked into a contract with bad service is the worst. Let\'s see if the math works out to switch."',
-    subs: [
-      { id:'etf_fear', label:'Afraid of termination fee', quote:'"I don\'t want to pay a $200 cancellation fee"' },
-      { id:'months_left', label:'Still have months left', quote:'"I still have 8 months on my contract"' },
-      { id:'auto_renewed', label:'Contract auto-renewed', quote:'"They renewed my contract without telling me"' }
-    ],
-    deepener: ['"How many months are left?"', '"Do you know the early termination fee?"', '"When does the contract expire?"']
-  },
-  just_moved: {
-    label: 'Just moved',
-    freq: '12%',
-    empathy: '"Welcome to the area! Setting up internet is one of those things you want to get right from the start."',
-    subs: [
-      { id:'new_to_area', label:'New to San Antonio area', quote:'"We just moved here from [city]"' },
-      { id:'no_service_yet', label:'No internet yet', quote:'"We don\'t have internet set up yet"' },
-      { id:'previous_provider_unavailable', label:'Previous provider not available', quote:'"Our old provider doesn\'t serve this address"' }
-    ],
-    deepener: ['"When did you move?"', '"What provider did you have before?"', '"What do you mainly use the internet for?"']
   }
 };
 
 // ===== VALUE MATCH MAPPING (Alamo pain tile IDs) =====
 const valueMatch = {
-  price_hikes: {
+  too_expensive: {
     b1: { title:'Price Lock — Rate Never Increases', script:'"So one of the biggest differences with Alamo Broadband is that the price I quote you today is the price you keep. It\'s locked in — no surprise increases after 12 months, no promo rates that expire. What you see on day one is what you see every month after that. That\'s pretty different from what you\'re dealing with now, right?"' },
     b2: { title:'No Contract — Cancel Anytime', script:'"And we don\'t do contracts. It\'s month-to-month, and if you ever want to cancel, there\'s no termination fee. You stay because you want to, not because some contract says you have to. Sound good?"' }
   },
-  unreliable_connection: {
+  keeps_dropping: {
     b1: { title:'Reliable Uptime — Dedicated Connection', script:'"So our network is built for reliability — 99.99% uptime. You get a dedicated connection with enterprise-grade equipment. We own our towers right here in San Antonio. When it rains, when it\'s peak hours, when everyone\'s streaming — your connection stays solid. That\'s really what you need, right?"' },
     b2: { title:'Local San Antonio Support', script:'"And if something ever does go wrong, we\'re a local company right here in San Antonio. A real person picks up — 4.6 stars on Google. Gets it handled. No overseas call center, no sitting on hold."' }
   },
-  slow_speeds: {
+  too_slow: {
     b1: { title:'Consistent Speeds — No Throttling', script:'"Our UnFiber plan comes with unlimited data and we never throttle your speeds. Pages load instantly, downloads fly, and your speed at 8 PM is the same as noon. No more waiting around. Does that make sense?"' },
     b2: { title:'Dedicated Connection', script:'"You\'re on a dedicated connection — not shared cable where everyone in the neighborhood drags you down at peak hours. Your speed stays consistent no matter how many people are online."' }
   },
-  weather_issues: {
+  buffering: {
+    b1: { title:'Consistent Speeds — No More Buffering', script:'"With our dedicated connection, your speeds stay consistent whether it\'s noon or 8 PM. No more buffering, no more waiting for things to load."' },
+    b2: { title:'Free TV Service Included', script:'"And we include free TV service with every plan — over 100 channels. So you might be able to drop a streaming subscription or two."' }
+  },
+  bill_keeps_changing: {
+    b1: { title:'Price Lock — Your Rate Never Changes', script:'"The price I quote you today is the price you keep. It\'s locked in. No promo rates, no surprise increases, no fine print. What you see on day one is what you see every month."' },
+    b2: { title:'No Hidden Fees', script:'"One price, one bill, no surprises. We don\'t do promo rates that expire or fees that show up out of nowhere."' }
+  },
+  storms: {
     b1: { title:'Local Towers — Not Satellite', script:'"Our signal only travels a few miles from a local tower — not 22,000 miles to space like satellite. Light to moderate rain doesn\'t affect us at all. Even in severe storms, any interruption is brief and recovers quickly."' },
     b2: { title:'99.99% Uptime Reliability', script:'"We have 99.99% uptime. Our equipment is designed for Texas weather. You\'ll notice a massive difference compared to satellite."' }
   },
-  ip_rotation: {
-    b1: { title:'Fixed IP — No Streaming Issues', script:'"With Alamo Broadband, you get a fixed connection pointed directly at your home. Your IP stays consistent, so Hulu shows your San Antonio channels, Netflix works perfectly, and no more VPN errors. That alone is worth the switch."' },
-    b2: { title:'Dedicated Connection — Not Shared', script:'"Unlike T-Mobile or AT&T Air, this is a dedicated connection — not bouncing between cell towers. Your streaming just works."' }
-  },
-  no_other_options: {
+  no_options: {
     b1: { title:'We Can Reach Your Address', script:'"Great news — we can serve your area. Our towers are right here in the San Antonio metro and surrounding counties. You don\'t have to settle for satellite anymore."' },
     b2: { title:'Real Internet — Not Satellite', script:'"You\'re getting real internet — unlimited data, low latency, consistent speeds. No more rationing data or losing signal in storms. Price locked, no contract."' }
   },
@@ -2222,51 +2215,49 @@ const valueMatch = {
     b1: { title:'Truly Unlimited Data — No Throttling', script:'"With us, unlimited means unlimited. Stream all day, game all night, work from home all week — your speed never drops because you \'used too much.\' There is no cap to hit. No more rationing your data. Make sense?"' },
     b2: { title:'No Overage Charges Ever', script:'"No more surprise charges on the bill. Use as much as you want — the price doesn\'t change. The price I quote you is the price you pay, period."' }
   },
-  bad_customer_service: {
+  laggy: {
+    b1: { title:'Low Latency — Built for Real-Time', script:'"Our network is local — not bouncing a signal off a satellite 22,000 miles away. That means low latency, no lag, and video calls that actually work."' },
+    b2: { title:'Dedicated Connection', script:'"You get a dedicated connection — not shared with your whole neighborhood. When everyone else\'s internet slows down at 7 PM, yours stays fast."' }
+  },
+  bad_service: {
     b1: { title:'Local San Antonio Support — Real People', script:'"So we\'re actually a local company right here in San Antonio — 4.6 stars on Google. When you call us, you\'re going to get a real person who knows your area and knows your account. No overseas call centers, no sitting on hold for 45 minutes."' },
     b2: { title:'Responsive — No Phone Tree', script:'"When you have a problem, it gets fixed. First call. Not four visits and a ticket that sits for 10 days. That\'s what local support looks like. Plus you get free TV service included with every plan."' }
-  },
-  expensive_satellite: {
-    b1: { title:'Half the Price, Better Service', script:'"You\'re paying over $100 for satellite that\'s slow and drops in storms. Our UnFiber plans start at $59.95 — unlimited data, low latency, and it works in the rain. You\'d save hundreds per year and get way better internet."' },
-    b2: { title:'No Data Caps + Free TV', script:'"No more worrying about data caps. No more 600ms latency. And you get free TV service included — that\'s another $30-50 a month in value."' }
-  },
-  contract_locked: {
-    b1: { title:'No Contract — Ever', script:'"Here\'s the thing — we don\'t do contracts. Period. It\'s month-to-month. You stay because you want to, not because a piece of paper says you have to. And even if you pay the early termination fee to leave your current provider, the money you save with our locked rate pays that back in months."' },
-    b2: { title:'Price Lock Beats Promo Pricing', script:'"Their promo rate expires and jumps every year. With us, the price is locked from day one. When you add up what you\'ll actually pay over 2-3 years, we\'re almost always cheaper — even with the ETF."' }
-  },
-  just_moved: {
-    b1: { title:'Get Set Up Right From the Start', script:'"Perfect timing — you get to pick the right provider from day one. No contract to lock you in, price locked from day one, and 30 days to make sure you love it."' },
-    b2: { title:'Price Lock + Free TV', script:'"The price is locked from day one, no contract, and you get free TV service included. One less thing to worry about while you\'re getting settled."' }
   }
 };
 
 // ===== FUTURE STATE MAPPING (Alamo pain sub-option IDs) =====
 const futureStates = {
-  // price_hikes
+  // too_expensive
   promo_expired: '"You open your bill next month, same price. You open it a year from now, same price. No more promo games."',
   hidden_fees: '"One price. No equipment rental, no broadcast fee, no hidden taxes that double your bill. What I quote you is what you pay."',
   bundle_confusion: '"One simple bill. Internet. That\'s it. No bundle confusion, no hidden fees, no mystery charges."',
   loyal_customer_penalty: '"With us, there are no tiers. The price you get on day one is the same price every customer pays. No loyalty penalty."',
-  // unreliable_connection
+  hundred_plus: '"You\'re paying half what you were, and the internet actually works. Better service, lower bill."',
+  locked_in_satellite: '"No more being trapped. Month-to-month, cancel anytime. You stay because you want to."',
+  satellite_not_worth: '"You\'re finally getting what you\'re paying for. Real speeds, unlimited data, and it works in the rain."',
+  // keeps_dropping
   daily_drops: '"What if your internet just... stayed on? All day, every day. No random drops, no wondering if it\'s going to cut out."',
   evening_slowdown: '"It\'s 8 PM, everyone\'s home, the kids are streaming, you\'re watching your show — and it just works. Same speed at 8 PM as noon."',
   random_outages: '"No more losing internet for hours and wondering when it\'s coming back. 99.99% uptime — it just stays on."',
   att_air_drops: '"No more AT&T box randomly dying on you. A dedicated connection that stays solid all day."',
-  // slow_speeds
+  // too_slow
   speed_fraction: '"You run a speed test and the number matches what you\'re paying for. Consistently. Not just at 3 AM."',
   upload_terrible: '"Your upload is strong enough for video calls, cloud backup, streaming — whatever you need to send up, it just goes."',
   multiple_devices_slow: '"Everyone in the house is online — phones, laptops, smart TV, gaming — and nobody notices. It just handles it."',
   wfh_struggles: '"You\'re on a Zoom call and your face isn\'t frozen, your voice isn\'t cutting out — you look professional."',
-  // weather_issues
+  // buffering
+  streaming_buffer: '"You hit play and it just plays. No spinning wheel, no waiting — just your show, instantly."',
+  quality_drops: '"Crystal clear picture from start to finish. No more blurry drops to 480p in the middle of a movie."',
+  music_skips: '"Your music plays smooth, your podcasts don\'t skip, your audio just works."',
+  loading_forever: '"Pages load instantly. No more staring at a loading bar wondering if it\'s going to finish."',
+  // bill_keeps_changing
+  surprise_fees: '"No more mystery charges showing up on your bill. One price, every month, period."',
+  rate_creep: '"The rate you sign up for is the rate you keep. A year from now, two years from now — same price."',
+  // storms
   rain_outages: '"It rains, it storms — your internet doesn\'t care. It just stays on."',
   storm_hours_down: '"After the storm passes, your internet is already working. No waiting hours for it to come back."',
   seasonal_issues: '"Spring storms, fall weather — doesn\'t matter. Your connection stays solid through all of it."',
-  // ip_rotation
-  hulu_location: '"You open Hulu and see your San Antonio local channels. Every time. No more Houston feeds."',
-  netflix_vpn: '"Netflix just works. No VPN errors, no buffering, no location problems."',
-  streaming_blocks: '"Every streaming app works perfectly. No more apps refusing to load or thinking you\'re somewhere else."',
-  location_services: '"Your location services show exactly where you are. No more confusion across your devices."',
-  // no_other_options
+  // no_options
   only_satellite: '"Real home internet — not satellite. Unlimited data, low latency, and it works in the rain."',
   no_cable_fiber: '"You finally have a real option. Not satellite, not hotspot — real dedicated home internet."',
   been_searching: '"After years of looking, you\'ve got reliable internet that actually works. And the price never changes."',
@@ -2275,38 +2266,33 @@ const futureStates = {
   overage_charges: '"No more checking your data balance before watching a movie. No more surprise charges. Use as much as you want."',
   hotspot_as_primary: '"No more draining your phone data because the internet gave out. Unlimited means unlimited."',
   cant_stream: '"Your whole household streams Netflix, watches YouTube, downloads updates — and nobody worries about hitting a limit. Because there is no limit."',
-  // bad_customer_service
+  // laggy
+  gaming_lag: '"Zero lag. Your game responds the instant you move. No more dying because the internet hiccuped."',
+  video_call_freeze: '"Your face doesn\'t freeze, your voice doesn\'t cut out. Video calls just work."',
+  smart_home_delay: '"Your smart devices respond instantly. Lights, locks, cameras — no more waiting for them to catch up."',
+  general_latency: '"Everything feels instant. Click, load, done. No more half-second delays on every single thing."',
+  // bad_service
   long_hold_times: '"No more two-hour hold times. You call, someone answers. Local team, right here in San Antonio."',
   no_resolution: '"What if the first time you called about a problem, someone actually fixed it?"',
   overseas_support: '"When you call, you get a real person right here in San Antonio who speaks your language and knows your area."',
-  broken_promises: '"When we say a tech is coming, they show up. 4.6 stars on Google — we back up what we promise."',
-  // expensive_satellite
-  hundred_plus: '"You\'re paying half what you were, and the internet actually works. Better service, lower bill."',
-  locked_in_satellite: '"No more being trapped. Month-to-month, cancel anytime. You stay because you want to."',
-  satellite_not_worth: '"You\'re finally getting what you\'re paying for. Real speeds, unlimited data, and it works in the rain."',
-  // contract_locked
-  etf_fear: '"Imagine being free of that contract — no termination fee hanging over you, no rate increases, just internet that works at a price that never changes."',
-  months_left: '"In a few months you\'ll be free — and when that day comes, you switch to a locked price that never goes up."',
-  auto_renewed: '"No more surprise renewals. With us, you\'re month-to-month. You stay because you want to, not because you forgot to cancel."',
-  // just_moved
-  new_to_area: '"Welcome home! You\'ve got reliable internet set up from day one — one less thing to worry about."',
-  no_service_yet: '"You go from no internet to unlimited internet — price locked, no contract, 30-day guarantee."',
-  previous_provider_unavailable: '"Your old provider may not serve here, but we do. And we\'re better — price locked, unlimited data, local support."'
+  broken_promises: '"When we say a tech is coming, they show up. 4.6 stars on Google — we back up what we promise."'
 };
 
 // ===== REFLECT & FLIP MAPS (used by renderValueMatch) =====
 const REFLECT_MAP = {
-  price_hikes: function() {
+  too_expensive: function() {
     var price = state.current_price;
     var impacts = state.pain_impacts || [];
-    var r = 'the bill keeps going up';
-    if (price > 0) r = 'you\'re paying $' + price + '/month and the bill keeps climbing';
+    var r = 'you\'re paying too much for internet that doesn\'t work';
+    if (price > 0) r = 'you\'re paying $' + price + '/month and not getting what you\'re paying for';
     if (impacts.includes('promo_expired')) r = 'your promo expired and now you\'re paying way more than you signed up for';
     else if (impacts.includes('hidden_fees')) r = 'hidden fees keep adding up on your bill';
     else if (impacts.includes('loyal_customer_penalty')) r = 'new customers get better deals while you\'re paying full price';
+    else if (impacts.includes('hundred_plus')) r = 'you\'re paying over $100 a month for slow satellite';
+    else if (impacts.includes('locked_in_satellite')) r = 'you\'re stuck in a satellite contract';
     return r;
   },
-  unreliable_connection: function() {
+  keeps_dropping: function() {
     var impacts = state.pain_impacts || [];
     var r = 'the internet keeps dropping on you';
     if (impacts.includes('daily_drops')) r = 'the internet drops on you at least once a day';
@@ -2315,7 +2301,7 @@ const REFLECT_MAP = {
     else if (impacts.includes('att_air_drops')) r = 'your AT&T Air keeps cutting out';
     return r;
   },
-  slow_speeds: function() {
+  too_slow: function() {
     var impacts = state.pain_impacts || [];
     var r = 'everything is running slow';
     if (impacts.includes('speed_fraction')) r = 'you\'re not getting anywhere near the speed you\'re paying for';
@@ -2324,21 +2310,30 @@ const REFLECT_MAP = {
     else if (impacts.includes('wfh_struggles')) r = 'you can\'t even work from home reliably';
     return r;
   },
-  weather_issues: function() {
+  buffering: function() {
+    var impacts = state.pain_impacts || [];
+    var r = 'your internet keeps buffering';
+    if (impacts.includes('streaming_buffer')) r = 'your shows keep buffering in the middle of watching';
+    else if (impacts.includes('quality_drops')) r = 'your video quality keeps dropping to blurry';
+    else if (impacts.includes('loading_forever')) r = 'pages take forever to load';
+    return r;
+  },
+  bill_keeps_changing: function() {
+    var impacts = state.pain_impacts || [];
+    var r = 'your bill is different every month';
+    if (impacts.includes('surprise_fees')) r = 'surprise fees keep showing up on your bill';
+    else if (impacts.includes('rate_creep')) r = 'the rate keeps going up every year';
+    else if (impacts.includes('promo_expired')) r = 'your promo expired and now the price jumped';
+    return r;
+  },
+  storms: function() {
     var impacts = state.pain_impacts || [];
     var r = 'you lose internet every time it storms';
     if (impacts.includes('rain_outages')) r = 'your internet dies every time it rains';
     else if (impacts.includes('storm_hours_down')) r = 'it takes hours to come back after storms';
     return r;
   },
-  ip_rotation: function() {
-    var impacts = state.pain_impacts || [];
-    var r = 'your streaming thinks you\'re in a different city';
-    if (impacts.includes('hulu_location')) r = 'Hulu keeps showing you Houston channels instead of San Antonio';
-    else if (impacts.includes('netflix_vpn')) r = 'Netflix thinks you\'re using a VPN';
-    return r;
-  },
-  no_other_options: function() {
+  no_options: function() {
     var impacts = state.pain_impacts || [];
     var r = 'you don\'t have any good internet options in your area';
     if (impacts.includes('only_satellite')) r = 'satellite is your only option right now';
@@ -2353,43 +2348,35 @@ const REFLECT_MAP = {
     else if (impacts.includes('cant_stream')) r = 'you can\'t even stream without worrying about the cap';
     return r;
   },
-  bad_customer_service: function() {
+  laggy: function() {
+    var impacts = state.pain_impacts || [];
+    var r = 'everything feels laggy and delayed';
+    if (impacts.includes('gaming_lag')) r = 'you\'re getting killed by lag every time you game';
+    else if (impacts.includes('video_call_freeze')) r = 'your video calls keep freezing';
+    else if (impacts.includes('smart_home_delay')) r = 'your smart devices take forever to respond';
+    return r;
+  },
+  bad_service: function() {
     var impacts = state.pain_impacts || [];
     var r = 'you can\'t get help when something goes wrong';
     if (impacts.includes('long_hold_times')) r = 'you\'re sitting on hold for hours when you call';
     else if (impacts.includes('no_resolution')) r = 'they keep sending you in circles and never fix anything';
     else if (impacts.includes('overseas_support')) r = 'you can\'t understand the support team';
     return r;
-  },
-  expensive_satellite: function() {
-    var impacts = state.pain_impacts || [];
-    var r = 'you\'re paying way too much for satellite internet';
-    if (impacts.includes('hundred_plus')) r = 'you\'re paying over $100 a month for slow satellite';
-    else if (impacts.includes('locked_in_satellite')) r = 'you\'re stuck in a satellite contract';
-    return r;
-  },
-  contract_locked: function() {
-    var impacts = state.pain_impacts || [];
-    var r = 'you\'re stuck in a contract';
-    if (impacts.includes('etf_fear')) r = 'the early termination fee is keeping you stuck';
-    else if (impacts.includes('auto_renewed')) r = 'your contract auto-renewed without you knowing';
-    return r;
-  },
-  just_moved: function() { return 'you just moved and need to get internet set up'; }
+  }
 };
 
 const FLIP_MAP = {
-  price_hikes: 'the price I quote you today is locked in — it never goes up, no surprise fees',
-  unreliable_connection: 'that just stops happening — your internet stays on, period. 99.99% uptime',
-  slow_speeds: 'your speed stays consistent whether it\'s noon or 8 PM with the whole family on',
-  weather_issues: 'your internet works in the rain — our towers are local, not 22,000 miles in space',
-  ip_rotation: 'your streaming shows your San Antonio channels, Netflix works, no more VPN errors',
-  no_other_options: 'you finally have real internet — unlimited data, low latency, and it works',
+  too_expensive: 'the price I quote you today is locked in — it never goes up, no surprise fees',
+  keeps_dropping: 'that just stops happening — your internet stays on, period. 99.99% uptime',
+  too_slow: 'your speed stays consistent whether it\'s noon or 8 PM with the whole family on',
+  buffering: 'the buffering stops — you hit play and it just plays, no spinning wheel',
+  bill_keeps_changing: 'your bill is the same every month — the price I quote you is the price you keep, period',
+  storms: 'your internet works in the rain — our towers are local, not 22,000 miles in space',
+  no_options: 'you finally have real internet — unlimited data, low latency, and it works',
   data_caps: 'there\'s no cap — use as much as you want, it never slows down on you',
-  bad_customer_service: 'when you call us, a real person picks up — local team right here in San Antonio',
-  expensive_satellite: 'you\'re paying half the price for internet that actually works — with free TV included',
-  contract_locked: 'there\'s no contract — ever. Month-to-month, price locked, cancel anytime',
-  just_moved: 'we get you set up right from day one — price locked, no contract'
+  laggy: 'the lag disappears — low latency local network, everything responds instantly',
+  bad_service: 'when you call us, a real person picks up — local team right here in San Antonio'
 };
 
 // ===== OBJECTION DATA (16 Alamo-specific handlers — V/I/R/RC framework) =====
@@ -2789,17 +2776,16 @@ function buildStep2Suggestion() {
   var pains = state.pain_types || [];
   var suggestions = [];
 
-  if (pains.includes('price_hikes')) suggestions.push('Did the price jump after a promo? Hidden fees adding up?');
-  if (pains.includes('unreliable_connection')) suggestions.push('Drops daily? Slows in evenings? Random outages?');
-  if (pains.includes('slow_speeds')) suggestions.push('Not getting promised speeds? Slow with multiple devices?');
-  if (pains.includes('weather_issues')) suggestions.push('Goes out in rain? Takes hours to recover after storms?');
-  if (pains.includes('ip_rotation')) suggestions.push('Hulu showing wrong channels? Netflix VPN errors?');
-  if (pains.includes('no_other_options')) suggestions.push('Only satellite available? No cable or fiber?');
+  if (pains.includes('too_expensive')) suggestions.push('Did the price jump after a promo? Hidden fees adding up? Paying too much for satellite?');
+  if (pains.includes('keeps_dropping')) suggestions.push('Drops daily? Slows in evenings? Random outages?');
+  if (pains.includes('too_slow')) suggestions.push('Not getting promised speeds? Slow with multiple devices?');
+  if (pains.includes('buffering')) suggestions.push('Shows buffering? Video quality dropping? Pages taking forever?');
+  if (pains.includes('bill_keeps_changing')) suggestions.push('Promo expired? Surprise fees? Rate keeps creeping up?');
+  if (pains.includes('storms')) suggestions.push('Goes out in rain? Takes hours to recover after storms?');
+  if (pains.includes('no_options')) suggestions.push('Only satellite available? No cable or fiber?');
   if (pains.includes('data_caps')) suggestions.push('Getting throttled? Overage charges? Using hotspot?');
-  if (pains.includes('bad_customer_service')) suggestions.push('Hours on hold? Never fix the issue? Overseas support?');
-  if (pains.includes('expensive_satellite')) suggestions.push('Paying $100+ for satellite? Locked in contract?');
-  if (pains.includes('contract_locked')) suggestions.push('Afraid of termination fee? Still have months left?');
-  if (pains.includes('just_moved')) suggestions.push('New to the area? No internet set up yet?');
+  if (pains.includes('laggy')) suggestions.push('Gaming lag? Video calls freezing? Everything feels delayed?');
+  if (pains.includes('bad_service')) suggestions.push('Hours on hold? Never fix the issue? Overseas support?');
 
   if (!suggestions.length) return '';
   var unique = suggestions.filter(function(v, i) { return suggestions.indexOf(v) === i; });
@@ -2812,19 +2798,20 @@ function getRecommendedSubs() {
   var pains = state.pain_types || [];
   var rec = [];
 
-  if (usage.includes('streaming')) rec.push('evening_slowdown', 'cant_stream', 'hulu_location');
-  if (usage.includes('gaming')) rec.push('daily_drops', 'evening_slowdown');
-  if (usage.includes('wfh')) rec.push('wfh_struggles', 'upload_terrible', 'daily_drops');
-  if (usage.includes('browsing')) rec.push('speed_fraction', 'multiple_devices_slow');
+  if (usage.includes('streaming')) rec.push('evening_slowdown', 'cant_stream', 'streaming_buffer');
+  if (usage.includes('gaming')) rec.push('daily_drops', 'evening_slowdown', 'gaming_lag');
+  if (usage.includes('wfh')) rec.push('wfh_struggles', 'upload_terrible', 'daily_drops', 'video_call_freeze');
+  if (usage.includes('browsing')) rec.push('speed_fraction', 'multiple_devices_slow', 'loading_forever');
 
-  if (pains.includes('price_hikes')) rec.push('promo_expired', 'hidden_fees');
-  if (pains.includes('unreliable_connection')) rec.push('daily_drops', 'random_outages');
-  if (pains.includes('slow_speeds')) rec.push('speed_fraction', 'multiple_devices_slow');
-  if (pains.includes('weather_issues')) rec.push('rain_outages', 'storm_hours_down');
-  if (pains.includes('ip_rotation')) rec.push('hulu_location', 'netflix_vpn');
+  if (pains.includes('too_expensive')) rec.push('promo_expired', 'hidden_fees', 'hundred_plus');
+  if (pains.includes('keeps_dropping')) rec.push('daily_drops', 'random_outages');
+  if (pains.includes('too_slow')) rec.push('speed_fraction', 'multiple_devices_slow');
+  if (pains.includes('buffering')) rec.push('streaming_buffer', 'quality_drops');
+  if (pains.includes('bill_keeps_changing')) rec.push('surprise_fees', 'rate_creep');
+  if (pains.includes('storms')) rec.push('rain_outages', 'storm_hours_down');
   if (pains.includes('data_caps')) rec.push('throttled_after_limit', 'cant_stream');
-  if (pains.includes('bad_customer_service')) rec.push('long_hold_times', 'no_resolution');
-  if (pains.includes('expensive_satellite')) rec.push('hundred_plus', 'satellite_not_worth');
+  if (pains.includes('laggy')) rec.push('gaming_lag', 'video_call_freeze');
+  if (pains.includes('bad_service')) rec.push('long_hold_times', 'no_resolution');
 
   return rec.filter(function(v, i) { return rec.indexOf(v) === i; });
 }
@@ -2924,31 +2911,37 @@ function renderSinglePainProbe() {
 
 // v4.6: Dynamic deepener — builds questions based on selected sub-options from Step 2
 var subPhrases = {
-  // price_hikes
+  // too_expensive
   promo_expired: { issue:'your promo price expired and now you\'re paying way more' },
   hidden_fees: { issue:'hidden fees keep adding up on your bill' },
   bundle_confusion: { issue:'the bundle pricing is confusing and you don\'t know what you\'re paying' },
   loyal_customer_penalty: { issue:'new customers get better deals while you\'re paying full price' },
-  // unreliable_connection
+  hundred_plus: { issue:'paying over $100 a month for slow satellite' },
+  locked_in_satellite: { issue:'locked into a satellite contract' },
+  satellite_not_worth: { issue:'not getting what you pay for with satellite' },
+  // keeps_dropping
   daily_drops: { issue:'the internet drops on you every day' },
   evening_slowdown: { issue:'it slows way down every evening' },
   random_outages: { issue:'you get random multi-hour outages' },
   att_air_drops: { issue:'your AT&T Air/5G keeps cutting out' },
-  // slow_speeds
+  // too_slow
   speed_fraction: { issue:'you\'re getting a fraction of the speed you were promised' },
   upload_terrible: { issue:'your upload speed is terrible' },
   multiple_devices_slow: { issue:'it crawls when multiple devices are on' },
   wfh_struggles: { issue:'you keep freezing on work calls' },
-  // weather_issues
+  // buffering
+  streaming_buffer: { issue:'your shows keep buffering' },
+  quality_drops: { issue:'the video quality keeps dropping to blurry' },
+  music_skips: { issue:'your music and audio keeps cutting out' },
+  loading_forever: { issue:'pages take forever to load' },
+  // bill_keeps_changing
+  surprise_fees: { issue:'surprise fees keep showing up on your bill' },
+  rate_creep: { issue:'the rate keeps going up every year' },
+  // storms
   rain_outages: { issue:'the internet dies every time it rains' },
   storm_hours_down: { issue:'it takes hours to come back after storms' },
   seasonal_issues: { issue:'it\'s worse in certain seasons' },
-  // ip_rotation
-  hulu_location: { issue:'Hulu keeps showing you Houston channels' },
-  netflix_vpn: { issue:'Netflix thinks you\'re using a VPN' },
-  streaming_blocks: { issue:'streaming apps refuse to work' },
-  location_services: { issue:'location services think you\'re somewhere else' },
-  // no_other_options
+  // no_options
   only_satellite: { issue:'satellite is your only option out here' },
   no_cable_fiber: { issue:'cable and fiber don\'t serve your address' },
   been_searching: { issue:'you\'ve been looking for something better for years' },
@@ -2957,23 +2950,16 @@ var subPhrases = {
   overage_charges: { issue:'paying overage charges' },
   hotspot_as_primary: { issue:'using your phone hotspot as your main internet' },
   cant_stream: { issue:'can\'t stream without hitting the data cap' },
-  // bad_customer_service
+  // laggy
+  gaming_lag: { issue:'you\'re getting killed by lag every time you game' },
+  video_call_freeze: { issue:'your video calls keep freezing' },
+  smart_home_delay: { issue:'your smart devices take forever to respond' },
+  general_latency: { issue:'everything feels delayed and laggy' },
+  // bad_service
   long_hold_times: { issue:'you\'re sitting on hold for hours' },
   no_resolution: { issue:'they never actually resolve the issue' },
   overseas_support: { issue:'you can\'t understand the support team' },
-  broken_promises: { issue:'they keep breaking promises' },
-  // expensive_satellite
-  hundred_plus: { issue:'paying over $100 a month for slow satellite' },
-  locked_in_satellite: { issue:'locked into a satellite contract' },
-  satellite_not_worth: { issue:'not getting what you pay for with satellite' },
-  // contract_locked
-  etf_fear: { issue:'worried about the early termination fee' },
-  months_left: { issue:'still have months left on the contract' },
-  auto_renewed: { issue:'the contract auto-renewed without you knowing' },
-  // just_moved
-  new_to_area: { issue:'just moved to the San Antonio area' },
-  no_service_yet: { issue:'don\'t have internet set up yet' },
-  previous_provider_unavailable: { issue:'your previous provider doesn\'t serve this address' }
+  broken_promises: { issue:'they keep breaking promises' }
 };
 
 function buildDynamicDeepener(painType, selectedSubs) {
@@ -2987,35 +2973,41 @@ function buildDynamicDeepener(painType, selectedSubs) {
   var issues = painSubs.map(function(id) { return subPhrases[id]?.issue; }).filter(Boolean);
   var issueStr = issues.length ? issues.join(' and ') : tree.label.toLowerCase();
 
-  if (painType === 'price_hikes') {
-    questions.push('"So ' + (issues[0] || 'the bill keeps going up') + '? And... how much are you paying now versus what you started at?"');
+  if (painType === 'too_expensive') {
+    questions.push('"So ' + (issues[0] || 'you\'re paying too much') + '? And... how much are you paying now versus what you started at?"');
     questions.push('"And for that price, is the service at least good, or are you paying more AND dealing with problems?"');
     questions.push('"You know... how long have you been dealing with that?"');
-  } else if (painType === 'unreliable_connection') {
+  } else if (painType === 'keeps_dropping') {
     questions.push('"So the internet ' + issueStr + ' — and... how often is that happening?"');
     questions.push('"And when it goes out, how long does it take to come back?"');
     questions.push('"So... how long has that been going on?"');
     questions.push('"And nobody\'s been able to fix it this whole time?"');
-  } else if (painType === 'slow_speeds') {
+  } else if (painType === 'too_slow') {
     questions.push('"So ' + issueStr + ' — and is that every day, or more like certain times?"');
     questions.push('"So... how long has that been going on?"');
     questions.push('"And nobody\'s been able to fix it?"');
-  } else if (painType === 'weather_issues') {
+  } else if (painType === 'buffering') {
+    questions.push('"So ' + issueStr + ' — how often does the buffering happen?"');
+    questions.push('"Is it worse at certain times of day?"');
+    questions.push('"How long has that been going on?"');
+  } else if (painType === 'bill_keeps_changing') {
+    questions.push('"So ' + (issues[0] || 'the bill keeps changing') + '? And... how many times has the price gone up?"');
+    questions.push('"Do you even know what you\'re paying for at this point?"');
+    questions.push('"How long have you been dealing with that?"');
+  } else if (painType === 'storms') {
     questions.push('"So ' + issueStr + ' — how long does it typically take to come back?"');
     questions.push('"Is this with satellite service?"');
-  } else if (painType === 'ip_rotation') {
-    questions.push('"So ' + issueStr + ' — which streaming services are affected?"');
-    questions.push('"Is this with T-Mobile or AT&T?"');
   } else if (painType === 'data_caps') {
     questions.push('"So you\'re ' + issueStr + ' — how often does that happen?"');
     questions.push('"And when that happens, what does it actually look like? Can you even use it?"');
     questions.push('"How long has that been going on?"');
-  } else if (painType === 'bad_customer_service') {
+  } else if (painType === 'laggy') {
+    questions.push('"So ' + issueStr + ' — what are you noticing the lag on most?"');
+    questions.push('"How bad is it — like unusable or just annoying?"');
+    questions.push('"How long has that been going on?"');
+  } else if (painType === 'bad_service') {
     questions.push('"So ' + issueStr + ' — walk me through what happens when you try to get help."');
     questions.push('"How long have you been dealing with that?"');
-  } else if (painType === 'expensive_satellite') {
-    questions.push('"So ' + issueStr + ' — what speeds are you actually getting?"');
-    questions.push('"How long have you been with them?"');
   } else {
     return tree.deepener || [];
   }
@@ -3053,7 +3045,7 @@ function renderPainDeepener() {
   // Build the opening question combining all pains
   // Price-only pains don't have a "day to day" experience — use price-specific opener
   var isPriceOnly = state.pain_types.every(function(t) {
-    return t === 'price_hikes' || t === 'expensive_satellite';
+    return t === 'too_expensive' || t === 'bill_keeps_changing';
   });
 
   if (allIssues.length) {
@@ -3081,7 +3073,7 @@ function renderPainDeepener() {
 
   // "How often?" with inline answers
   var hasFreqPain = state.pain_types.some(function(t) {
-    return t === 'unreliable_connection' || t === 'slow_speeds' || t === 'data_caps' || t === 'bad_customer_service' || t === 'weather_issues';
+    return t !== 'too_expensive' && t !== 'bill_keeps_changing' && t !== 'no_options';
   });
   if (hasFreqPain) {
     html += makeDeepenerRow('"And... how often does that happen?"',
@@ -3115,7 +3107,7 @@ function renderPainDeepener() {
   // Pain-triggered benefit weaves — show after Step 3 when dig deeper is completed
   var painBenefitWeaves = {
     data_caps: { label: 'BENEFIT: Unlimited Data', script: '"And just so you know — with us, there are no data caps. It\'s unlimited. Stream, download, game, whatever you want. No throttling, no overage charges."' },
-    ip_rotation: { label: 'BENEFIT: Free TV Service', script: '"We actually include a free TV service with every plan — over 100 channels through your browser or a Roku. So not only is your internet unlimited, you might be able to drop your streaming subscriptions too."' }
+    buffering: { label: 'BENEFIT: Free TV Service', script: '"We actually include a free TV service with every plan — over 100 channels through your browser or a Roku. So not only is your internet unlimited, you might be able to drop a streaming subscription or two."' }
   };
   var hasDeepenerAnswers = state.pain_frequency || state.pain_duration || state.provider_tried_fix;
   if (hasDeepenerAnswers) {
@@ -3145,17 +3137,16 @@ function makeDeepenerRow(question, pillsHtml) {
 
 // v4.9: Short value match summaries
 var valueMatchShort = {
-  price_hikes: 'Price locked from day one — never increases. No contract, cancel anytime.',
-  unreliable_connection: 'Reliable uptime on a dedicated connection with local support that actually fixes things.',
-  slow_speeds: 'Consistent speeds, no throttling, dedicated connection. Your speed at 8 PM is the same as noon.',
-  weather_issues: 'Local towers — not satellite. Works in rain, minimal weather impact, 99.99% uptime.',
-  ip_rotation: 'Fixed IP — no streaming location issues. Hulu, Netflix, everything works perfectly.',
-  no_other_options: 'Real internet for your area. Unlimited data, low latency, not satellite.',
+  too_expensive: 'Price locked from day one — never increases. No contract, cancel anytime.',
+  keeps_dropping: 'Reliable uptime on a dedicated connection with local support that actually fixes things.',
+  too_slow: 'Consistent speeds, no throttling, dedicated connection. Your speed at 8 PM is the same as noon.',
+  buffering: 'Consistent speeds, no buffering. Dedicated connection means your speed at 8 PM is the same as noon.',
+  bill_keeps_changing: 'Price locked from day one. No promo rates, no surprise increases, no fine print.',
+  storms: 'Local towers — not satellite. Works in rain, minimal weather impact, 99.99% uptime.',
+  no_options: 'Real internet for your area. Unlimited data, low latency, not satellite.',
   data_caps: 'Truly unlimited data. No caps, no throttling, no overage fees. Use as much as you want.',
-  bad_customer_service: 'Local support team in San Antonio. A real person answers. No phone tree, no overseas call centers.',
-  expensive_satellite: 'Half the price of satellite with way better service. Free TV included.',
-  contract_locked: 'No contract ever. Month-to-month, price locked, cancel anytime. ETF pays for itself in months.',
-  just_moved: 'Get set up right from the start. Price locked, no contract, 30-day money-back guarantee.'
+  laggy: 'Low latency, local network. No satellite delay, no shared neighborhood bandwidth.',
+  bad_service: 'Local support team in San Antonio. A real person answers. No phone tree, no overseas call centers.'
 };
 
 // v4.9.1: Benefit checklist toggle
