@@ -1378,20 +1378,6 @@ textarea:focus { border-color: var(--accent); }
     <strong>Pole Fees (if applicable):</strong> 20ft pole: +$50 | 30ft pole: +$100 | Tripod: included
   </div>
 
-  <div style="margin-top:16px">
-    <label>Autopay? <span style="font-weight:400;font-size:11px;color:var(--success)">(-$5/mo discount)</span></label>
-    <div class="pill-group" style="margin-top:4px">
-      <div class="pill" onclick="setAutopay(this,'yes')">Yes &mdash; save $5/mo</div>
-      <div class="pill" onclick="setAutopay(this,'no')">No &mdash; manual</div>
-    </div>
-    <div id="autopay-script" class="hidden" style="margin-top:8px">
-      <div class="script-block" style="border-left-color:var(--success)">
-        "And if you set up autopay, you save $5 every month automatically. Most people do it &mdash; it just comes out on the same day each month, you don't even have to think about it. Want me to set that up for you?"
-      </div>
-    </div>
-    <div id="autopay-price-note" class="hidden" style="margin-top:6px;padding:6px 12px;background:var(--success-dim);border:1px solid var(--success);border-radius:var(--radius);font-size:12px;color:var(--success);font-weight:600"></div>
-  </div>
-
   <!-- WEAVE: No Contract + 30-Day Guarantee — moved from Section 4 -->
   <div class="coach-note" style="margin-bottom:8px">These are risk reducers, not features. Drop them right before the close to remove last-second hesitation.</div>
   <div class="standard-only" id="weave-guarantee" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(167,139,250,0.02));border:1px solid rgba(167,139,250,0.25);border-radius:var(--radius)">
@@ -3487,12 +3473,11 @@ function renderSummary() {
   document.getElementById('sum-address').textContent = N(state.lead_address);
   document.getElementById('sum-plan').textContent = plan ? plan.name : '\u2014';
   var displayPrice = plan ? plan.price : 0;
-  if (plan && state.autopay === 'yes') displayPrice = plan.price - 5;
-  document.getElementById('sum-price').textContent = plan ? '$' + displayPrice.toFixed(2) + '/mo' + (state.autopay === 'yes' ? ' (w/ autopay)' : '') : '\u2014';
+  document.getElementById('sum-price').textContent = plan ? '$' + displayPrice.toFixed(2) + '/mo' : '\u2014';
   document.getElementById('sum-date').textContent = N(state.install_date);
   document.getElementById('sum-time').textContent = N(state.install_time);
   document.getElementById('sum-plan-name2').textContent = plan ? plan.name : '\u2014';
-  document.getElementById('sum-price2').textContent = plan ? '$' + (state.autopay === 'yes' ? (plan.price - 5).toFixed(2) : plan.price) : '\u2014';
+  document.getElementById('sum-price2').textContent = plan ? '$' + plan.price : '\u2014';
   document.getElementById('sum-date2').textContent = N(state.install_date);
   document.getElementById('sum-time2').textContent = N(state.install_time);
   var h = new Date().getHours();
@@ -3500,7 +3485,6 @@ function renderSummary() {
   var feeEl = document.getElementById('sum-fee');
   var fee = state.install_fee ? '$' + state.install_fee : '$99';
   feeEl.textContent = fee;
-  if (state.autopay === 'yes') feeEl.textContent += ' + autopay';
 }
 
 
@@ -4359,27 +4343,6 @@ function setProperty(el, key, val) {
   if (state.payment) { checkState.payment = 'completed'; updateChecklist(); }
 }
 
-function setAutopay(el, val) {
-  state.autopay = val;
-  setActivePill(el);
-  var scriptEl = document.getElementById('autopay-script');
-  var noteEl = document.getElementById('autopay-price-note');
-  if (val === 'yes') {
-    if (scriptEl) scriptEl.classList.add('hidden'); // hide pitch since they said yes
-    if (noteEl && state.plan_price) {
-      var discounted = (state.plan_price - 5).toFixed(2);
-      noteEl.textContent = 'With autopay: $' + discounted + '/mo (saving $60/year)';
-      noteEl.classList.remove('hidden');
-    }
-  } else {
-    if (scriptEl) scriptEl.classList.remove('hidden'); // show pitch so rep can ask
-    if (noteEl) noteEl.classList.add('hidden');
-  }
-  checkState.payment = 'completed';
-  saveToLocalStorage();
-  renderAll();
-  updateChecklist();
-}
 
 function setDisposition(el, value) {
   state.disposition = value;
