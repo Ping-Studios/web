@@ -1363,6 +1363,19 @@ textarea:focus { border-color: var(--accent); }
     </div>
   </div>
 
+  <!-- Trial close — temperature check after pitch -->
+  <div id="roi-trial-close" class="hidden" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+    <div class="script-block" style="border-left-color:var(--accent)">
+      "Does that sound like what you're looking for?"
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <div class="pill" style="border-color:var(--success);color:var(--success)" onclick="setROITrialClose(this,'yes')">Yeah, let's do it</div>
+      <div class="pill" style="border-color:var(--success);color:var(--success)" onclick="setROITrialClose(this,'good')">Sounds good</div>
+      <div class="pill" style="border-color:var(--warning);color:var(--warning)" onclick="setROITrialClose(this,'question')">I have a question</div>
+    </div>
+    <div id="roi-trial-response" class="hidden" style="margin-top:8px"></div>
+  </div>
+
   <button class="next-btn" onclick="scrollToSection('sec-payment')">Continue to Setup Fee &darr;</button>
 </div>
 
@@ -3416,6 +3429,10 @@ function renderROI() {
     }
   }
 
+  // Show trial close when pitch is visible
+  var trialClose = document.getElementById('roi-trial-close');
+  if (trialClose) trialClose.classList.remove('hidden');
+
   flashSection('sec-roi');
 }
 
@@ -3493,6 +3510,20 @@ function renderSummary() {
 // ===== PRICE COMPARE (removed in v5.1 — ROI handles all pricing) =====
 
 // ===== CLOSE RESPONSE HANDLERS =====
+function setROITrialClose(el, val) {
+  el.parentElement.querySelectorAll('.pill').forEach(function(p) { p.classList.remove('active'); });
+  el.classList.add('active');
+  var responseEl = document.getElementById('roi-trial-response');
+  if (val === 'yes' || val === 'good') {
+    responseEl.classList.remove('hidden');
+    responseEl.innerHTML = '<div class="coach-note" style="border-color:var(--success);background:var(--success-dim);color:var(--success);margin:0">They\'re with you. Move straight to setup fee. Don\'t re-sell \u2014 just transition: "Great, let me walk you through how we get you set up."</div>';
+  } else if (val === 'question') {
+    responseEl.classList.remove('hidden');
+    responseEl.innerHTML = '<div class="coach-note" style="border-color:var(--warning);background:var(--warning-dim);color:var(--warning);margin:0">Don\'t panic. Ask: "Sure, what\'s on your mind?" \u2014 let them talk. If it\'s an objection, use the Handle Objection panel. If it\'s a logistics question (install time, equipment, etc.), answer it and come back to: "Does that clear things up? Ready to get you set up?"</div>';
+  }
+  saveToLocalStorage();
+}
+
 function setCloseResponse(el, response) {
   state.close1_response = response;
   setActiveResp(el);
@@ -4741,6 +4772,8 @@ function resetForm() {
   // Hide dont-cancel block
   var dontCancel = document.getElementById('dont-cancel-block');
   if (dontCancel) dontCancel.classList.add('hidden');
+  var roiTrial = document.getElementById('roi-trial-close');
+  if (roiTrial) roiTrial.classList.add('hidden');
   // Hide conditional sections
   document.querySelectorAll('#score-branch, #dm-trap-inline, #rent-notice-discovery, #spouse-feeling-row, #spouse-name-row, #landlord-yes, #landlord-no, #anchor-close-section, #spouse-ammunition, #provider-intel-hint-opening, #provider-coach-note-opening, #paint-the-picture').forEach(function(el) { if(el) el.classList.add('hidden'); });
   // Re-render
