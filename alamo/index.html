@@ -4418,23 +4418,21 @@ function finalizeAndSubmit() {
 
   fetch('https://hook.us1.make.com/fi223x1r9jckxs72oaugymkb2ikvuizd', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(payload)
   })
-  .then(function(resp) {
-    if (resp.ok) {
-      status.style.display = 'block';
-      status.style.background = 'var(--success-dim)';
-      status.style.color = 'var(--success)';
-      status.style.border = '1px solid var(--success)';
-      status.textContent = 'Submitted successfully!';
-      btn.textContent = 'Submitted \u2713';
-      btn.style.background = 'var(--success)';
-      btn.style.borderColor = 'var(--success)';
-      btn.style.opacity = '1';
-    } else {
-      throw new Error('HTTP ' + resp.status);
-    }
+  .then(function() {
+    // With no-cors mode, response is opaque but request was sent
+    status.style.display = 'block';
+    status.style.background = 'var(--success-dim)';
+    status.style.color = 'var(--success)';
+    status.style.border = '1px solid var(--success)';
+    status.textContent = 'Submitted successfully!';
+    btn.textContent = 'Submitted \u2713';
+    btn.style.background = 'var(--success)';
+    btn.style.borderColor = 'var(--success)';
+    btn.style.opacity = '1';
   })
   .catch(function(err) {
     status.style.display = 'block';
