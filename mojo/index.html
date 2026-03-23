@@ -655,7 +655,7 @@ textarea:focus { border-color: var(--accent); }
     <span class="crumb" id="bc-priority">Priority: —</span>
   </div>
   <div style="display:flex;gap:8px;align-items:center;margin-left:auto">
-    <select id="team-member-select" onchange="updateState('team_member',this.value)" style="background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;font-size:12px;cursor:pointer">
+    <select id="team-member-select" onchange="updateState('team_member',this.value);var f=document.getElementById('team-member-field');if(f)f.value=this.value" style="background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;font-size:12px;cursor:pointer">
       <option value="">Rep</option>
       <option value="Paul Gonzales">Paul G.</option>
       <option value="Aaron Lim">Aaron L.</option>
@@ -778,6 +778,20 @@ textarea:focus { border-color: var(--accent); }
     <div id="session-manager" style="flex:1;display:flex;align-items:center"></div>
   </div>
 
+  <!-- Rep Name (required) -->
+  <div class="input-row" style="margin-bottom:12px">
+    <label style="font-weight:700;color:var(--danger)">Rep <span style="font-size:10px">*</span></label>
+    <select id="team-member-field" onchange="updateState('team_member',this.value);var h=document.getElementById('team-member-select');if(h)h.value=this.value" style="flex:1;background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border);border-radius:var(--radius);padding:8px 14px;font-size:14px;cursor:pointer">
+      <option value="">Select your name...</option>
+      <option value="Paul Gonzales">Paul Gonzales</option>
+      <option value="Aaron Lim">Aaron Lim</option>
+      <option value="Mario Gan Jr">Mario Gan Jr</option>
+      <option value="Rose Carbon">Rose Carbon</option>
+      <option value="Jade Jupia">Jade Jupia</option>
+      <option value="Sam Rivera">Sam Rivera</option>
+    </select>
+  </div>
+
   <div class="form-grid">
     <div class="input-row" style="margin:0">
       <label>Name</label>
@@ -806,6 +820,10 @@ textarea:focus { border-color: var(--accent); }
     <div class="input-row" style="margin:0">
       <label>ZIP</label>
       <input type="text" id="inp-zip" placeholder="ZIP" oninput="updateState('lead_zip',this.value)">
+    </div>
+    <div class="input-row" style="margin:0">
+      <label>Contact ID</label>
+      <input type="text" id="inp-contact-id" placeholder="CRM ID" readonly style="background:var(--bg-input);color:var(--text-muted);cursor:not-allowed;opacity:0.8" oninput="updateState('contact_id',this.value)">
     </div>
     <div style="display:flex;align-items:end">
       <button class="next-btn" style="margin:0;width:100%" onclick="checkServiceability()">Check Serviceability</button>
@@ -1750,8 +1768,7 @@ textarea:focus { border-color: var(--accent); }
   </div>
   <div class="coach-note">End the call on a high note. Don't ramble. Don't re-sell. They already said yes.</div>
 
-  <button class="complete-btn" onclick="markComplete()">Mark Call Complete &#10003;</button>
-  <button class="next-btn" style="width:100%;margin-top:12px;background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border)" onclick="scrollToSection('sec-disposition')">Continue to Disposition &darr;</button>
+  <button class="next-btn" onclick="scrollToSection('sec-disposition')">Continue to Disposition &darr;</button>
 </div>
 
 <!-- ==================== DISPOSITION ==================== -->
@@ -1874,7 +1891,8 @@ textarea:focus { border-color: var(--accent); }
   </div>
 
   <div style="margin-top:16px">
-    <button class="complete-btn" onclick="markComplete()">Finalize &amp; Save</button>
+    <button class="complete-btn" id="finalize-btn" onclick="finalizeAndSubmit()">Finalize &amp; Submit &#10148;</button>
+    <div id="webhook-status" style="font-size:12px;margin-top:6px;display:none;padding:8px 12px;border-radius:var(--radius);font-weight:600"></div>
     <button class="next-btn" style="width:100%;margin-top:12px;background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border)" onclick="newCall()">Start New Call</button>
   </div>
 </div>
@@ -1990,6 +2008,7 @@ textarea:focus { border-color: var(--accent); }
 const state = {
   call_type: 'outbound',
   team_member: '',
+  contact_id: '',
   lead_name: '', lead_address: '', lead_phone: '', lead_email: '', lead_city: '', lead_state: 'AZ', lead_zip: '',
   satisfaction_score: 0,
   pain_types: [], // v4.0: multi-select pain
@@ -4322,20 +4341,85 @@ function setDispositionReason(el, value) {
   saveToLocalStorage();
 }
 
-function markComplete() {
+function finalizeAndSubmit() {
+  if (!state.team_member) {
+    alert('Please select your name (Rep) at the top of Section 1 before submitting.');
+    scrollToSection('sec-opening');
+    return;
+  }
   state.call_complete = true;
   checkState.wrapup = 'completed';
   saveToLocalStorage();
   updateChecklist();
-  var blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = 'mojo-call-' + (state.lead_name || 'unknown') + '-' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  document.querySelector('.complete-btn').textContent = 'Call Complete!';
-  document.querySelector('.complete-btn').style.background = 'var(--text-muted)';
+
+  var btn = document.getElementById('finalize-btn');
+  var status = document.getElementById('webhook-status');
+  btn.textContent = 'Submitting...';
+  btn.style.opacity = '0.6';
+  btn.disabled = true;
+
+  var payload = JSON.parse(JSON.stringify(state));
+  payload.submitted_at = new Date().toISOString();
+  payload.client = 'mojo_broadband';
+
+  fetch('https://hook.us1.make.com/fi223x1r9jckxs72oaugymkb2ikvuizd', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(resp) {
+    if (resp.ok) {
+      status.style.display = 'block';
+      status.style.background = 'var(--success-dim)';
+      status.style.color = 'var(--success)';
+      status.style.border = '1px solid var(--success)';
+      status.textContent = 'Submitted successfully!';
+      btn.textContent = 'Submitted \u2713';
+      btn.style.background = 'var(--success)';
+      btn.style.borderColor = 'var(--success)';
+      btn.style.opacity = '1';
+    } else {
+      throw new Error('HTTP ' + resp.status);
+    }
+  })
+  .catch(function(err) {
+    status.style.display = 'block';
+    status.style.background = 'var(--danger-dim)';
+    status.style.color = 'var(--danger)';
+    status.style.border = '1px solid var(--danger)';
+    status.textContent = 'Error: ' + err.message + '. Try again.';
+    btn.textContent = 'Retry \u21bb';
+    btn.style.opacity = '1';
+    btn.disabled = false;
+  });
+}
+
+function markComplete() { finalizeAndSubmit(); }
+
+// ===== URL PRE-FILL =====
+function prefillFromURL() {
+  var params = new URLSearchParams(window.location.search);
+  var fieldMap = {
+    lead_name: 'inp-name',
+    lead_phone: 'inp-phone',
+    lead_email: 'inp-email',
+    lead_address: 'inp-address',
+    lead_city: 'inp-city',
+    lead_state: 'inp-state',
+    lead_zip: 'inp-zip',
+    contact_id: 'inp-contact-id'
+  };
+  var filled = false;
+  Object.keys(fieldMap).forEach(function(key) {
+    var val = params.get(key);
+    if (val) {
+      state[key] = val;
+      var el = document.getElementById(fieldMap[key]);
+      if (el) el.value = val;
+      filled = true;
+    }
+  });
+  if (filled) saveToLocalStorage();
 }
 
 // ===== PILL/BUTTON HELPERS =====
@@ -4985,6 +5069,7 @@ function init() {
   buildObjectionTiles();
   buildObjectionSelects();
   initCalendar();
+  prefillFromURL();
 
   // v5.1: Restore visual state for pain tiles after build
   if (state.pain_types.length > 0) {
@@ -5037,6 +5122,7 @@ function init() {
   if (state.lead_city) { var el = document.getElementById('inp-city'); if(el) el.value = state.lead_city; }
   if (state.lead_state) { var el = document.getElementById('inp-state'); if(el) el.value = state.lead_state; }
   if (state.lead_zip) { var el = document.getElementById('inp-zip'); if(el) el.value = state.lead_zip; }
+  if (state.contact_id) { var el = document.getElementById('inp-contact-id'); if(el) el.value = state.contact_id; }
   if (state.current_price) { var el = document.getElementById('inp-price-opening'); if(el) el.value = state.current_price; }
   if (state.current_provider) { var el = document.getElementById('inp-provider-opening'); if(el) el.value = state.current_provider; }
   if (state.switch_trigger_text) { var el = document.getElementById('inp-trigger-text'); if(el) el.value = state.switch_trigger_text; }
@@ -5054,6 +5140,8 @@ function init() {
   if (state.team_member) {
     var sel = document.getElementById('team-member-select');
     if (sel) sel.value = state.team_member;
+    var field = document.getElementById('team-member-field');
+    if (field) field.value = state.team_member;
   }
   // Provider pills (opening)
   if (state.current_provider) {
