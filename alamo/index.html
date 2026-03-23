@@ -811,6 +811,10 @@ textarea:focus { border-color: var(--accent); }
       <label>ZIP</label>
       <input type="text" id="inp-zip" placeholder="ZIP" oninput="updateState('lead_zip',this.value)">
     </div>
+    <div class="input-row" style="margin:0">
+      <label>Contact ID</label>
+      <input type="text" id="inp-contact-id" placeholder="CRM ID" readonly style="background:var(--bg-input);color:var(--text-muted);cursor:not-allowed;opacity:0.8" oninput="updateState('contact_id',this.value)">
+    </div>
     <div style="display:flex;align-items:end">
       <button class="next-btn" style="margin:0;width:100%" onclick="checkServiceability()">Check Serviceability</button>
     </div>
@@ -1886,6 +1890,8 @@ textarea:focus { border-color: var(--accent); }
 
   <div style="margin-top:16px">
     <button class="complete-btn" onclick="markComplete()">Finalize &amp; Save</button>
+    <button class="complete-btn" id="submit-webhook-btn" onclick="submitToWebhook()" style="width:100%;margin-top:8px;background:var(--accent);border-color:var(--accent)">Submit to CRM &#10148;</button>
+    <div id="webhook-status" style="font-size:12px;margin-top:6px;display:none;padding:8px 12px;border-radius:var(--radius);font-weight:600"></div>
     <button class="next-btn" style="width:100%;margin-top:12px;background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border)" onclick="newCall()">Start New Call</button>
   </div>
 </div>
@@ -2001,6 +2007,7 @@ textarea:focus { border-color: var(--accent); }
 const state = {
   call_type: 'outbound',
   team_member: '',
+  contact_id: '',
   lead_name: '', lead_address: '', lead_phone: '', lead_email: '', lead_city: '', lead_state: 'TX', lead_zip: '',
   satisfaction_score: 0,
   pain_types: [], // v4.0: multi-select pain
@@ -4388,6 +4395,76 @@ function markComplete() {
   document.querySelector('.complete-btn').style.background = 'var(--text-muted)';
 }
 
+// ===== WEBHOOK SUBMISSION =====
+function submitToWebhook() {
+  var btn = document.getElementById('submit-webhook-btn');
+  var status = document.getElementById('webhook-status');
+  btn.textContent = 'Submitting...';
+  btn.style.opacity = '0.6';
+  btn.disabled = true;
+
+  var payload = JSON.parse(JSON.stringify(state));
+  payload.submitted_at = new Date().toISOString();
+  payload.client = 'alamo_broadband';
+
+  fetch('https://hook.us1.make.com/fi223x1r9jckxs72oaugymkb2ikvuizd', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(resp) {
+    if (resp.ok) {
+      status.style.display = 'block';
+      status.style.background = 'var(--success-dim)';
+      status.style.color = 'var(--success)';
+      status.style.border = '1px solid var(--success)';
+      status.textContent = 'Submitted successfully!';
+      btn.textContent = 'Submitted \u2713';
+      btn.style.background = 'var(--success)';
+      btn.style.borderColor = 'var(--success)';
+      btn.style.opacity = '1';
+    } else {
+      throw new Error('HTTP ' + resp.status);
+    }
+  })
+  .catch(function(err) {
+    status.style.display = 'block';
+    status.style.background = 'var(--danger-dim)';
+    status.style.color = 'var(--danger)';
+    status.style.border = '1px solid var(--danger)';
+    status.textContent = 'Error: ' + err.message + '. Try again.';
+    btn.textContent = 'Retry Submit \u21bb';
+    btn.style.opacity = '1';
+    btn.disabled = false;
+  });
+}
+
+// ===== URL PRE-FILL =====
+function prefillFromURL() {
+  var params = new URLSearchParams(window.location.search);
+  var fieldMap = {
+    lead_name: 'inp-name',
+    lead_phone: 'inp-phone',
+    lead_email: 'inp-email',
+    lead_address: 'inp-address',
+    lead_city: 'inp-city',
+    lead_state: 'inp-state',
+    lead_zip: 'inp-zip',
+    contact_id: 'inp-contact-id'
+  };
+  var filled = false;
+  Object.keys(fieldMap).forEach(function(key) {
+    var val = params.get(key);
+    if (val) {
+      state[key] = val;
+      var el = document.getElementById(fieldMap[key]);
+      if (el) el.value = val;
+      filled = true;
+    }
+  });
+  if (filled) saveToLocalStorage();
+}
+
 // ===== PILL/BUTTON HELPERS =====
 function setActivePill(el) {
   if (!el) return;
@@ -5035,6 +5112,7 @@ function init() {
   buildObjectionTiles();
   buildObjectionSelects();
   initCalendar();
+  prefillFromURL();
 
   // v5.1: Restore visual state for pain tiles after build
   if (state.pain_types.length > 0) {
@@ -5087,6 +5165,7 @@ function init() {
   if (state.lead_city) { var el = document.getElementById('inp-city'); if(el) el.value = state.lead_city; }
   if (state.lead_state) { var el = document.getElementById('inp-state'); if(el) el.value = state.lead_state; }
   if (state.lead_zip) { var el = document.getElementById('inp-zip'); if(el) el.value = state.lead_zip; }
+  if (state.contact_id) { var el = document.getElementById('inp-contact-id'); if(el) el.value = state.contact_id; }
   if (state.current_price) { var el = document.getElementById('inp-price-opening'); if(el) el.value = state.current_price; }
   if (state.current_provider) { var el = document.getElementById('inp-provider-opening'); if(el) el.value = state.current_provider; }
   if (state.switch_trigger_text) { var el = document.getElementById('inp-trigger-text'); if(el) el.value = state.switch_trigger_text; }
