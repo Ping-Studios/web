@@ -4416,45 +4416,13 @@ function finalizeAndSubmit() {
   payload.submitted_at = new Date().toISOString();
   payload.client = 'alamo_broadband';
 
-  var webhookURL = 'https://hook.us1.make.com/tq9l7qmnhflbfzbdt8rxrlq4qpl7rihy';
-  var jsonStr = JSON.stringify(payload);
-
-  // Use sendBeacon (reliable, no CORS issues for POST)
-  var sent = false;
-  try {
-    var blob = new Blob([jsonStr], { type: 'application/json' });
-    sent = navigator.sendBeacon(webhookURL, blob);
-  } catch(e) { sent = false; }
-
-  if (sent) {
-    status.style.display = 'block';
-    status.style.background = 'var(--success-dim)';
-    status.style.color = 'var(--success)';
-    status.style.border = '1px solid var(--success)';
-    status.textContent = 'Submitted successfully!';
-    btn.textContent = 'Submitted \u2713';
-    btn.style.background = 'var(--success)';
-    btn.style.borderColor = 'var(--success)';
-    btn.style.opacity = '1';
-  } else {
-    // Fallback: hidden form POST via iframe
-    try {
-      var iframe = document.createElement('iframe');
-      iframe.name = 'webhook-frame';
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-      var form = document.createElement('form');
-      form.method = 'POST';
-      form.action = webhookURL;
-      form.target = 'webhook-frame';
-      var input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'data';
-      input.value = jsonStr;
-      form.appendChild(input);
-      document.body.appendChild(form);
-      form.submit();
-      setTimeout(function() { form.remove(); iframe.remove(); }, 3000);
+  fetch('https://hook.us1.make.com/tq9l7qmnhflbfzbdt8rxrlq4qpl7rihy', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(resp) {
+    if (resp.ok) {
       status.style.display = 'block';
       status.style.background = 'var(--success-dim)';
       status.style.color = 'var(--success)';
@@ -4464,17 +4432,20 @@ function finalizeAndSubmit() {
       btn.style.background = 'var(--success)';
       btn.style.borderColor = 'var(--success)';
       btn.style.opacity = '1';
-    } catch(err) {
-      status.style.display = 'block';
-      status.style.background = 'var(--danger-dim)';
-      status.style.color = 'var(--danger)';
-      status.style.border = '1px solid var(--danger)';
-      status.textContent = 'Error submitting. Try again.';
-      btn.textContent = 'Retry \u21bb';
-      btn.style.opacity = '1';
-      btn.disabled = false;
+    } else {
+      throw new Error('HTTP ' + resp.status);
     }
-  }
+  })
+  .catch(function(err) {
+    status.style.display = 'block';
+    status.style.background = 'var(--danger-dim)';
+    status.style.color = 'var(--danger)';
+    status.style.border = '1px solid var(--danger)';
+    status.textContent = 'Error: ' + err.message + '. Try again.';
+    btn.textContent = 'Retry \u21bb';
+    btn.style.opacity = '1';
+    btn.disabled = false;
+  });
 }
 
 function markComplete() { finalizeAndSubmit(); }
