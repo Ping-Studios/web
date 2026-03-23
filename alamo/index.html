@@ -1765,8 +1765,7 @@ textarea:focus { border-color: var(--accent); }
   </div>
   <div class="coach-note">End the call on a high note. Don't ramble. Don't re-sell. They already said yes.</div>
 
-  <button class="complete-btn" onclick="markComplete()">Mark Call Complete &#10003;</button>
-  <button class="next-btn" style="width:100%;margin-top:12px;background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border)" onclick="scrollToSection('sec-disposition')">Continue to Disposition &darr;</button>
+  <button class="next-btn" onclick="scrollToSection('sec-disposition')">Continue to Disposition &darr;</button>
 </div>
 
 <!-- ==================== DISPOSITION ==================== -->
@@ -1889,8 +1888,7 @@ textarea:focus { border-color: var(--accent); }
   </div>
 
   <div style="margin-top:16px">
-    <button class="complete-btn" onclick="markComplete()">Finalize &amp; Save</button>
-    <button class="complete-btn" id="submit-webhook-btn" onclick="submitToWebhook()" style="width:100%;margin-top:8px;background:var(--accent);border-color:var(--accent)">Submit to CRM &#10148;</button>
+    <button class="complete-btn" id="finalize-btn" onclick="finalizeAndSubmit()">Finalize &amp; Submit &#10148;</button>
     <div id="webhook-status" style="font-size:12px;margin-top:6px;display:none;padding:8px 12px;border-radius:var(--radius);font-weight:600"></div>
     <button class="next-btn" style="width:100%;margin-top:12px;background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border)" onclick="newCall()">Start New Call</button>
   </div>
@@ -4379,25 +4377,13 @@ function setDispositionReason(el, value) {
   saveToLocalStorage();
 }
 
-function markComplete() {
+function finalizeAndSubmit() {
   state.call_complete = true;
   checkState.wrapup = 'completed';
   saveToLocalStorage();
   updateChecklist();
-  var blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = 'alamo-call-' + (state.lead_name || 'unknown') + '-' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  document.querySelector('.complete-btn').textContent = 'Call Complete!';
-  document.querySelector('.complete-btn').style.background = 'var(--text-muted)';
-}
 
-// ===== WEBHOOK SUBMISSION =====
-function submitToWebhook() {
-  var btn = document.getElementById('submit-webhook-btn');
+  var btn = document.getElementById('finalize-btn');
   var status = document.getElementById('webhook-status');
   btn.textContent = 'Submitting...';
   btn.style.opacity = '0.6';
@@ -4433,11 +4419,13 @@ function submitToWebhook() {
     status.style.color = 'var(--danger)';
     status.style.border = '1px solid var(--danger)';
     status.textContent = 'Error: ' + err.message + '. Try again.';
-    btn.textContent = 'Retry Submit \u21bb';
+    btn.textContent = 'Retry \u21bb';
     btn.style.opacity = '1';
     btn.disabled = false;
   });
 }
+
+function markComplete() { finalizeAndSubmit(); }
 
 // ===== URL PRE-FILL =====
 function prefillFromURL() {
