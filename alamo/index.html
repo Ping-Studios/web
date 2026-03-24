@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.2.1</title>
+<title>Alamo Broadband — Sales Intelligence v5.9.0</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -935,6 +935,15 @@ textarea:focus { border-color: var(--accent); }
       <div class="pill" onclick="toggleUsage(this,'browsing')">Browsing</div>
       <div class="pill" onclick="toggleUsage(this,'smart_home')">Smart Home</div>
       <div class="pill" onclick="toggleUsage(this,'school')">School</div>
+    </div>
+  </div>
+
+  <!-- HOUSEHOLD: Just me vs Whole household (Standard mode) -->
+  <div class="standard-only" style="margin-top:12px">
+    <div class="section-label">Household</div>
+    <div class="pill-group" id="household-pills">
+      <div class="pill" onclick="setHouseholdMulti(this, false)">Just me</div>
+      <div class="pill" onclick="setHouseholdMulti(this, true)">Whole household</div>
     </div>
   </div>
 
@@ -2049,7 +2058,10 @@ const state = {
   mode: 'standard',
   mining_interest: '',
   callback_date: '',
-  callback_time: ''
+  callback_time: '',
+  household_multi: false,
+  pain_usage_scenario: '',
+  worst_affected_usage: ''
 };
 
 // ===== CHECKLIST CONFIG =====
@@ -2092,7 +2104,7 @@ const plans = {
 const painTree = {
   too_expensive: {
     label: 'Too expensive',
-    freq: '62%',
+    freq: '45%',
     empathy: '"You\'re paying too much for internet that doesn\'t even work right. That\'s frustrating."',
     subs: [
       { id:'promo_expired', label:'Promo rate expired', quote:'"They advertised $30, I\'m paying $75 now"' },
@@ -2107,7 +2119,7 @@ const painTree = {
   },
   keeps_dropping: {
     label: 'Keeps dropping',
-    freq: '58%',
+    freq: '22%',
     empathy: '"Nothing worse than your internet just cutting out on you in the middle of something."',
     subs: [
       { id:'daily_drops', label:'Drops daily', quote:'"It goes out at least once a day"' },
@@ -2119,7 +2131,7 @@ const painTree = {
   },
   too_slow: {
     label: 'Too slow',
-    freq: '48%',
+    freq: '30%',
     empathy: '"You\'re paying for fast internet and getting slow internet. That\'s not right."',
     subs: [
       { id:'speed_fraction', label:'Getting fraction of promised', quote:'"They said 25 Mbps, I\'m getting 4"' },
@@ -2131,7 +2143,7 @@ const painTree = {
   },
   buffering: {
     label: 'Buffering',
-    freq: '40%',
+    freq: '30%',
     empathy: '"That spinning wheel in the middle of a show is the worst. You shouldn\'t have to deal with that."',
     subs: [
       { id:'streaming_buffer', label:'Shows keep buffering' },
@@ -2166,7 +2178,7 @@ const painTree = {
   },
   no_options: {
     label: 'No options out here',
-    freq: '30%',
+    freq: '25%',
     empathy: '"A lot of folks out here feel stuck. That\'s actually why we built our network in this area."',
     subs: [
       { id:'only_satellite', label:'Only option is satellite', quote:'"Out here it\'s either HughesNet or nothing"' },
@@ -2177,7 +2189,7 @@ const painTree = {
   },
   data_caps: {
     label: 'Data caps',
-    freq: '28%',
+    freq: '9%',
     empathy: '"Unlimited should mean unlimited. You shouldn\'t have to watch your usage like a meter."',
     subs: [
       { id:'throttled_after_limit', label:'Throttled after limit', quote:'"After 20 GB it slows to a crawl"' },
@@ -2189,7 +2201,7 @@ const painTree = {
   },
   laggy: {
     label: 'Laggy',
-    freq: '22%',
+    freq: '15%',
     empathy: '"When everything\'s delayed by half a second, it makes the whole internet feel broken."',
     subs: [
       { id:'gaming_lag', label:'Gaming lag/high ping' },
@@ -2201,7 +2213,7 @@ const painTree = {
   },
   bad_service: {
     label: 'Bad service',
-    freq: '22%',
+    freq: '10%',
     empathy: '"You shouldn\'t have to fight just to get someone on the phone who can help."',
     subs: [
       { id:'long_hold_times', label:'Hours on hold', quote:'"I waited 2 hours on hold"' },
@@ -2210,6 +2222,17 @@ const painTree = {
       { id:'broken_promises', label:'Broken promises', quote:'"They said a tech would come and never showed"' }
     ],
     deepener: ['"When was the last time you called them?"', '"What happened?"', '"Have they tried to fix the issue?"']
+  },
+  provider_shutting_down: {
+    label: 'Provider shutting down',
+    freq: '5%',
+    empathy: '"So your current provider is shutting down? That\'s stressful. At least you found us before it went dark."',
+    subs: [
+      { id:'provider_closing', label:'Provider going out of business', quote:'"They told us they\'re shutting down"' },
+      { id:'service_discontinued', label:'Service being discontinued', quote:'"AT&T said they\'re dropping DSL in our area"' },
+      { id:'forced_switch', label:'Being forced to switch', quote:'"We have 30 days to find something else"' }
+    ],
+    deepener: ['"When did they tell you?"', '"Do you have a deadline?"', '"Have you looked at anything else yet?"']
   }
 };
 
@@ -2254,8 +2277,340 @@ const valueMatch = {
   bad_service: {
     b1: { title:'Local San Antonio Support — Real People', script:'"So we\'re actually a local company right here in San Antonio — 4.6 stars on Google. When you call us, you\'re going to get a real person who knows your area and knows your account. No overseas call centers, no sitting on hold for 45 minutes."' },
     b2: { title:'Responsive — No Phone Tree', script:'"When you have a problem, it gets fixed. First call. Not four visits and a ticket that sits for 10 days. That\'s what local support looks like. Plus you get free TV service included with every plan."' }
+  },
+  provider_shutting_down: {
+    b1: { title:'We Can Serve Your Address Today', script:'"Good news — we can get you set up before your current provider shuts down. We\'re local, right here in San Antonio, and we can usually get you installed within a few days."' },
+    b2: { title:'No Contract — Month to Month', script:'"And there\'s no contract. Month-to-month, cancel anytime. Price locked in — it never goes up. So you\'re not jumping from one bad situation into another."' }
   }
 };
+
+// ============================================================
+// DYNAMIC SCENARIO BUILDER v2.0
+// Builds usage-specific deepener questions from atomic fragments
+// ============================================================
+
+// --- Pain verbs: what does this pain feel like in one word? ---
+var painVerbs = {
+  keeps_dropping: 'cuts out',
+  too_slow: 'crawls',
+  buffering: 'buffers',
+  laggy: 'lags',
+  storms: 'goes out',
+  data_caps: 'gets throttled'
+};
+
+// --- Usage activities: what is the person doing? ---
+var usageActivity = {
+  streaming: 'watching something',
+  gaming: 'gaming',
+  wfh: 'on a work call',
+  browsing: 'just browsing',
+  smart_home: 'running your smart home',
+  school: 'doing schoolwork'
+};
+
+// --- Multi-user version of the activity ---
+var usageActivityMulti = {
+  streaming: 'the family\'s streaming',
+  gaming: 'you\'re trying to game',
+  wfh: 'you\'re on a work call',
+  browsing: 'everyone\'s online',
+  smart_home: 'your smart home\'s running',
+  school: 'the kids are doing school'
+};
+
+// --- Impact phrases: what specifically goes wrong? (36 combos) ---
+var impactPhrases = {
+  keeps_dropping__gaming:      'Are you getting kicked out of matches? Downloads just stopping?',
+  keeps_dropping__streaming:   'Shows freezing mid-episode? Screen just goes black?',
+  keeps_dropping__wfh:         'Zoom calls disconnecting? Files failing to save?',
+  keeps_dropping__browsing:    'Pages just stop loading? Have to keep refreshing?',
+  keeps_dropping__smart_home:  'Cameras going dark? Locks and thermostat going offline?',
+  keeps_dropping__school:      'Getting kicked out of virtual class? Assignments not saving?',
+
+  too_slow__gaming:      'Everything freezing up on you? Downloads taking forever?',
+  too_slow__streaming:   'Buffering constantly? Picture going blurry?',
+  too_slow__wfh:         'Files not going through? Video freezing on your end?',
+  too_slow__browsing:    'Click something and just sit there waiting?',
+  too_slow__smart_home:  'Tap the app and nothing happens for a few seconds?',
+  too_slow__school:      'Assignments taking forever to load? Videos not playing?',
+
+  buffering__gaming:      'Game stuttering? Updates crawling?',
+  buffering__streaming:   'Spinning wheel every time you hit play? Movie nights ruined?',
+  buffering__wfh:         'Video freezing on calls? Coworkers telling you you\'re cutting out?',
+  buffering__browsing:    'Pages loading piece by piece? Images not coming through?',
+  buffering__smart_home:  'Camera feeds frozen? Doorbell cam just a still image?',
+  buffering__school:      'Educational videos not playing? Online tests timing out?',
+
+  laggy__gaming:      'Everything delayed? Getting killed because of lag?',
+  laggy__streaming:   'Audio out of sync? Controls not responding?',
+  laggy__wfh:         'Half-second delay on calls? Talking over people?',
+  laggy__browsing:    'Click and wait, type and wait?',
+  laggy__smart_home:  'Say a command and wait seconds for anything to happen?',
+  laggy__school:      'Typing an answer and it shows up two seconds later?',
+
+  storms__gaming:      'Lose connection mid-game? No way to finish?',
+  storms__streaming:   'Show just dies? Stuck staring at a loading screen?',
+  storms__wfh:         'Missing meetings? Missing deadlines because of weather?',
+  storms__browsing:    'Even basic internet goes out? Just have to wait it out?',
+  storms__smart_home:  'Cameras go dark? Thermostat goes offline when you need it most?',
+  storms__school:      'Kids can\'t get on class? Rainy day means no school?',
+
+  data_caps__gaming:      'Rationing game downloads? Avoiding updates?',
+  data_caps__streaming:   'Dropping to low quality just to stretch the data?',
+  data_caps__wfh:         'Worried about getting throttled mid-workday?',
+  data_caps__browsing:    'Watching your data just from browsing? That\'s stressful.',
+  data_caps__smart_home:  'Cameras and sensors eating into the cap 24/7?',
+  data_caps__school:      'Online classes burning through the data for the whole house?'
+};
+
+// --- Multi-user kickers: appended when household_multi = true ---
+var multiUserKicker = {
+  keeps_dropping__gaming:      'Who else is getting cut off when that happens?',
+  keeps_dropping__streaming:   'Does one person\'s stream kill it for everyone?',
+  keeps_dropping__wfh:         'Is it worse when the rest of the house gets on?',
+  keeps_dropping__browsing:    'Is it the whole house or just you?',
+  keeps_dropping__smart_home:  'Everything else going down with it?',
+  keeps_dropping__school:      'Multiple kids online making it worse?',
+
+  too_slow__gaming:      'Does it get worse every time someone else gets on?',
+  too_slow__streaming:   'Can anyone in the house watch in HD anymore?',
+  too_slow__wfh:         'Does the family getting on tank your connection?',
+  too_slow__browsing:    'Is it everyone or just certain devices?',
+  too_slow__smart_home:  'Is the whole house competing for bandwidth?',
+  too_slow__school:      'Can the kids even do homework if someone else is on?',
+
+  buffering__gaming:      'Does it get unplayable when the house is busy?',
+  buffering__streaming:   'Can two people even stream at the same time?',
+  buffering__wfh:         'Does someone streaming while you\'re on a call freeze you out?',
+  buffering__browsing:    'Is everyone in the house dealing with it?',
+  buffering__smart_home:  'Does it get worse when the house is busy online?',
+  buffering__school:      'Are multiple kids buffering at the same time?',
+
+  laggy__gaming:      'Are you losing matches because the family\'s online?',
+  laggy__streaming:   'Is everyone dealing with the delay?',
+  laggy__wfh:         'Is it the family getting on that causes the lag?',
+  laggy__browsing:    'Does the whole house feel it?',
+  laggy__smart_home:  'Everything slow when the house is busy?',
+  laggy__school:      'Are the kids lagging through class while the house is online?',
+
+  storms__gaming:      'Does the whole house lose it?',
+  storms__streaming:   'Is the whole family stuck with nothing?',
+  storms__wfh:         'Can nobody in the house get online?',
+  storms__browsing:    'Is the entire household offline?',
+  storms__smart_home:  'Whole smart home goes down too?',
+  storms__school:      'Nobody can work, nobody can do school?',
+
+  data_caps__gaming:      'Are you telling the family to get off so you don\'t get throttled?',
+  data_caps__streaming:   'Are you rationing who gets to watch what?',
+  data_caps__wfh:         'Between work and the rest of the house, do you hit the cap before the month\'s over?',
+  data_caps__browsing:    'Can anyone use it guilt-free?',
+  data_caps__smart_home:  'Is the cap gone before the month starts between devices and the family?',
+  data_caps__school:      'Are you choosing between their homework and everything else?'
+};
+
+// --- Pain weight ranking (based on 2,527 transcript frequency data) ---
+var painWeight = {
+  too_slow: 10,
+  buffering: 9,
+  keeps_dropping: 8,
+  laggy: 5,
+  storms: 5,
+  data_caps: 3,
+  too_expensive: 4,
+  bill_keeps_changing: 3,
+  bad_service: 3,
+  no_options: 2
+};
+
+// --- Usage priority per pain: which usage makes this pain hurt most? ---
+var painUsagePriority = {
+  keeps_dropping: ['wfh', 'gaming', 'streaming', 'school', 'smart_home', 'browsing'],
+  too_slow:       ['wfh', 'streaming', 'gaming', 'school', 'browsing', 'smart_home'],
+  buffering:      ['streaming', 'wfh', 'gaming', 'school', 'browsing', 'smart_home'],
+  laggy:          ['gaming', 'wfh', 'smart_home', 'streaming', 'school', 'browsing'],
+  storms:         ['wfh', 'school', 'streaming', 'smart_home', 'gaming', 'browsing'],
+  data_caps:      ['streaming', 'gaming', 'school', 'wfh', 'browsing', 'smart_home']
+};
+
+// --- Pains that don't get usage-specific scenarios ---
+var nonUsagePains = ['too_expensive', 'bill_keeps_changing', 'no_options', 'bad_service', 'provider_shutting_down'];
+
+// --- Slow + Buffering merge rules ---
+var slowBufferMergeUsages = ['streaming', 'browsing', 'smart_home'];
+
+// --- Merged question templates for slow+buffer combos ---
+var slowBufferMerged = {
+  streaming:   'it just won\'t cooperate -- buffering, going blurry, freezing up mid-show?',
+  browsing:    'pages barely load? Click something and just sit there waiting?',
+  smart_home:  'your smart home stuff isn\'t keeping up -- commands not going through, camera feeds frozen?'
+};
+
+
+// ============================================================
+// BUILDER FUNCTIONS
+// ============================================================
+
+function buildScenarioQuestion() {
+  var usages = state.usage_types || [];
+  var pains = state.pain_types || [];
+  var multi = state.household_multi;
+
+  var usagePains = pains.filter(function(p) { return nonUsagePains.indexOf(p) === -1; });
+
+  if (!usagePains.length || !usages.length) return null;
+
+  var hasSlow = usagePains.indexOf('too_slow') >= 0;
+  var hasBuff = usagePains.indexOf('buffering') >= 0;
+  var mergedSlowBuffer = false;
+
+  var bestScore = -1;
+  var leadPain = null;
+  var leadUsage = null;
+
+  usagePains.forEach(function(pain) {
+    var priority = painUsagePriority[pain] || [];
+    var weight = painWeight[pain] || 1;
+    usages.forEach(function(usage) {
+      var pidx = priority.indexOf(usage);
+      var pscore = pidx >= 0 ? (6 - pidx) : 0;
+      var total = (weight * 2) + (pscore * 3);
+      if (total > bestScore) {
+        bestScore = total;
+        leadPain = pain;
+        leadUsage = usage;
+      }
+    });
+  });
+
+  if (!leadPain || !leadUsage) return null;
+
+  if (hasSlow && hasBuff && slowBufferMergeUsages.indexOf(leadUsage) >= 0) {
+    mergedSlowBuffer = true;
+  }
+
+  var question;
+
+  if (mergedSlowBuffer) {
+    var mergedPhrase = slowBufferMerged[leadUsage] || '';
+    var activity = multi ? (usageActivityMulti[leadUsage] || usageActivity[leadUsage]) : usageActivity[leadUsage];
+
+    if (multi) {
+      var kickerKey = 'too_slow__' + leadUsage;
+      var kicker = multiUserKicker[kickerKey] || multiUserKicker['buffering__' + leadUsage] || '';
+      question = '"So ' + activity + ' and ' + mergedPhrase + (kicker ? ' ' + kicker : '') + '"';
+    } else {
+      question = '"So you\'re ' + activity + ' and ' + mergedPhrase + '"';
+    }
+  } else {
+    var painVerb = painVerbs[leadPain] || 'acts up';
+    var activity = multi ? (usageActivityMulti[leadUsage] || usageActivity[leadUsage]) : usageActivity[leadUsage];
+    var impactKey = leadPain + '__' + leadUsage;
+    var impact = impactPhrases[impactKey] || '';
+    var kicker = (multi && multiUserKicker[impactKey]) ? ' ' + multiUserKicker[impactKey] : '';
+
+    if (multi) {
+      question = '"So ' + activity + ' and the internet ' + painVerb + ' on you -- ' + impact + kicker + '"';
+    } else {
+      question = '"So you\'re ' + activity + ' and it just ' + painVerb + ' -- ' + impact + '"';
+    }
+  }
+
+  var secondaryQ = null;
+  var effectivePains = usagePains.slice();
+
+  if (mergedSlowBuffer) {
+    effectivePains = effectivePains.filter(function(p) { return p !== 'too_slow' && p !== 'buffering'; });
+  } else {
+    effectivePains = effectivePains.filter(function(p) { return p !== leadPain; });
+  }
+
+  if (effectivePains.length > 0) {
+    var secondPain = effectivePains.sort(function(a, b) {
+      return (painWeight[b] || 0) - (painWeight[a] || 0);
+    })[0];
+    var secondVerb = painVerbs[secondPain] || 'acts up';
+
+    var secPriority = painUsagePriority[secondPain] || [];
+    var secUsage = null;
+    for (var i = 0; i < secPriority.length; i++) {
+      if (usages.indexOf(secPriority[i]) >= 0) { secUsage = secPriority[i]; break; }
+    }
+    if (!secUsage) secUsage = usages[0];
+
+    var secImpact = impactPhrases[secondPain + '__' + secUsage] || '';
+    if (secImpact) {
+      secondaryQ = '"And you mentioned it also ' + secondVerb + ' -- ' + secImpact + '"';
+    }
+  }
+
+  return {
+    lead: question,
+    secondary: secondaryQ,
+    leadPain: leadPain,
+    leadUsage: leadUsage,
+    mergedSlowBuffer: mergedSlowBuffer
+  };
+}
+
+function buildWorstAffectedQuestion() {
+  var usages = state.usage_types || [];
+  if (usages.length < 2) return null;
+
+  var labels = {
+    streaming: 'the streaming',
+    gaming: 'the gaming',
+    wfh: 'working from home',
+    browsing: 'the browsing',
+    smart_home: 'the smart home stuff',
+    school: 'the school stuff'
+  };
+
+  var parts = usages.map(function(u) { return labels[u] || u; });
+  var list;
+  if (parts.length === 2) {
+    list = parts[0] + ' and ' + parts[1];
+  } else {
+    list = parts.slice(0, -1).join(', ') + ', and ' + parts[parts.length - 1];
+  }
+
+  return '"Out of everything -- ' + list + ' -- what\'s getting hit the worst by this?"';
+}
+
+function buildScenarioHTML() {
+  var result = buildScenarioQuestion();
+  if (!result) return null;
+
+  var html = '';
+
+  html += makeDeepenerRow(result.lead, '');
+
+  if (result.secondary) {
+    html += makeDeepenerRow(result.secondary, '');
+  }
+
+  var worstQ = buildWorstAffectedQuestion();
+  if (worstQ) {
+    var usageLabels = {
+      streaming: 'Streaming', gaming: 'Gaming', wfh: 'Work from Home',
+      browsing: 'Browsing', smart_home: 'Smart Home', school: 'School'
+    };
+    var worstPills = (state.usage_types || []).map(function(u) {
+      var label = usageLabels[u] || u;
+      var active = state.worst_affected_usage === u ? ' active' : '';
+      return '<div class="pill deepener-pill' + active + '" onclick="setWorstUsage(this,\'' + u + '\')">' + label + '</div>';
+    }).join('');
+    html += makeDeepenerRow(worstQ, worstPills);
+  }
+
+  return html;
+}
+
+function setWorstUsage(el, val) {
+  state.worst_affected_usage = val;
+  renderPainDeepener();
+  saveToLocalStorage();
+}
 
 // ===== FUTURE STATE MAPPING (Alamo pain sub-option IDs) =====
 const futureStates = {
@@ -3098,8 +3453,11 @@ function renderPainDeepener() {
   }
 
   var html = '';
-  // Opening question (no inline answers)
-  if (openingQ) {
+  // Try usage-specific scenario question first, fall back to generic
+  var scenarioHTML = buildScenarioHTML();
+  if (scenarioHTML) {
+    html += scenarioHTML;
+  } else if (openingQ) {
     html += makeDeepenerRow(openingQ, '');
   }
 
@@ -3861,6 +4219,16 @@ function setHousehold(el, n) {
   saveToLocalStorage();
   renderAll();
   autoRecommendPlan();
+}
+
+function setHouseholdMulti(el, val) {
+  state.household_multi = val;
+  document.querySelectorAll('#household-pills .pill').forEach(function(p) {
+    p.classList.remove('multi-selected');
+  });
+  el.classList.add('multi-selected');
+  renderPainDeepener();
+  saveToLocalStorage();
 }
 
 function toggleUsage(el, val) {
@@ -5102,9 +5470,9 @@ function init() {
 
   // v5.1: Clear stale state from older versions
   var stateVersion = localStorage.getItem('alamo_state_version');
-  if (stateVersion !== 'v5.1') {
+  if (stateVersion !== 'v5.9') {
     localStorage.removeItem('alamo_sales_state');
-    localStorage.setItem('alamo_state_version', 'v5.2');
+    localStorage.setItem('alamo_state_version', 'v5.9');
   }
 
   // Load saved state if exists
@@ -5154,6 +5522,16 @@ function init() {
           b.textContent = idx + 1;
           p.appendChild(b);
         }
+      }
+    });
+  }
+
+  // v5.3: Restore household pill state
+  if (state.household_multi !== undefined) {
+    document.querySelectorAll('#household-pills .pill').forEach(function(p) {
+      var isMulti = p.getAttribute('onclick').indexOf('true') > -1;
+      if ((isMulti && state.household_multi) || (!isMulti && !state.household_multi)) {
+        p.classList.add('multi-selected');
       }
     });
   }
