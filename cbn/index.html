@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBN America — Check Availability</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  :root { --f-head: 'Outfit', sans-serif; --f-body: 'DM Sans', sans-serif; --navy: #1c275d; --blue: #2ea3f2; --blue-dark: #1b8bd4; --white: #ffffff; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--f-body); }
+  input:focus { border-color: var(--blue) !important; box-shadow: 0 0 0 3px rgba(46,163,242,.15); }
+  @keyframes cbnFadeIn { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes cbnSlideUp { from { opacity: 0; transform: translateY(16px) } to { opacity: 1; transform: none } }
+  ::-webkit-scrollbar { width: 5px }
+  ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 3px }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef, useEffect } = React;
+
+const LOGO = "logo.png";
+
+const PLANS = [
+  { name: "Essential", sub: "EVERYDAY BROWSING", speed: "100", upload: "20", price: "49.99", bars: 3, popular: false },
+  { name: "Standard", sub: "STREAMING & REMOTE WORK", speed: "200", upload: "200", price: "64.99", bars: 5, popular: true },
+  { name: "Premium", sub: "WHOLE-HOME POWER", speed: "1,000", upload: "1,000", price: "89.99", bars: 8, popular: false },
+];
+
+const SAMPLE_ADDRESSES = [
+  "123 Peachtree St, Atlanta, GA 30301",
+  "456 Ocean Blvd, Jacksonville, FL 32202",
+  "789 Broadway, Rochester, NY 14607",
+  "1010 Magnolia Ave, Savannah, GA 31401",
+  "2345 Palm Dr, Orlando, FL 32801",
+  "603 Elm Street, Syracuse, NY 13202",
+  "88 Riverside Dr, Albany, NY 12202",
+  "540 Bayshore Blvd, Tampa, FL 33606",
+  "310 Vine St, Utica, NY 13501",
+  "881 Palmetto Rd, Macon, GA 31201",
+];
+
+function SpeedBars({ filled, total = 8, color = "var(--navy)" }) {
+  return (
+    <div style={{ display: "flex", gap: "3px", alignItems: "center" }}>
+      {Array.from({ length: total }).map((_, i) => (
+        <div key={i} style={{
+          width: "22px", height: "8px", borderRadius: "2px",
+          background: i < filled ? color : "#dde1e8",
+          transition: "background 0.3s"
+        }} />
+      ))}
+    </div>
+  );
+}
+
+function PlanDetails({ plan, onClose }) {
+  const p = plan;
+  return (
+    <div onClick={onClose} style={{
+      position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      zIndex: 9999, padding: "16px", backdropFilter: "blur(4px)",
+      animation: "cbnFadeIn .2s ease"
+    }}>
+      <div onClick={e => e.stopPropagation()} style={{
+        background: "#fff", borderRadius: "14px", maxWidth: "430px", width: "100%",
+        maxHeight: "88vh", overflow: "auto", boxShadow: "0 25px 60px rgba(0,0,0,0.35)",
+        animation: "cbnSlideUp .3s ease"
+      }}>
+        <div style={{ background: "var(--navy)", color: "#fff", padding: "18px 22px", borderRadius: "14px 14px 0 0", position: "relative" }}>
+          <button onClick={onClose} style={{ position: "absolute", top: 10, right: 14, background: "none", border: "none", color: "#fff", fontSize: "20px", cursor: "pointer", opacity: .7 }}>{"\u2715"}</button>
+          <div style={{ fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", opacity: .6, marginBottom: 2 }}>Plan Details</div>
+          <div style={{ fontSize: "20px", fontWeight: 800, fontFamily: "var(--f-head)" }}>{p.name}</div>
+          <div style={{ fontSize: "12px", opacity: .5 }}>CBN America | Residential</div>
+        </div>
+        <div style={{ padding: "18px 22px" }}>
+          <div style={{ background: "var(--blue)", borderRadius: "8px", padding: "12px", textAlign: "center", marginBottom: 14 }}>
+            <div style={{ fontSize: "12px", fontWeight: 600, color: "#fff", opacity: .85 }}>Monthly Price</div>
+            <div style={{ fontSize: "30px", fontWeight: 800, color: "#fff", fontFamily: "var(--f-head)" }}>${p.price}</div>
+            <div style={{ fontSize: "10px", color: "#fff", opacity: .7 }}>No contract required | Cancel anytime</div>
+          </div>
+          <div style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "#999", marginBottom: 8 }}>Speeds Provided</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
+            {[{ l: "Download", v: p.speed + " Mbps" }, { l: "Upload", v: p.upload + " Mbps" }, { l: "Latency", v: "Low" }].map((s, i) => (
+              <div key={i} style={{ background: "#f7f8fa", borderRadius: "7px", padding: "10px 8px", textAlign: "center" }}>
+                <div style={{ fontSize: "10px", color: "#999", fontWeight: 600 }}>{s.l}</div>
+                <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--navy)", marginTop: 2 }}>{s.v}</div>
+              </div>
+            ))}
+          </div>
+          {[{ l: "Data Included", v: "Unlimited", g: true }, { l: "Contract Required", v: "None", g: true }, { l: "Hidden Fees", v: "None", g: true }].map((r, i) => (
+            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderTop: "1px solid #eee" }}>
+              <span style={{ fontSize: "12px", color: "#666" }}>{r.l}</span>
+              <span style={{ fontSize: "12px", fontWeight: 700, color: r.g ? "#27ae60" : "var(--navy)" }}>{r.v}</span>
+            </div>
+          ))}
+          <div style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "#999", margin: "14px 0 8px" }}>Guarantee</div>
+          <div style={{ background: "#e8f8ef", borderRadius: "8px", padding: "12px", textAlign: "center" }}>
+            <div style={{ fontSize: "13px", fontWeight: 700, color: "#27ae60" }}>100% Risk-Free Guarantee</div>
+            <div style={{ fontSize: "11px", color: "#666", marginTop: 4 }}>Cancel with 30-day notice. Return hardware. No additional payment.</div>
+          </div>
+          <div style={{ marginTop: 12, padding: 10, background: "#f7f8fa", borderRadius: 7, fontSize: "10px", color: "#999", lineHeight: 1.5, textAlign: "center" }}>
+            Sales: <strong style={{ color: "var(--navy)" }}>(877) 578-7780</strong> | New Service: <strong style={{ color: "var(--navy)" }}>(833) 568-5857</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FormPage({ onSubmit }) {
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [showDrop, setShowDrop] = useState(false);
+  const [filtered, setFiltered] = useState([]);
+  const [errors, setErrors] = useState({});
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const h = e => { if (ref.current && !ref.current.contains(e.target)) setShowDrop(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
+
+  const onAddr = v => {
+    setAddress(v);
+    if (v.length >= 1) {
+      const f = SAMPLE_ADDRESSES.filter(a => a.toLowerCase().includes(v.toLowerCase()));
+      setFiltered(f.length ? f : SAMPLE_ADDRESSES.slice(0, 5));
+      setShowDrop(true);
+    } else setShowDrop(false);
+  };
+
+  const fmtPhone = v => {
+    const d = v.replace(/\D/g, "").slice(0, 10);
+    if (d.length >= 7) return "(" + d.slice(0,3) + ") " + d.slice(3,6) + "-" + d.slice(6);
+    if (d.length >= 4) return "(" + d.slice(0,3) + ") " + d.slice(3);
+    return d.length > 0 ? "(" + d : "";
+  };
+
+  const validate = () => {
+    const e = {};
+    if (!name.trim()) e.name = true;
+    if (!address.trim()) e.address = true;
+    if (!email.trim() && !phone.trim()) e.contact = true;
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = true;
+    setErrors(e);
+    return !Object.keys(e).length;
+  };
+
+  const submit = () => { if (validate()) onSubmit({ name, address, email, phone }); };
+
+  const inp = (err) => ({
+    width: "100%", padding: "13px 15px", fontSize: "14px",
+    border: "2px solid " + (err ? "#e74c3c" : "#e0e3e8"), borderRadius: "9px",
+    outline: "none", fontFamily: "var(--f-body)", background: "#fff",
+    boxSizing: "border-box", transition: "border .2s, box-shadow .2s"
+  });
+
+  return (
+    <div style={{ minHeight: "100vh", background: "linear-gradient(160deg, #1c275d 0%, #0f1a3e 50%, #1c275d 100%)", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div style={{ width: "100%", background: "var(--blue)", padding: "6px 0", textAlign: "center", fontSize: "12px", fontWeight: 700, color: "#fff", fontFamily: "var(--f-head)", letterSpacing: ".5px", display: "flex", justifyContent: "center", gap: "24px", flexWrap: "wrap" }}>
+        <span>No Contracts</span>
+        <span>No Hidden Fees</span>
+        <span>100% Risk-Free</span>
+      </div>
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "28px 16px 24px", width: "100%", maxWidth: "480px" }}>
+        <div style={{ width: "100%" }}>
+          <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <img src={LOGO} alt="CBN America" style={{ height: "60px", marginBottom: 14 }} />
+            <div style={{ display: "inline-block", background: "rgba(46,163,242,.15)", color: "var(--blue)", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", padding: "5px 14px", borderRadius: "16px", marginBottom: 10, fontFamily: "var(--f-head)" }}>Check Availability</div>
+            <h1 style={{ color: "#fff", fontSize: "clamp(24px,5vw,32px)", fontWeight: 800, margin: "0 0 6px", fontFamily: "var(--f-head)", lineHeight: 1.15 }}>Empowering Affordable Internet</h1>
+            <p style={{ color: "rgba(255,255,255,.45)", fontSize: "14px", margin: 0 }}>See if Community Broadband is available at your address.</p>
+          </div>
+          <div style={{ background: "#fff", borderRadius: "14px", padding: "28px 24px", boxShadow: "0 20px 50px rgba(0,0,0,.3)" }}>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--navy)", marginBottom: 5, fontFamily: "var(--f-head)" }}>Full Name</label>
+              <input placeholder="John Smith" value={name} onChange={e => setName(e.target.value)} style={inp(errors.name)} onFocus={e => e.target.style.borderColor = "var(--blue)"} onBlur={e => e.target.style.borderColor = errors.name ? "#e74c3c" : "#e0e3e8"} />
+            </div>
+            <div style={{ marginBottom: 16, position: "relative" }} ref={ref}>
+              <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--navy)", marginBottom: 5, fontFamily: "var(--f-head)" }}>Service Address</label>
+              <input placeholder="Start typing your address..." value={address} onChange={e => onAddr(e.target.value)} onFocus={() => { if (address) setShowDrop(true); }} style={inp(errors.address)} />
+              {showDrop && filtered.length > 0 && (
+                <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: "2px solid var(--blue)", borderRadius: "9px", marginTop: 3, boxShadow: "0 10px 28px rgba(0,0,0,.12)", zIndex: 10, maxHeight: 200, overflow: "auto" }}>
+                  {filtered.map((a, i) => (
+                    <div key={i} onClick={() => { setAddress(a); setShowDrop(false); }}
+                      style={{ padding: "11px 14px", cursor: "pointer", fontSize: "13px", color: "var(--navy)", borderBottom: i < filtered.length - 1 ? "1px solid #f5f5f5" : "none" }}
+                      onMouseEnter={e => e.target.style.background = "#eef7ff"}
+                      onMouseLeave={e => e.target.style.background = "#fff"}>
+                      {a}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--navy)", marginBottom: 5, fontFamily: "var(--f-head)" }}>Email Address</label>
+              <input type="email" placeholder="you@email.com" value={email} onChange={e => setEmail(e.target.value)} style={inp(errors.email)} onFocus={e => e.target.style.borderColor = "var(--blue)"} onBlur={e => e.target.style.borderColor = "#e0e3e8"} />
+            </div>
+            <div style={{ marginBottom: 20 }}>
+              <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--navy)", marginBottom: 5, fontFamily: "var(--f-head)" }}>Phone Number</label>
+              <input type="tel" placeholder="(877) 555-1234" value={phone} onChange={e => setPhone(fmtPhone(e.target.value))} style={inp(false)} onFocus={e => e.target.style.borderColor = "var(--blue)"} onBlur={e => e.target.style.borderColor = "#e0e3e8"} />
+            </div>
+            {errors.contact && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "7px", padding: "9px 12px", marginBottom: 14, fontSize: "12px", color: "#dc2626" }}>Please provide an email or phone number.</div>}
+            <button onClick={submit} style={{ width: "100%", padding: "15px", background: "var(--blue)", color: "#fff", border: "none", borderRadius: "9px", fontSize: "15px", fontWeight: 700, cursor: "pointer", fontFamily: "var(--f-head)", letterSpacing: ".4px", boxShadow: "0 4px 14px rgba(46,163,242,.4)", transition: "all .2s" }}
+              onMouseEnter={e => { e.target.style.background = "var(--blue-dark)"; e.target.style.transform = "translateY(-1px)"; }}
+              onMouseLeave={e => { e.target.style.background = "var(--blue)"; e.target.style.transform = "none"; }}>
+              Check Availability
+            </button>
+            <p style={{ textAlign: "center", fontSize: "10px", color: "#aaa", marginTop: 10, lineHeight: 1.4 }}>By submitting, you agree to be contacted by CBN America.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CongratsPage({ userData }) {
+  const [labelPlan, setLabelPlan] = useState(null);
+  const [vis, setVis] = useState(false);
+
+  useEffect(() => { setTimeout(() => setVis(true), 80); }, []);
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#f0f2f5", fontFamily: "var(--f-body)" }}>
+      <div style={{ background: "var(--blue)", padding: "6px 0", textAlign: "center", fontSize: "12px", fontWeight: 700, color: "#fff", fontFamily: "var(--f-head)", display: "flex", justifyContent: "center", gap: "24px", flexWrap: "wrap" }}>
+        <span>No Contracts</span>
+        <span>No Hidden Fees</span>
+        <span>100% Risk-Free</span>
+      </div>
+
+      <div style={{ background: "#fff", borderBottom: "1px solid #e8eaed", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <img src={LOGO} alt="CBN America" style={{ height: "44px" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--navy)", fontSize: "13px", fontWeight: 600, fontFamily: "var(--f-head)" }}>
+          <a href="tel:8775787780" style={{ color: "var(--navy)", textDecoration: "none" }}>(877) 578-7780</a>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "center", gap: 0, padding: "18px 20px 0", maxWidth: 480, margin: "0 auto" }}>
+        {["CHOOSE PLAN", "SCHEDULE", "CONFIRM"].map((s, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "center", flex: i < 2 ? 1 : "none" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, minWidth: 70 }}>
+              <div style={{
+                width: 28, height: 28, borderRadius: "50%",
+                background: i === 0 ? "var(--navy)" : "#dde1e8",
+                color: i === 0 ? "#fff" : "#999",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: "12px", fontWeight: 700, fontFamily: "var(--f-head)"
+              }}>{i + 1}</div>
+              <span style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "1px", color: i === 0 ? "var(--navy)" : "#aaa", fontFamily: "var(--f-head)" }}>{s}</span>
+            </div>
+            {i < 2 && <div style={{ flex: 1, height: 2, background: "#dde1e8", margin: "0 8px", marginBottom: 16 }} />}
+          </div>
+        ))}
+      </div>
+
+      <div style={{
+        textAlign: "center", padding: "14px 20px 0",
+        opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(12px)", transition: "all .5s ease"
+      }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#e8f8ef", color: "#27ae60", fontSize: "12px", fontWeight: 700, padding: "5px 14px", borderRadius: "16px", marginBottom: 8, fontFamily: "var(--f-head)" }}>
+          <span style={{ fontSize: "10px" }}>&#9679;</span> Service Available at Your Address
+        </div>
+        <h1 style={{ fontSize: "clamp(28px,5vw,42px)", fontWeight: 800, color: "var(--navy)", margin: "0 0 4px", fontFamily: "var(--f-head)", lineHeight: 1.1 }}>
+          Great News! <span style={{ color: "var(--blue)" }}>You're Covered.</span>
+        </h1>
+
+        <div style={{ display: "flex", justifyContent: "center", gap: 14, flexWrap: "wrap", margin: "14px auto 8px", maxWidth: 620 }}>
+          {[
+            { icon: "\u2713", title: "No Contracts", desc: "Cancel Anytime" },
+            { icon: "\u221e", title: "Unlimited Data", desc: "No Caps, No Throttling" },
+            { icon: "100%", title: "Risk-Free Guarantee", desc: "Love It or Leave It" },
+          ].map((f, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, background: "#fff", border: "1px solid #e8eaed", borderRadius: "10px", padding: "9px 14px" }}>
+              <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#e8f8ef", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", color: "#27ae60", fontWeight: 700, flexShrink: 0 }}>{f.icon}</div>
+              <div style={{ textAlign: "left" }}>
+                <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--navy)", fontFamily: "var(--f-head)" }}>{f.title}</div>
+                <div style={{ fontSize: "10px", color: "#999" }}>{f.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "center", gap: 18, flexWrap: "wrap", marginBottom: 2 }}>
+          {["UNLIMITED DATA", "U.S.-BASED SUPPORT", "NO HIDDEN FEES"].map((t, i) => (
+            <span key={i} style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "1px", color: "#999", fontFamily: "var(--f-head)" }}>{t}</span>
+          ))}
+        </div>
+      </div>
+
+      <div style={{
+        display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+        gap: 16, maxWidth: 900, margin: "14px auto", padding: "0 20px"
+      }}>
+        {PLANS.map((p, i) => (
+          <div key={i} style={{
+            background: "#fff", borderRadius: "14px", padding: "22px 18px 18px",
+            border: p.popular ? "2px solid var(--navy)" : "1px solid #e8eaed",
+            position: "relative", transition: "all .25s",
+            opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(16px)",
+            transitionDelay: (i * .07 + .15) + "s",
+            boxShadow: p.popular ? "0 8px 30px rgba(28,39,93,.12)" : "0 2px 8px rgba(0,0,0,.04)"
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,.1)"; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = p.popular ? "0 8px 30px rgba(28,39,93,.12)" : "0 2px 8px rgba(0,0,0,.04)"; }}>
+            {p.popular && (
+              <div style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", background: "var(--navy)", color: "#fff", fontSize: "10px", fontWeight: 700, padding: "4px 16px", borderRadius: "10px", letterSpacing: "1.2px", fontFamily: "var(--f-head)", whiteSpace: "nowrap" }}>MOST POPULAR</div>
+            )}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 2 }}>
+              <div>
+                <div style={{ fontSize: "19px", fontWeight: 800, color: "var(--navy)", fontFamily: "var(--f-head)" }}>{p.name}</div>
+                <div style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "1.2px", color: "#999", fontFamily: "var(--f-head)" }}>{p.sub}</div>
+              </div>
+            </div>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 1, margin: "8px 0 2px" }}>
+              <span style={{ fontSize: "12px", color: "#999", fontWeight: 600, alignSelf: "flex-start", marginTop: 4 }}>$</span>
+              <span style={{ fontSize: "40px", fontWeight: 800, color: "var(--navy)", fontFamily: "var(--f-head)", lineHeight: 1 }}>{p.price.split(".")[0]}</span>
+              <span style={{ fontSize: "15px", fontWeight: 700, color: "var(--navy)", fontFamily: "var(--f-head)" }}>.{p.price.split(".")[1]}</span>
+              <span style={{ fontSize: "12px", color: "#999", marginLeft: 2 }}>/mo</span>
+            </div>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 4, color: "#27ae60", fontSize: "10px", fontWeight: 600, marginBottom: 12 }}>
+              <span style={{ fontSize: "9px" }}>&#9679;</span> Unlimited Data &bull; No Contract
+            </div>
+            <div style={{ marginBottom: 6 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+                <span style={{ fontSize: "10px", fontWeight: 600, color: "#999", letterSpacing: ".3px" }}>DOWNLOAD SPEED</span>
+                <span style={{ fontSize: "14px", fontWeight: 800, color: "var(--navy)", fontFamily: "var(--f-head)" }}>{p.speed} Mbps</span>
+              </div>
+              <SpeedBars filled={p.bars} color="var(--navy)" />
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+                <span style={{ fontSize: "10px", fontWeight: 600, color: "#999", letterSpacing: ".3px" }}>UPLOAD SPEED</span>
+                <span style={{ fontSize: "14px", fontWeight: 800, color: "var(--navy)", fontFamily: "var(--f-head)" }}>{p.upload} Mbps</span>
+              </div>
+              <SpeedBars filled={Math.max(1, Math.ceil(p.bars * .6))} color="var(--blue)" />
+            </div>
+            <button onClick={() => setLabelPlan(p)} style={{
+              width: "100%", padding: "11px",
+              background: p.popular ? "var(--navy)" : "#f7f8fa",
+              color: p.popular ? "#fff" : "var(--navy)",
+              border: p.popular ? "none" : "1px solid #e0e3e8",
+              borderRadius: "9px", fontSize: "13px", fontWeight: 700,
+              cursor: "pointer", fontFamily: "var(--f-head)",
+              transition: "all .2s", letterSpacing: ".3px"
+            }}
+            onMouseEnter={e => e.target.style.opacity = ".85"}
+            onMouseLeave={e => e.target.style.opacity = "1"}>
+              {"Select " + p.name}
+            </button>
+            <button onClick={() => setLabelPlan(p)} style={{
+              width: "100%", padding: "6px", background: "none", border: "none",
+              color: "var(--blue)", fontSize: "11px", fontWeight: 600, cursor: "pointer",
+              fontFamily: "var(--f-head)", marginTop: 4
+            }}>
+              View Plan Details
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ background: "var(--navy)", padding: "28px 20px 20px", marginTop: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 24, maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
+          {[
+            { t: "U.S.-Based Support", d: "Real people, real help. Our 100% U.S.-based support team is here when you need them." },
+            { t: "Truly Unlimited", d: "No data caps, no throttling, no surprise charges. Unlimited means unlimited." },
+            { t: "Risk-Free Guarantee", d: "Not satisfied? Cancel with 30-day notice, return the hardware, and owe nothing more." },
+          ].map((b, i) => (
+            <div key={i}>
+              <div style={{ fontSize: "14px", fontWeight: 700, color: "#fff", fontFamily: "var(--f-head)", marginBottom: 5 }}>{b.t}</div>
+              <div style={{ fontSize: "12px", color: "rgba(255,255,255,.5)", lineHeight: 1.6 }}>{b.d}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ textAlign: "center", marginTop: 24, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,.08)" }}>
+          <p style={{ fontSize: "13px", color: "rgba(255,255,255,.5)", margin: "0 0 4px" }}>A CBN representative will reach out shortly to get you connected.</p>
+          <div style={{ display: "flex", justifyContent: "center", gap: 20, flexWrap: "wrap", marginTop: 8 }}>
+            <a href="tel:8775787780" style={{ color: "var(--blue)", fontWeight: 700, fontSize: "15px", textDecoration: "none", fontFamily: "var(--f-head)" }}>Sales: (877) 578-7780</a>
+            <a href="tel:8335685857" style={{ color: "var(--blue)", fontWeight: 700, fontSize: "15px", textDecoration: "none", fontFamily: "var(--f-head)" }}>New Service: (833) 568-5857</a>
+          </div>
+        </div>
+
+        <div style={{
+          maxWidth: 500, margin: "24px auto 0",
+          display: "grid", gridTemplateColumns: "1fr 1fr",
+          gap: 20, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,.08)"
+        }}>
+          <div>
+            <div style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "1px", color: "var(--blue)", fontFamily: "var(--f-head)", marginBottom: 6 }}>SERVICE AREAS</div>
+            <div style={{ fontSize: "12px", color: "rgba(255,255,255,.5)", lineHeight: 1.8 }}>
+              <div>Florida</div>
+              <div>Georgia</div>
+              <div>New York</div>
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "1px", color: "var(--blue)", fontFamily: "var(--f-head)", marginBottom: 6 }}>CONTACT</div>
+            <div style={{ fontSize: "12px", color: "rgba(255,255,255,.5)", lineHeight: 1.8 }}>
+              <div>Sales: <a href="tel:8775787780" style={{ color: "rgba(255,255,255,.7)", textDecoration: "none" }}>(877) 578-7780</a></div>
+              <div>New Service: <a href="tel:8335685857" style={{ color: "rgba(255,255,255,.7)", textDecoration: "none" }}>(833) 568-5857</a></div>
+              <div>NY (CBN FLX): <a href="tel:3153255000" style={{ color: "rgba(255,255,255,.7)", textDecoration: "none" }}>(315) 325-5000</a></div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ textAlign: "center", marginTop: 24, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,.06)" }}>
+          <img src={LOGO} alt="CBN America" style={{ height: 36, opacity: .4 }} />
+          <div style={{ fontSize: "11px", color: "var(--blue)", fontFamily: "var(--f-head)", fontWeight: 600, marginTop: 4, letterSpacing: "1px" }}>Empowering Affordable Internet</div>
+          <p style={{ fontSize: "10px", color: "rgba(255,255,255,.2)", marginTop: 4 }}>&copy; CBN America | Community Broadband Networks | All Rights Reserved</p>
+        </div>
+      </div>
+
+      {labelPlan && <PlanDetails plan={labelPlan} onClose={() => setLabelPlan(null)} />}
+    </div>
+  );
+}
+
+function App() {
+  const [page, setPage] = useState("form");
+  const [userData, setUserData] = useState(null);
+
+  return (
+    <>
+      {page === "form"
+        ? <FormPage onSubmit={d => { setUserData(d); setPage("congrats"); window.scrollTo(0,0); }} />
+        : <CongratsPage userData={userData} />
+      }
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
