@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.9.0</title>
+<title>Alamo Broadband — Sales Intelligence v5.9.1</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -859,11 +859,10 @@ textarea:focus { border-color: var(--accent); }
       "Hey, is this <span class="var" data-var="lead_name">[Name]</span>?" <span class="coaching">Wait for confirmation.</span>
     </div>
     <div class="script-block">
-      "Hey <span class="var" data-var="lead_name">[Name]</span>, it's <span class="var" data-var="team_member">[Your Name]</span> &mdash; you were looking into internet options at <span class="var" data-var="lead_address">[Address]</span> recently, right?" <span class="coaching">Wait for confirmation.</span>
+      "Hey <span class="var" data-var="lead_name">[Name]</span>, it's <span class="var" data-var="team_member">[Your Name]</span> with Alamo Broadband on a recorded line. You were looking into internet options at <span class="var" data-var="lead_address">[Address]</span> recently, right?" <span class="coaching">Wait for confirmation.</span>
     </div>
     <div class="script-block">
-      "Awesome. Just heads up, call is recorded &mdash;<br><br>
-      So I'm just going to ask you a few questions to make sure the plan we recommend isn't too much or too little for what you need. Sound good?<br><br>
+      "Awesome. So I'm just going to ask you a few quick questions to make sure the plan we recommend isn't too much or too little for what you need. Sound good?<br><br>
       So what do you use the internet for most? Streaming, gaming, working from home?"
     </div>
   </div>
@@ -1109,7 +1108,7 @@ textarea:focus { border-color: var(--accent); }
     <div class="script-block">
       "And what are you paying a month for that?"
     </div>
-    <input type="number" id="inp-price-opening" placeholder="e.g. 90" oninput="updateState('current_price',parseFloat(this.value)||0)">
+    <input type="number" id="inp-price-opening" placeholder="e.g. 90" oninput="updateState('current_price',parseFloat(this.value)||0)" onchange="updateState('current_price',parseFloat(this.value)||0)">
   </div>
 
   <!-- WEAVE: Price Lock — drop after they tell you what they're paying -->
@@ -1324,6 +1323,7 @@ textarea:focus { border-color: var(--accent); }
       <div id="roi-missing-what"></div>
     </div>
     <div id="roi-calculated" class="hidden">
+      <div class="script-block" id="roi-script" style="margin-bottom:12px"></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
         <div class="roi-box" style="margin:0">
           <div class="roi-big" id="roi-monthly" style="font-size:28px">$0</div>
@@ -1336,7 +1336,6 @@ textarea:focus { border-color: var(--accent); }
       </div>
       <div id="roi-first-month-box" class="hidden" style="padding:10px 14px;background:var(--success-dim);border:1px solid var(--success);border-radius:var(--radius);text-align:center;margin-bottom:12px;font-size:13px;color:var(--success);font-weight:600"></div>
       <div id="roi-value-play-box" class="hidden" style="margin-bottom:12px"></div>
-      <div class="script-block" id="roi-script"></div>
     </div>
   </div>
   <!-- Don't Cancel — shown when a plan is selected -->
@@ -1770,18 +1769,21 @@ textarea:focus { border-color: var(--accent); }
     "Alright <span class="var" data-var="lead_name">[Name]</span>, let me read this back to make sure we're all good:"
   </div>
 
-  <ul class="summary-list" id="summary-list">
-    <li><span class="lbl">Address</span> <span id="sum-address">&mdash;</span></li>
-    <li><span class="lbl">Plan</span> <span id="sum-plan">&mdash;</span></li>
-    <li><span class="lbl">Monthly Price</span> <span id="sum-price">&mdash;</span></li>
-    <li><span class="lbl">Data</span> <span>Unlimited &mdash; no caps, no throttling</span></li>
-    <li><span class="lbl">Price Lock</span> <span>Rate locked &mdash; never increases</span></li>
-    <li><span class="lbl">Contract</span> <span>No contract &mdash; cancel anytime</span></li>
-    <li><span class="lbl">Guarantee</span> <span>30-day money-back guarantee</span></li>
-    <li><span class="lbl">Install Date</span> <span id="sum-date">&mdash;</span></li>
-    <li><span class="lbl">Time Window</span> <span id="sum-time">&mdash;</span></li>
-    <li><span class="lbl">Setup Fee</span> <span id="sum-fee">FREE (same-day signup)</span></li>
-  </ul>
+  <details id="wrapup-details">
+    <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);margin-bottom:8px;user-select:none">Review Details</summary>
+    <ul class="summary-list" id="summary-list">
+      <li><span class="lbl">Address</span> <span id="sum-address">&mdash;</span></li>
+      <li><span class="lbl">Plan</span> <span id="sum-plan">&mdash;</span></li>
+      <li><span class="lbl">Monthly Price</span> <span id="sum-price">&mdash;</span></li>
+      <li><span class="lbl">Data</span> <span>Unlimited &mdash; no caps, no throttling</span></li>
+      <li><span class="lbl">Price Lock</span> <span>Rate locked &mdash; never increases</span></li>
+      <li><span class="lbl">Contract</span> <span>No contract &mdash; cancel anytime</span></li>
+      <li><span class="lbl">Guarantee</span> <span>30-day money-back guarantee</span></li>
+      <li><span class="lbl">Install Date</span> <span id="sum-date">&mdash;</span></li>
+      <li><span class="lbl">Time Window</span> <span id="sum-time">&mdash;</span></li>
+      <li><span class="lbl">Setup Fee</span> <span id="sum-fee">FREE (same-day signup)</span></li>
+    </ul>
+  </details>
 
   <div class="script-block" style="margin-top:16px">
     "You're at <span class="var" data-var="lead_address">[Address]</span>."<br>
@@ -4301,18 +4303,15 @@ function selectPlan(planId) {
   document.querySelectorAll('#plan-grid .plan-card').forEach(function(c, i) {
     if (ids[i] === planId) c.classList.add('selected');
   });
-  // Collapse plan cards into compact summary bar
-  if (plan) {
-    document.getElementById('plan-grid').classList.add('hidden');
-    document.getElementById('plan-summary-bar').classList.remove('hidden');
-    document.getElementById('plan-summary-name').textContent = plan.name + ' \u2014 $' + plan.price.toFixed(2) + '/mo';
-    document.getElementById('plan-summary-details').textContent = 'Unlimited Data, Free TV Service + Router Included';
-    var coachNote = document.getElementById('plan-coach-note');
-    if (coachNote) coachNote.classList.add('hidden');
-  }
+  // v5.9.1: Keep plan cards visible after selection (don't collapse)
+  var coachNote = document.getElementById('plan-coach-note');
+  if (coachNote) coachNote.classList.add('hidden');
   checkState.roi = 'completed';
   saveToLocalStorage();
   renderAll();
+  // v5.9.1: Safety net — force ROI recalc after plan change
+  renderROI();
+  renderCloseSavings();
 }
 
 function expandPlanCards() {
@@ -5474,9 +5473,9 @@ function init() {
 
   // v5.1: Clear stale state from older versions
   var stateVersion = localStorage.getItem('alamo_state_version');
-  if (stateVersion !== 'v5.9') {
+  if (stateVersion !== 'v5.9.1') {
     localStorage.removeItem('alamo_sales_state');
-    localStorage.setItem('alamo_state_version', 'v5.9');
+    localStorage.setItem('alamo_state_version', 'v5.9.1');
   }
 
   // Load saved state if exists
@@ -5489,6 +5488,11 @@ function init() {
   document.querySelectorAll('.mode-btn').forEach(function(b) {
     var btnMode = b.getAttribute('onclick').match(/'([^']+)'\)/);
     if (btnMode) b.classList.toggle('active', btnMode[1] === savedMode);
+  });
+
+  // v5.9.1: Disable scroll-to-change on number inputs (prevents accidental price changes)
+  document.querySelectorAll('input[type="number"]').forEach(function(inp) {
+    inp.addEventListener('wheel', function(e) { e.preventDefault(); }, { passive: false });
   });
 
   buildPainTiles();
@@ -5593,22 +5597,14 @@ function init() {
       if (match && parseInt(match[1]) === state.household_size) p.classList.add('selected');
     });
   }
-  // Plan card selection
+  // Plan card selection (v5.9.1: keep cards visible, just highlight selected)
   if (state.recommended_plan) {
     var ids = ['unfiber50','unfiber100','unfiber300'];
     document.querySelectorAll('#plan-grid .plan-card').forEach(function(c, i) {
       if (ids[i] === state.recommended_plan) c.classList.add('selected');
     });
-    // Collapse to summary bar on restore
-    var restoredPlan = plans[state.recommended_plan];
-    if (restoredPlan) {
-      document.getElementById('plan-grid').classList.add('hidden');
-      document.getElementById('plan-summary-bar').classList.remove('hidden');
-      document.getElementById('plan-summary-name').textContent = restoredPlan.name + ' \u2014 $' + restoredPlan.price.toFixed(2) + '/mo';
-      document.getElementById('plan-summary-details').textContent = 'Unlimited Data, Free TV Service + Router Included';
-      var cn = document.getElementById('plan-coach-note');
-      if (cn) cn.classList.add('hidden');
-    }
+    var cn = document.getElementById('plan-coach-note');
+    if (cn) cn.classList.add('hidden');
   }
   // Pain sub-options
   if (state.pain_impacts && state.pain_impacts.length) {
