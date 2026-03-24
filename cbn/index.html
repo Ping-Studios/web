@@ -165,7 +165,6 @@ function FormPage({ onSubmit }) {
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "28px 16px 24px", width: "100%", maxWidth: "480px" }}>
         <div style={{ width: "100%" }}>
           <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <img src={LOGO} alt="CBN America" style={{ height: "60px", marginBottom: 14 }} />
             <div style={{ display: "inline-block", background: "rgba(46,163,242,.15)", color: "var(--blue)", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", padding: "5px 14px", borderRadius: "16px", marginBottom: 10, fontFamily: "var(--f-head)" }}>Check Availability</div>
             <h1 style={{ color: "#fff", fontSize: "clamp(24px,5vw,32px)", fontWeight: 800, margin: "0 0 6px", fontFamily: "var(--f-head)", lineHeight: 1.15 }}>Empowering Affordable Internet</h1>
             <p style={{ color: "rgba(255,255,255,.45)", fontSize: "14px", margin: 0 }}>See if Community Broadband is available at your address.</p>
@@ -227,7 +226,9 @@ function CongratsPage({ userData }) {
       </div>
 
       <div style={{ background: "#fff", borderBottom: "1px solid #e8eaed", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <img src={LOGO} alt="CBN America" style={{ height: "44px" }} />
+        <div style={{ fontSize: "18px", fontWeight: 800, color: "var(--navy)", fontFamily: "var(--f-head)", letterSpacing: ".3px" }}>
+          CBN <span style={{ color: "var(--blue)" }}>America</span>
+        </div>
         <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--navy)", fontSize: "13px", fontWeight: 600, fontFamily: "var(--f-head)" }}>
           <a href="tel:8775787780" style={{ color: "var(--navy)", textDecoration: "none" }}>(877) 578-7780</a>
         </div>
@@ -402,7 +403,9 @@ function CongratsPage({ userData }) {
         </div>
 
         <div style={{ textAlign: "center", marginTop: 24, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,.06)" }}>
-          <img src={LOGO} alt="CBN America" style={{ height: 36, opacity: .4 }} />
+          <div style={{ fontSize: "16px", fontWeight: 800, color: "rgba(255,255,255,.4)", fontFamily: "var(--f-head)", letterSpacing: ".5px" }}>
+            CBN <span style={{ color: "rgba(46,163,242,.4)" }}>America</span>
+          </div>
           <div style={{ fontSize: "11px", color: "var(--blue)", fontFamily: "var(--f-head)", fontWeight: 600, marginTop: 4, letterSpacing: "1px" }}>Empowering Affordable Internet</div>
           <p style={{ fontSize: "10px", color: "rgba(255,255,255,.2)", marginTop: 4 }}>&copy; CBN America | Community Broadband Networks | All Rights Reserved</p>
         </div>
