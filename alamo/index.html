@@ -1369,6 +1369,12 @@ textarea:focus { border-color: var(--accent); }
       </div>
       <div id="roi-first-month-box" class="hidden" style="padding:10px 14px;background:var(--success-dim);border:1px solid var(--success);border-radius:var(--radius);text-align:center;margin-bottom:12px;font-size:13px;color:var(--success);font-weight:600"></div>
       <div id="roi-value-play-box" class="hidden" style="margin-bottom:12px"></div>
+      <!-- Trial close inline after ROI script -->
+      <div style="margin-top:8px;padding:10px 14px;background:var(--accent-dim);border:1px solid var(--accent);border-radius:var(--radius)">
+        <div class="script-block" style="border-left-color:var(--accent);margin:0;font-size:13px;font-weight:600">
+          "Sound good?"
+        </div>
+      </div>
     </div>
   </div>
 
@@ -2208,7 +2214,6 @@ const painTree = {
     freq: '22%',
     empathy: '"Nothing worse than your internet just cutting out on you in the middle of something."',
     subs: [
-      { id:'daily_drops', label:'Drops daily', quote:'"It goes out at least once a day"' },
       { id:'evening_slowdown', label:'Slows down in evenings', quote:'"It\'s fine during the day but terrible at night"' },
       { id:'random_outages', label:'Random multi-hour outages', quote:'"Sometimes it\'s out for hours"' },
       { id:'att_air_drops', label:'AT&T Air / 5G drops', quote:'"The AT&T box just stops working"' }
@@ -4332,8 +4337,37 @@ function setHouseholdMulti(el, val) {
     p.classList.remove('multi-selected');
   });
   el.classList.add('multi-selected');
+
+  // Auto-set household_size and pre-select the Q2 pill in Qualifying
+  var autoSize = val === 'just_me' ? 1 : val === 'partner' ? 2 : 3;
+  state.household_size = autoSize;
+  // Visually select the matching Q2 pill
+  var q2Card = document.getElementById('q2-card');
+  if (q2Card) {
+    q2Card.querySelectorAll('.pill').forEach(function(p) {
+      var n = parseInt(p.textContent);
+      if (isNaN(n) && p.textContent.indexOf('5') >= 0) n = 5;
+      p.classList.toggle('selected', n === autoSize);
+    });
+    q2Card.classList.add('answered');
+    // Trigger DM trap for 2+ people
+    var dmInline = document.getElementById('dm-trap-inline');
+    var dmScript = document.getElementById('dm-trap-script');
+    if (autoSize === 1) {
+      if (dmInline) dmInline.classList.add('hidden');
+    } else if (autoSize === 2) {
+      if (dmScript) dmScript.innerHTML = '"Nice! And if you both decided you wanted to switch, is that something you\'d decide together, or you handle the internet stuff?"';
+      if (dmInline) dmInline.classList.remove('hidden');
+    } else {
+      if (dmScript) dmScript.innerHTML = '"Nice! And if you all decided you wanted to switch, is that something you\'d all decide together, or do you handle the internet stuff?"';
+      if (dmInline) dmInline.classList.remove('hidden');
+    }
+  }
+
   renderPainDeepener();
   saveToLocalStorage();
+  renderAll();
+  autoRecommendPlan();
 }
 
 function toggleUsage(el, val) {
@@ -4452,16 +4486,42 @@ function expandPlanCards() {
 }
 
 function autoRecommendPlan() {
-  var rec = 'unfiber100';
-  if (state.household_size >= 5 || state.usage_types.includes('gaming') || state.usage_types.includes('wfh')) {
-    rec = 'unfiber300';
-  } else if (state.household_size <= 2 && state.priority_preference === 'price') {
+  var rec = 'unfiber100'; // default
+  var size = state.household_size || 0;
+  var usages = state.usage_types || [];
+  var type = state.household_type || '';
+
+  // Just me with no heavy usage → Essentials
+  if (type === 'just_me' || (size <= 1 && !usages.includes('gaming') && !usages.includes('wfh'))) {
     rec = 'unfiber50';
   }
+  // Partner with no heavy usage → Essentials or Plus
+  else if (type === 'partner' || size === 2) {
+    rec = (usages.includes('gaming') || usages.includes('wfh')) ? 'unfiber100' : 'unfiber50';
+  }
+  // Whole household or 3+ → Plus
+  else if (size >= 3 && size < 5) {
+    rec = 'unfiber100';
+  }
+  // 5+ or gaming + WFH → Pro
+  if (size >= 5 || (usages.includes('gaming') && usages.includes('wfh'))) {
+    rec = 'unfiber300';
+  }
+  // Price priority override → downgrade one tier
+  if (state.priority_preference === 'price') {
+    if (rec === 'unfiber300') rec = 'unfiber100';
+    else if (rec === 'unfiber100') rec = 'unfiber50';
+  }
+
   var ids = ['unfiber50','unfiber100','unfiber300'];
   document.querySelectorAll('#plan-grid .plan-card').forEach(function(c, i) {
     c.classList.toggle('recommended', ids[i] === rec);
   });
+
+  // Auto-select the recommended plan if no plan is selected yet
+  if (!state.recommended_plan) {
+    selectPlan(rec);
+  }
 }
 
 // setTrialClose replaced by setCloseResponse (defined above)
@@ -4827,6 +4887,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.10.0g', date:'2026-03-25', changes:['Remove: "Drops daily" sub-option from keeps_dropping','Feature: household type auto-sets household size + DM trap in Qualifying','Fix: plan recommendation logic — just_me gets Essentials, partner respects usage','Feature: recommended plan auto-selected on first visit','Feature: "Sound good?" trial close added after ROI pitch script'] },
   { ver:'v5.10.0f', date:'2026-03-25', changes:['Fix: hesitant button auto-scrolls to Advanced Closes (Section 7)'] },
   { ver:'v5.10.0e', date:'2026-03-25', changes:['Fix: Step 2 prompt consolidated into purple box only — no duplication','Fix: satellite references removed from sub-phrase deepeners','Fix: trigger pills now populate response for all selections','Fix: annotation popovers appear to the right instead of below','Fix: recommended badge stays on plan card after selecting different plan','Update: ROI pitch script moved above plan cards — rep reads script first','Update: Step 2 prompt uses pain label: "when you say it\'s too expensive..."'] },
   { ver:'v5.10.0d', date:'2026-03-25', changes:['Fix: price pains no longer default to "price going up" assumption anywhere','Fix: too_expensive deepener is open-ended — "walk me through what\'s going on"','Fix: bill_keeps_changing deepener removes "how long" and "how many times"','Update: Step 2 instruction text now prompts rep to ask open-ended question first'] },
@@ -6108,9 +6169,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.0f') {
+  if (annotationVer !== 'v5.10.0g') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.0f');
+    localStorage.setItem('alamo_annotation_version', 'v5.10.0g');
   }
 
   // v5.10: Restore dev mode if previously unlocked
