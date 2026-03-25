@@ -1009,8 +1009,9 @@ textarea:focus { border-color: var(--accent); }
       <span class="coaching">Click one below based on their answer.</span>
     </div>
     <div class="pill-group" id="household-pills">
-      <div class="pill" onclick="setHouseholdMulti(this, false)">Just me</div>
-      <div class="pill" onclick="setHouseholdMulti(this, true)">Whole household</div>
+      <div class="pill" onclick="setHouseholdMulti(this, 'just_me')">Just me</div>
+      <div class="pill" onclick="setHouseholdMulti(this, 'partner')">Partner</div>
+      <div class="pill" onclick="setHouseholdMulti(this, 'whole_household')">Whole household</div>
     </div>
   </div>
 
@@ -2139,6 +2140,7 @@ const state = {
   callback_date: '',
   callback_time: '',
   household_multi: false,
+  household_type: '',
   pain_usage_scenario: '',
   worst_affected_usage: ''
 };
@@ -3188,6 +3190,10 @@ function renderAll() {
   renderCloseSavings();
   renderSpouseScheduleNote();
   updateChecklist();
+  // v5.10: Re-inject dev annotations after dynamic content renders
+  if (localStorage.getItem('alamo_dev_mode') === 'true') {
+    injectAnnotationButtons();
+  }
 }
 
 function renderBreadcrumbs() {
@@ -4301,7 +4307,8 @@ function setHousehold(el, n) {
 }
 
 function setHouseholdMulti(el, val) {
-  state.household_multi = val;
+  state.household_type = val;
+  state.household_multi = (val === 'partner' || val === 'whole_household');
   document.querySelectorAll('#household-pills .pill').forEach(function(p) {
     p.classList.remove('multi-selected');
   });
@@ -4764,10 +4771,13 @@ var DEV_ANNOTATABLE_SELECTORS = [
   '.section', '.script-block', '.q-card', '.pain-step', '.coach-note',
   '.mining-coach-note', '.plan-card', '.pill-group', '.pain-grid',
   '.roi-box', '.pain-benefit-weave', '#dont-cancel-block', '#roi-trial-close',
-  '#weave-price-lock', '.summary-list', '.input-row'
+  '#weave-price-lock', '.summary-list', '.input-row',
+  '.pain-empathy-item', '.pain-sub-group', '#pain-deepener-script',
+  '.pain-benefit-weave', '.obj-detail', '.competitor-card'
 ];
 
 var devChangelog = [
+  { ver:'v5.10.0b', date:'2026-03-25', changes:['Update: household pills — added "Partner" option (Just me / Partner / Whole Household)','Feature: pain deepener steps now annotatable in dev mode (empathy, sub-options, deepener questions)','Fix: dev annotations re-inject after dynamic content renders'] },
   { ver:'v5.10.0a', date:'2026-03-25', changes:['Fix: outbound opener — "from Alamo Broadband" + casual recorded line after confirmation (annotation feedback)'] },
   { ver:'v5.10.0', date:'2026-03-24', changes:['Feature: Developer Mode with inline annotations','Feature: annotation export to JSON','Feature: Dev Changelog panel','Password-protected (5555) — unlock in Settings'] },
   { ver:'v5.9.1', date:'2026-03-24', changes:['Fix: scroll-to-change on number inputs (rep quoted $94 vs $100)','Fix: ROI hierarchy — value script above savings numbers','Fix: wrap-up line items collapsible behind Review Details','Fix: plan cards stay visible after selection','Fix: outbound intro now says company name + recorded line','Fix: ROI safety net — force recalc after plan change'] },
@@ -5927,11 +5937,11 @@ function init() {
     });
   }
 
-  // v5.3: Restore household pill state
-  if (state.household_multi !== undefined) {
+  // v5.10: Restore household pill state (3-option: just_me, partner, whole_household)
+  if (state.household_type) {
     document.querySelectorAll('#household-pills .pill').forEach(function(p) {
-      var isMulti = p.getAttribute('onclick').indexOf('true') > -1;
-      if ((isMulti && state.household_multi) || (!isMulti && !state.household_multi)) {
+      var match = p.getAttribute('onclick').match(/'([^']+)'/);
+      if (match && match[1] === state.household_type) {
         p.classList.add('multi-selected');
       }
     });
@@ -6027,9 +6037,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.0a') {
+  if (annotationVer !== 'v5.10.0b') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.0a');
+    localStorage.setItem('alamo_annotation_version', 'v5.10.0b');
   }
 
   // v5.10: Restore dev mode if previously unlocked
