@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.9.1</title>
+<title>Alamo Broadband — Sales Intelligence v5.10.0</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -639,6 +639,48 @@ textarea:focus { border-color: var(--accent); }
   .pain-step3-grid { grid-template-columns: 1fr; }
   #objection-overlay, #competitor-overlay, #tech-overlay { width: 100%; right: -100%; }
 }
+
+/* ===== DEV MODE ===== */
+.dev-annotatable { position: relative; }
+.dev-annotate-btn {
+  position: absolute; top: 4px; right: 4px; width: 22px; height: 22px;
+  background: var(--accent); color: #fff; border: none; border-radius: 50%;
+  font-size: 11px; line-height: 1; cursor: pointer; z-index: 50; opacity: 0.5;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity .2s, transform .2s;
+}
+.dev-annotate-btn:hover { opacity: 1; transform: scale(1.15); }
+.dev-annotate-btn.has-note { background: var(--warning); opacity: 1; }
+.dev-popover {
+  position: absolute; top: calc(100% + 4px); right: 0; width: 320px; z-index: 200;
+  background: var(--bg-card); border: 2px solid var(--accent); border-radius: var(--radius-lg);
+  padding: 14px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.dev-popover .dev-action-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.dev-popover .dev-action-pill {
+  padding: 4px 10px; font-size: 11px; border: 1px solid var(--border); border-radius: 20px;
+  cursor: pointer; background: var(--bg-input); color: var(--text-secondary); transition: all .15s;
+}
+.dev-popover .dev-action-pill:hover { border-color: var(--accent); color: var(--accent); }
+.dev-popover .dev-action-pill.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+.dev-popover textarea {
+  width: 100%; min-height: 60px; padding: 8px; background: var(--bg-input); color: var(--text-primary);
+  border: 1px solid var(--border); border-radius: var(--radius); font-size: 12px; font-family: inherit;
+  resize: vertical; margin-bottom: 8px;
+}
+.dev-popover .dev-save-btn {
+  width: 100%; padding: 6px; background: var(--success); color: #fff; border: none;
+  border-radius: var(--radius); cursor: pointer; font-size: 12px; font-weight: 600;
+}
+.dev-popover .dev-delete-btn {
+  width: 100%; padding: 6px; background: var(--danger-dim); color: var(--danger); border: 1px solid var(--danger);
+  border-radius: var(--radius); cursor: pointer; font-size: 11px; margin-top: 4px;
+}
+#dev-badge {
+  background: var(--warning); color: #000; font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 10px; letter-spacing: .5px; animation: devPulse 2s infinite;
+}
+@keyframes devPulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
 </style>
 </head>
 <body>
@@ -675,6 +717,7 @@ textarea:focus { border-color: var(--accent); }
   </div>
   <button id="objection-btn" onclick="openObjectionPanel()">Handle Objection</button>
   <button id="tech-explainer-btn" onclick="openTechExplainer()" title="Technology Explainer" style="background:var(--purple);color:#fff;border:none;border-radius:var(--radius);padding:6px 12px;font-size:12px;cursor:pointer;font-weight:600;white-space:nowrap">Tech Explainer</button>
+  <span id="dev-badge" class="hidden">DEV</span>
   <button id="gear-btn" onclick="toggleSettings()" title="Settings">&#9881;</button>
 </div>
 <div id="progress-bar"><div class="fill" id="progress-fill" style="width:0%"></div></div>
@@ -757,6 +800,27 @@ textarea:focus { border-color: var(--accent); }
       <button class="settings-btn danger" onclick="resetAllSettings()">Reset All</button>
     </div>
     <p id="settings-saved-msg" style="font-size:11px;color:var(--success);text-align:center;margin:6px 0 0 0;display:none">Settings saved!</p>
+
+    <!-- DEV MODE -->
+    <div style="border-top:1px solid var(--border);margin-top:20px;padding-top:16px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:8px">Developer Mode</div>
+      <div id="dev-mode-gate">
+        <input type="password" id="dev-password" placeholder="Enter dev password" onkeydown="if(event.key==='Enter')unlockDevMode()"
+          style="width:100%;padding:8px 12px;background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border);border-radius:var(--radius);font-size:13px;margin-bottom:8px;box-sizing:border-box">
+        <button onclick="unlockDevMode()" style="width:100%;padding:8px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:13px;font-weight:600">Unlock</button>
+        <p id="dev-password-error" style="font-size:11px;color:var(--danger);text-align:center;margin:6px 0 0 0;display:none">Wrong password</p>
+      </div>
+      <div id="dev-mode-controls" class="hidden">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <span style="color:var(--success);font-weight:700;font-size:13px">DEV MODE ACTIVE</span>
+          <button onclick="lockDevMode()" style="margin-left:auto;padding:4px 10px;background:var(--danger-dim);color:var(--danger);border:1px solid var(--danger);border-radius:var(--radius);cursor:pointer;font-size:11px">Lock</button>
+        </div>
+        <button onclick="exportAnnotations()" style="width:100%;padding:8px;background:var(--success);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:13px;font-weight:600;margin-bottom:6px">Export Annotations (JSON)</button>
+        <button onclick="clearAnnotations()" style="width:100%;padding:8px;background:var(--danger-dim);color:var(--danger);border:1px solid var(--danger);border-radius:var(--radius);cursor:pointer;font-size:13px;margin-bottom:6px">Clear All Annotations</button>
+        <button onclick="toggleDevChangelog()" style="width:100%;padding:8px;background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent);border-radius:var(--radius);cursor:pointer;font-size:13px">View Dev Changelog</button>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:8px" id="dev-annotation-count">0 annotations</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1931,6 +1995,15 @@ textarea:focus { border-color: var(--accent); }
 
 <!-- OBJECTION HANDLER OVERLAY -->
 <div id="backdrop" onclick="closeAllPanels()"></div>
+
+<!-- DEV CHANGELOG OVERLAY -->
+<div id="dev-changelog-overlay" style="position:fixed;top:var(--header-h);right:-450px;width:450px;max-width:90vw;height:calc(100vh - var(--header-h));background:var(--bg-secondary);border-left:1px solid var(--border);z-index:1000;transition:right .3s;overflow-y:auto;display:flex;flex-direction:column">
+  <div class="panel-header" style="display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid var(--border)">
+    <h2 style="font-size:18px;margin:0;color:var(--text-primary)">Dev Changelog</h2>
+    <button class="panel-close" onclick="closeAllPanels()" style="background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer">&times;</button>
+  </div>
+  <div class="panel-body" id="dev-changelog-body" style="flex:1;overflow-y:auto;padding:16px"></div>
+</div>
 
 <div id="objection-overlay">
   <div class="panel-header">
@@ -4680,6 +4753,323 @@ function loadSavedSettings() {
   } catch(e) {}
 }
 
+// ============================================================
+// DEV MODE + ANNOTATION SYSTEM v1.0
+// ============================================================
+
+var devAnnotations = [];
+var devActivePopover = null;
+
+var DEV_ANNOTATABLE_SELECTORS = [
+  '.section', '.script-block', '.q-card', '.pain-step', '.coach-note',
+  '.mining-coach-note', '.plan-card', '.pill-group', '.pain-grid',
+  '.roi-box', '.pain-benefit-weave', '#dont-cancel-block', '#roi-trial-close',
+  '#weave-price-lock', '.summary-list', '.input-row'
+];
+
+var devChangelog = [
+  { ver:'v5.10.0', date:'2026-03-24', changes:['Feature: Developer Mode with inline annotations','Feature: annotation export to JSON','Feature: Dev Changelog panel','Password-protected (5555) — unlock in Settings'] },
+  { ver:'v5.9.1', date:'2026-03-24', changes:['Fix: scroll-to-change on number inputs (rep quoted $94 vs $100)','Fix: ROI hierarchy — value script above savings numbers','Fix: wrap-up line items collapsible behind Review Details','Fix: plan cards stay visible after selection','Fix: outbound intro now says company name + recorded line','Fix: ROI safety net — force recalc after plan change'] },
+  { ver:'v5.9.0', date:'2026-03-24', changes:['Feature: dynamic scenario builder for pain deepeners','Feature: household pills (just me / whole household)','Feature: provider shutting down pain type','Update: pain frequency badges from 2,527 real transcripts','Update: localStorage version check to clear stale state'] },
+  { ver:'v5.8.6', date:'2026-03-23', changes:['Fix: switch to plain fetch with CORS for webhook delivery'] },
+  { ver:'v5.8.5', date:'2026-03-23', changes:['Fix: webhook URL was using Mojo URL instead of Alamo'] },
+  { ver:'v5.8.4', date:'2026-03-23', changes:['Feature: use sendBeacon for webhook delivery'] },
+  { ver:'v5.8.3', date:'2026-03-23', changes:['Fix: webhook CORS issue'] },
+  { ver:'v5.7.0', date:'2026-03-22', changes:['Feature: webhook submission, URL pre-fill, Contact ID, rep required'] }
+];
+
+function unlockDevMode() {
+  var pw = document.getElementById('dev-password').value;
+  if (pw !== '5555') {
+    var err = document.getElementById('dev-password-error');
+    err.style.display = 'block';
+    setTimeout(function() { err.style.display = 'none'; }, 2000);
+    return;
+  }
+  try { localStorage.setItem('alamo_dev_mode', 'true'); } catch(e) {}
+  enableDevMode();
+}
+
+function lockDevMode() {
+  try { localStorage.removeItem('alamo_dev_mode'); } catch(e) {}
+  disableDevMode();
+}
+
+function enableDevMode() {
+  document.getElementById('dev-mode-gate').classList.add('hidden');
+  document.getElementById('dev-mode-controls').classList.remove('hidden');
+  document.getElementById('dev-badge').classList.remove('hidden');
+  loadDevAnnotations();
+  injectAnnotationButtons();
+  updateDevAnnotationCount();
+}
+
+function disableDevMode() {
+  document.getElementById('dev-mode-gate').classList.remove('hidden');
+  document.getElementById('dev-mode-controls').classList.add('hidden');
+  document.getElementById('dev-badge').classList.add('hidden');
+  document.getElementById('dev-password').value = '';
+  removeAnnotationButtons();
+  if (devActivePopover) { devActivePopover.remove(); devActivePopover = null; }
+}
+
+function loadDevAnnotations() {
+  try {
+    var raw = localStorage.getItem('alamo_dev_annotations');
+    if (raw) devAnnotations = JSON.parse(raw);
+    else devAnnotations = [];
+  } catch(e) { devAnnotations = []; }
+}
+
+function saveDevAnnotations() {
+  try { localStorage.setItem('alamo_dev_annotations', JSON.stringify(devAnnotations)); } catch(e) {}
+  updateDevAnnotationCount();
+}
+
+function updateDevAnnotationCount() {
+  var el = document.getElementById('dev-annotation-count');
+  if (el) el.textContent = devAnnotations.length + ' annotation' + (devAnnotations.length !== 1 ? 's' : '');
+}
+
+function getDevId(el, idx) {
+  var section = el.closest('.section');
+  var secId = section ? section.id : 'global';
+  var tag = el.className.split(' ')[0] || el.tagName.toLowerCase();
+  if (el.id) tag = el.id;
+  return secId + '__' + tag + '__' + idx;
+}
+
+function getSectionName(el) {
+  var section = el.closest('.section');
+  if (!section) return 'Global';
+  var title = section.querySelector('.section-title');
+  return title ? title.textContent.trim() : section.id;
+}
+
+function getElementPreview(el) {
+  var text = el.textContent || '';
+  text = text.replace(/\s+/g, ' ').trim();
+  return text.substring(0, 100) + (text.length > 100 ? '...' : '');
+}
+
+function injectAnnotationButtons() {
+  removeAnnotationButtons();
+  var globalIdx = 0;
+  DEV_ANNOTATABLE_SELECTORS.forEach(function(sel) {
+    document.querySelectorAll(sel).forEach(function(el) {
+      // Skip elements inside popovers or settings panel
+      if (el.closest('#settings-panel') || el.closest('.dev-popover') || el.closest('#dev-changelog-overlay')) return;
+      // Skip hidden elements
+      if (el.classList.contains('hidden') || el.offsetParent === null) return;
+
+      el.classList.add('dev-annotatable');
+      var devId = getDevId(el, globalIdx);
+      el.setAttribute('data-dev-id', devId);
+
+      var btn = document.createElement('button');
+      btn.className = 'dev-annotate-btn';
+      btn.textContent = '+';
+      btn.title = 'Add annotation';
+      btn.setAttribute('data-dev-target', devId);
+      btn.onclick = function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        openAnnotation(devId, el);
+      };
+
+      // Check if annotation exists
+      var existing = devAnnotations.find(function(a) { return a.id === devId; });
+      if (existing) {
+        btn.classList.add('has-note');
+        btn.textContent = '!';
+        btn.title = existing.action + ': ' + (existing.comment || '').substring(0, 40);
+      }
+
+      el.appendChild(btn);
+      globalIdx++;
+    });
+  });
+}
+
+function removeAnnotationButtons() {
+  document.querySelectorAll('.dev-annotate-btn').forEach(function(b) { b.remove(); });
+  document.querySelectorAll('.dev-annotatable').forEach(function(el) { el.classList.remove('dev-annotatable'); });
+  document.querySelectorAll('.dev-popover').forEach(function(p) { p.remove(); });
+}
+
+function openAnnotation(devId, el) {
+  // Close any existing popover
+  if (devActivePopover) { devActivePopover.remove(); devActivePopover = null; }
+
+  var existing = devAnnotations.find(function(a) { return a.id === devId; });
+
+  var pop = document.createElement('div');
+  pop.className = 'dev-popover';
+  pop.onclick = function(e) { e.stopPropagation(); };
+
+  var actions = ['Remove', 'Move Up', 'Move Down', 'Change Wording', 'Bug', 'Feature Request'];
+  var actionKeys = ['remove', 'move-up', 'move-down', 'change', 'bug', 'feature'];
+  var selectedAction = existing ? existing.action : '';
+
+  var pillsHtml = '<div class="dev-action-pills">';
+  actions.forEach(function(label, i) {
+    var sel = actionKeys[i] === selectedAction ? ' selected' : '';
+    pillsHtml += '<div class="dev-action-pill' + sel + '" data-action="' + actionKeys[i] + '" onclick="selectDevAction(this)">' + label + '</div>';
+  });
+  pillsHtml += '</div>';
+
+  pop.innerHTML = pillsHtml +
+    '<textarea id="dev-comment-input" placeholder="Add your notes here...">' + (existing ? existing.comment || '' : '') + '</textarea>' +
+    '<button class="dev-save-btn" onclick="saveAnnotationFromPopover(\'' + devId + '\')">Save Annotation</button>' +
+    (existing ? '<button class="dev-delete-btn" onclick="deleteAnnotation(\'' + devId + '\')">Delete Annotation</button>' : '');
+
+  el.appendChild(pop);
+  devActivePopover = pop;
+
+  // Close on outside click
+  setTimeout(function() {
+    document.addEventListener('click', closeDevPopoverOnOutsideClick);
+  }, 10);
+}
+
+function closeDevPopoverOnOutsideClick(e) {
+  if (devActivePopover && !devActivePopover.contains(e.target) && !e.target.classList.contains('dev-annotate-btn')) {
+    devActivePopover.remove();
+    devActivePopover = null;
+    document.removeEventListener('click', closeDevPopoverOnOutsideClick);
+  }
+}
+
+function selectDevAction(pill) {
+  pill.parentElement.querySelectorAll('.dev-action-pill').forEach(function(p) { p.classList.remove('selected'); });
+  pill.classList.add('selected');
+}
+
+function saveAnnotationFromPopover(devId) {
+  var pop = devActivePopover;
+  if (!pop) return;
+
+  var actionPill = pop.querySelector('.dev-action-pill.selected');
+  var action = actionPill ? actionPill.getAttribute('data-action') : '';
+  var comment = pop.querySelector('#dev-comment-input').value.trim();
+
+  if (!action && !comment) return; // need at least one
+
+  var el = document.querySelector('[data-dev-id="' + devId + '"]');
+
+  var annotation = {
+    id: devId,
+    section: el ? getSectionName(el) : '',
+    elementPreview: el ? getElementPreview(el) : '',
+    action: action,
+    comment: comment,
+    author: state.team_member || 'Unknown',
+    timestamp: new Date().toISOString()
+  };
+
+  // Update or add
+  var idx = devAnnotations.findIndex(function(a) { return a.id === devId; });
+  if (idx >= 0) devAnnotations[idx] = annotation;
+  else devAnnotations.push(annotation);
+
+  saveDevAnnotations();
+
+  // Update the button
+  var btn = el ? el.querySelector('.dev-annotate-btn') : null;
+  if (btn) {
+    btn.classList.add('has-note');
+    btn.textContent = '!';
+    btn.title = action + ': ' + comment.substring(0, 40);
+  }
+
+  // Close popover
+  pop.remove();
+  devActivePopover = null;
+  document.removeEventListener('click', closeDevPopoverOnOutsideClick);
+}
+
+function deleteAnnotation(devId) {
+  devAnnotations = devAnnotations.filter(function(a) { return a.id !== devId; });
+  saveDevAnnotations();
+
+  var el = document.querySelector('[data-dev-id="' + devId + '"]');
+  var btn = el ? el.querySelector('.dev-annotate-btn') : null;
+  if (btn) {
+    btn.classList.remove('has-note');
+    btn.textContent = '+';
+    btn.title = 'Add annotation';
+  }
+
+  if (devActivePopover) { devActivePopover.remove(); devActivePopover = null; }
+  document.removeEventListener('click', closeDevPopoverOnOutsideClick);
+}
+
+function exportAnnotations() {
+  if (!devAnnotations.length) {
+    alert('No annotations to export.');
+    return;
+  }
+  var data = {
+    tool: 'Alamo Broadband Sales Intelligence',
+    version: 'v5.10.0',
+    exportDate: new Date().toISOString(),
+    exportedBy: state.team_member || 'Unknown',
+    totalAnnotations: devAnnotations.length,
+    annotations: devAnnotations
+  };
+  var json = JSON.stringify(data, null, 2);
+  var blob = new Blob([json], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var dateStr = new Date().toISOString().split('T')[0];
+  a.href = url;
+  a.download = 'alamo_annotations_' + dateStr + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function clearAnnotations() {
+  if (!confirm('Clear all ' + devAnnotations.length + ' annotations? This cannot be undone.')) return;
+  devAnnotations = [];
+  saveDevAnnotations();
+  injectAnnotationButtons(); // refresh buttons
+}
+
+function toggleDevChangelog() {
+  var overlay = document.getElementById('dev-changelog-overlay');
+  var isOpen = overlay.style.right === '0px';
+  closeAllPanels();
+  if (!isOpen) {
+    overlay.style.right = '0';
+    document.getElementById('backdrop').classList.add('open');
+    renderDevChangelog();
+  }
+}
+
+function renderDevChangelog() {
+  var body = document.getElementById('dev-changelog-body');
+  var html = '';
+  devChangelog.forEach(function(entry) {
+    html += '<div style="margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
+    html += '<span style="font-weight:700;font-size:15px;color:var(--accent)">' + entry.ver + '</span>';
+    html += '<span style="font-size:11px;color:var(--text-muted)">' + entry.date + '</span>';
+    html += '</div>';
+    html += '<ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-secondary);line-height:1.8">';
+    entry.changes.forEach(function(c) {
+      var color = 'var(--text-secondary)';
+      if (c.indexOf('Fix:') === 0) color = 'var(--danger)';
+      else if (c.indexOf('Feature:') === 0) color = 'var(--success)';
+      else if (c.indexOf('Update:') === 0) color = 'var(--accent)';
+      html += '<li style="color:' + color + '">' + c + '</li>';
+    });
+    html += '</ul></div>';
+  });
+  body.innerHTML = html;
+}
+
 function checkServiceability() {
   var address = state.lead_address;
   var city = state.lead_city;
@@ -5058,6 +5448,8 @@ function closeAllPanels() {
   document.getElementById('competitor-overlay').classList.remove('open');
   var techOverlay = document.getElementById('tech-overlay');
   if (techOverlay) techOverlay.style.right = '-420px';
+  var devLog = document.getElementById('dev-changelog-overlay');
+  if (devLog) devLog.style.right = '-450px';
   document.getElementById('backdrop').classList.remove('open');
 }
 
@@ -5473,9 +5865,9 @@ function init() {
 
   // v5.1: Clear stale state from older versions
   var stateVersion = localStorage.getItem('alamo_state_version');
-  if (stateVersion !== 'v5.9.1') {
+  if (stateVersion !== 'v5.10') {
     localStorage.removeItem('alamo_sales_state');
-    localStorage.setItem('alamo_state_version', 'v5.9.1');
+    localStorage.setItem('alamo_state_version', 'v5.10');
   }
 
   // Load saved state if exists
@@ -5631,6 +6023,11 @@ function init() {
   syncColorPickers();
   renderAll();
   renderSessionManager();
+
+  // v5.10: Restore dev mode if previously unlocked
+  if (localStorage.getItem('alamo_dev_mode') === 'true') {
+    enableDevMode();
+  }
 }
 
 document.addEventListener('DOMContentLoaded', init);
