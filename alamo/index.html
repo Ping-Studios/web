@@ -1108,16 +1108,16 @@ textarea:focus { border-color: var(--accent); }
     <div class="q-card standard-only" id="q1-card">
       <div class="q-num">Q1 &mdash; TRIGGER</div>
       <div class="q-script">"So... what finally made you start looking? Did something happen, or you just got fed up?"</div>
-      <div class="pill-group" style="flex-wrap:wrap;gap:6px">
-        <div class="pill" onclick="setTrigger(this,'fed_up')">Fed up</div>
-        <div class="pill" onclick="setTrigger(this,'bill_went_up')">Bill went up</div>
-        <div class="pill" onclick="setTrigger(this,'wfh')">Work from home now</div>
-        <div class="pill" onclick="setTrigger(this,'just_moved')">Just moved</div>
-        <div class="pill" onclick="setTrigger(this,'family_complaining')">Spouse/family complaining</div>
-        <div class="pill" onclick="setTrigger(this,'saw_ad')">Saw an ad</div>
-        <div class="pill" onclick="setTrigger(this,'referral')">Neighbor/friend referred</div>
-        <div class="pill" onclick="setTrigger(this,'saw_truck')">Saw your truck</div>
-        <div class="pill" onclick="setTrigger(this,'contract_ending')">Contract ending</div>
+      <div class="pill-group" id="trigger-pills" style="flex-wrap:wrap;gap:6px">
+        <div class="pill" onclick="toggleTrigger(this,'fed_up')">Fed up</div>
+        <div class="pill" onclick="toggleTrigger(this,'bill_went_up')">Bill went up</div>
+        <div class="pill" onclick="toggleTrigger(this,'wfh')">Work from home now</div>
+        <div class="pill" onclick="toggleTrigger(this,'just_moved')">Just moved</div>
+        <div class="pill" onclick="toggleTrigger(this,'family_complaining')">Spouse/family complaining</div>
+        <div class="pill" onclick="toggleTrigger(this,'saw_ad')">Saw an ad</div>
+        <div class="pill" onclick="toggleTrigger(this,'referral')">Neighbor/friend referred</div>
+        <div class="pill" onclick="toggleTrigger(this,'saw_truck')">Saw your truck</div>
+        <div class="pill" onclick="toggleTrigger(this,'contract_ending')">Contract ending</div>
       </div>
       <div id="trigger-response" class="hidden script-block" style="margin-top:8px;border-left-color:var(--success)"></div>
       <input type="text" id="inp-trigger-text" placeholder="Other trigger..." style="margin-top:8px" oninput="updateState('switch_trigger_text',this.value)">
@@ -2120,7 +2120,7 @@ const state = {
   pain_impact: '', pain_impacts: [], // v4.0: multi-select impacts
   pain_frequency: '', pain_duration: '', provider_tried_fix: '',
   current_provider: '', current_price: 0,
-  household_size: 0, usage_types: [], priority_preference: '', switch_trigger: '', switch_trigger_text: '',
+  household_size: 0, usage_types: [], priority_preference: '', switch_trigger: '', switch_triggers: [], switch_trigger_text: '',
   decision_maker: '', spouse_feeling: '', spouse_name: '',
   recommended_plan: '', plan_price: 0,
   close1_response: '', close2_response: '',
@@ -2186,7 +2186,7 @@ const painTree = {
   too_expensive: {
     label: 'Too expensive',
     freq: '45%',
-    empathy: '"You\'re paying too much for internet that doesn\'t even work right. That\'s frustrating."',
+    empathy: '"You\'re paying too much. That\'s frustrating — especially when you feel like you\'re not getting your money\'s worth."',
     subs: [
       { id:'promo_expired', label:'Promo rate expired', quote:'"They advertised $30, I\'m paying $75 now"' },
       { id:'hidden_fees', label:'Hidden fees & surcharges', quote:'"My bill has all these charges I never agreed to"' },
@@ -3559,13 +3559,15 @@ function renderPainDeepener() {
     );
   }
 
-  // "How long?" with inline answers
-  html += makeDeepenerRow('"So... how long has that been going on?"',
-    '<div class="pill deepener-pill' + (state.pain_duration === 'weeks' ? ' active' : '') + '" onclick="setPainDuration(this,\'weeks\')">Weeks</div>' +
-    '<div class="pill deepener-pill' + (state.pain_duration === 'months' ? ' active' : '') + '" onclick="setPainDuration(this,\'months\')">Months</div>' +
-    '<div class="pill deepener-pill' + (state.pain_duration === '6_months' ? ' active' : '') + '" onclick="setPainDuration(this,\'6_months\')">6+ months</div>' +
-    '<div class="pill deepener-pill' + (state.pain_duration === 'years' ? ' active' : '') + '" onclick="setPainDuration(this,\'years\')">Years</div>'
-  );
+  // "How long?" — skip for price-only pains
+  if (!isPriceOnly) {
+    html += makeDeepenerRow('"So... how long has that been going on?"',
+      '<div class="pill deepener-pill' + (state.pain_duration === 'weeks' ? ' active' : '') + '" onclick="setPainDuration(this,\'weeks\')">Weeks</div>' +
+      '<div class="pill deepener-pill' + (state.pain_duration === 'months' ? ' active' : '') + '" onclick="setPainDuration(this,\'months\')">Months</div>' +
+      '<div class="pill deepener-pill' + (state.pain_duration === '6_months' ? ' active' : '') + '" onclick="setPainDuration(this,\'6_months\')">6+ months</div>' +
+      '<div class="pill deepener-pill' + (state.pain_duration === 'years' ? ' active' : '') + '" onclick="setPainDuration(this,\'years\')">Years</div>'
+    );
+  }
 
   // "Talked to provider?" with inline answers
   var hasProviderPain = state.pain_types.some(function(t) { return t !== 'just_moved'; });
@@ -3598,6 +3600,12 @@ function renderPainDeepener() {
   }
 
   script.innerHTML = html;
+
+  // v5.10: Hide local support weave for price-only pains (doesn't make sense)
+  var localWeave = document.getElementById('weave-local-support');
+  if (localWeave) {
+    localWeave.classList.toggle('hidden', isPriceOnly && state.pain_types.length > 0);
+  }
 }
 
 function makeDeepenerRow(question, pillsHtml) {
@@ -4356,6 +4364,33 @@ function setTrigger(el, val) {
   renderAll();
 }
 
+function toggleTrigger(el, val) {
+  if (!state.switch_triggers) state.switch_triggers = [];
+  var idx = state.switch_triggers.indexOf(val);
+  if (idx >= 0) { state.switch_triggers.splice(idx, 1); el.classList.remove('multi-selected'); }
+  else { state.switch_triggers.push(val); el.classList.add('multi-selected'); }
+  // Keep legacy switch_trigger as the first selected
+  state.switch_trigger = state.switch_triggers.length ? state.switch_triggers[0] : '';
+  // Update numbered badges
+  document.querySelectorAll('#trigger-pills .pill').forEach(function(p) {
+    var badge = p.querySelector('.pill-badge');
+    if (badge) badge.remove();
+    var match = p.getAttribute('onclick').match(/'([^']+)'/);
+    if (match) {
+      var pillIdx = state.switch_triggers.indexOf(match[1]);
+      if (pillIdx >= 0) {
+        var b = document.createElement('span');
+        b.className = 'pill-badge';
+        b.textContent = pillIdx + 1;
+        p.appendChild(b);
+      }
+    }
+  });
+  if (state.switch_triggers.length > 0) document.getElementById('q1-card').classList.add('answered');
+  saveToLocalStorage();
+  renderAll();
+}
+
 function setDecisionMaker(el, val) {
   state.decision_maker = val;
   setActivePill(el);
@@ -4777,6 +4812,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.10.0c', date:'2026-03-25', changes:['Fix: too_expensive empathy — no longer assumes internet is broken','Fix: price-only pains skip "how long" and "how often" deepeners','Fix: local support weave hidden for price-only pains','Feature: switch trigger pills are now multi-select with number badges','Update: Step 2 instructions more open-ended for price pains'] },
   { ver:'v5.10.0b', date:'2026-03-25', changes:['Update: household pills — added "Partner" option (Just me / Partner / Whole Household)','Feature: pain deepener steps now annotatable in dev mode (empathy, sub-options, deepener questions)','Fix: dev annotations re-inject after dynamic content renders'] },
   { ver:'v5.10.0a', date:'2026-03-25', changes:['Fix: outbound opener — "from Alamo Broadband" + casual recorded line after confirmation (annotation feedback)'] },
   { ver:'v5.10.0', date:'2026-03-24', changes:['Feature: Developer Mode with inline annotations','Feature: annotation export to JSON','Feature: Dev Changelog panel','Password-protected (5555) — unlock in Settings'] },
@@ -5969,6 +6005,23 @@ function init() {
   if (state.current_price) { var el = document.getElementById('inp-price-opening'); if(el) el.value = state.current_price; }
   if (state.current_provider) { var el = document.getElementById('inp-provider-opening'); if(el) el.value = state.current_provider; }
   if (state.switch_trigger_text) { var el = document.getElementById('inp-trigger-text'); if(el) el.value = state.switch_trigger_text; }
+  // v5.10: Restore multi-select trigger pills
+  if (state.switch_triggers && state.switch_triggers.length > 0) {
+    document.querySelectorAll('#trigger-pills .pill').forEach(function(p) {
+      var match = p.getAttribute('onclick').match(/'([^']+)'/);
+      if (match) {
+        var pillIdx = state.switch_triggers.indexOf(match[1]);
+        if (pillIdx >= 0) {
+          p.classList.add('multi-selected');
+          var b = document.createElement('span');
+          b.className = 'pill-badge';
+          b.textContent = pillIdx + 1;
+          p.appendChild(b);
+        }
+      }
+    });
+    document.getElementById('q1-card').classList.add('answered');
+  }
   // Call type toggle
   if (state.call_type) {
     document.querySelectorAll('#call-type-toggle .toggle-btn').forEach(function(b) {
@@ -6037,9 +6090,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.0b') {
+  if (annotationVer !== 'v5.10.0c') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.0b');
+    localStorage.setItem('alamo_annotation_version', 'v5.10.0c');
   }
 
   // v5.10: Restore dev mode if previously unlocked
