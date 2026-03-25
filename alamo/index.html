@@ -652,9 +652,12 @@ textarea:focus { border-color: var(--accent); }
 .dev-annotate-btn:hover { opacity: 1; transform: scale(1.15); }
 .dev-annotate-btn.has-note { background: var(--warning); opacity: 1; }
 .dev-popover {
-  position: absolute; top: calc(100% + 4px); right: 0; width: 320px; z-index: 200;
+  position: absolute; top: 0; left: calc(100% + 8px); width: 320px; z-index: 200;
   background: var(--bg-card); border: 2px solid var(--accent); border-radius: var(--radius-lg);
   padding: 14px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+@media (max-width: 900px) {
+  .dev-popover { left: auto; right: 0; top: calc(100% + 4px); }
 }
 .dev-popover .dev-action-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
 .dev-popover .dev-action-pill {
@@ -1076,7 +1079,7 @@ textarea:focus { border-color: var(--accent); }
       <div class="pain-step-num">2</div>
       <div class="pain-step-title">Get Specific &mdash; Click All That Apply</div>
     </div>
-    <div class="pain-step-note">Ask them to elaborate: <strong>"What do you mean by that? What specifically is happening?"</strong> Then click the issues that match what they say. You can select multiple.</div>
+    <div class="pain-step-note">Click the specific issues they mentioned below. You can select multiple within each pain.</div>
     <div id="step2-suggestion" style="display:none;margin-bottom:8px;padding:8px 12px;background:var(--purple);background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(167,139,250,0.05));border-left:3px solid var(--purple);border-radius:0 var(--radius) var(--radius) 0;font-size:12px;color:var(--text-primary)"></div>
     <div id="pain-sub-container"></div>
   </div>
@@ -1347,6 +1350,29 @@ textarea:focus { border-color: var(--accent); }
   <div class="section-title">ROI / Savings Math + Plan</div>
   <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px">Winning reps do this 4x more often than losing reps. This is not optional.</p>
 
+  <!-- ROI Script — appears ABOVE plan cards so rep reads pitch first -->
+  <div id="roi-content">
+    <div id="roi-needs-data" style="color:var(--text-muted);font-size:13px;padding:16px;text-align:center;background:var(--bg-input);border-radius:var(--radius);border:1px dashed var(--border)">
+      <div id="roi-missing-what"></div>
+    </div>
+    <div id="roi-calculated" class="hidden">
+      <div class="script-block" id="roi-script" style="margin-bottom:12px"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="roi-box" style="margin:0">
+          <div class="roi-big" id="roi-monthly" style="font-size:28px">$0</div>
+          <div class="roi-sub" id="roi-monthly-label">saved per month</div>
+        </div>
+        <div class="roi-box" style="margin:0">
+          <div class="roi-big" id="roi-annual" style="font-size:28px">$0</div>
+          <div class="roi-sub" id="roi-annual-label">saved per year</div>
+        </div>
+      </div>
+      <div id="roi-first-month-box" class="hidden" style="padding:10px 14px;background:var(--success-dim);border:1px solid var(--success);border-radius:var(--radius);text-align:center;margin-bottom:12px;font-size:13px;color:var(--success);font-weight:600"></div>
+      <div id="roi-value-play-box" class="hidden" style="margin-bottom:12px"></div>
+    </div>
+  </div>
+
+  <!-- Plan Cards — below the pitch script -->
   <div class="coach-note" id="plan-coach-note">Click on the recommended plan based on their usage and household size. The RECOMMENDED badge shows your best suggestion.</div>
   <div id="plan-summary-bar" class="hidden" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--accent-dim);border:1px solid var(--accent);border-radius:var(--radius);margin-bottom:16px;cursor:pointer" onclick="expandPlanCards()">
     <div>
@@ -1382,27 +1408,6 @@ textarea:focus { border-color: var(--accent); }
     </div>
   </div>
 
-
-  <div id="roi-content">
-    <div id="roi-needs-data" style="color:var(--text-muted);font-size:13px;padding:16px;text-align:center;background:var(--bg-input);border-radius:var(--radius);border:1px dashed var(--border)">
-      <div id="roi-missing-what"></div>
-    </div>
-    <div id="roi-calculated" class="hidden">
-      <div class="script-block" id="roi-script" style="margin-bottom:12px"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-        <div class="roi-box" style="margin:0">
-          <div class="roi-big" id="roi-monthly" style="font-size:28px">$0</div>
-          <div class="roi-sub" id="roi-monthly-label">saved per month</div>
-        </div>
-        <div class="roi-box" style="margin:0">
-          <div class="roi-big" id="roi-annual" style="font-size:28px">$0</div>
-          <div class="roi-sub" id="roi-annual-label">saved per year</div>
-        </div>
-      </div>
-      <div id="roi-first-month-box" class="hidden" style="padding:10px 14px;background:var(--success-dim);border:1px solid var(--success);border-radius:var(--radius);text-align:center;margin-bottom:12px;font-size:13px;color:var(--success);font-weight:600"></div>
-      <div id="roi-value-play-box" class="hidden" style="margin-bottom:12px"></div>
-    </div>
-  </div>
   <!-- Don't Cancel — shown when a plan is selected -->
   <div id="dont-cancel-block" class="hidden" style="margin-top:12px">
     <div class="script-block" style="border-left-color:var(--warning)">
@@ -3261,7 +3266,8 @@ function buildStep2Suggestion() {
 
   if (!suggestions.length) return '';
   var unique = suggestions.filter(function(v, i) { return suggestions.indexOf(v) === i; });
-  return '<strong>Ask:</strong> "What specifically is happening? ' + unique.slice(0, 2).join(' ') + '"<br><span style="font-size:10px;color:var(--text-muted)">Click the highlighted options below that match what they say.</span>';
+  var painLabel = state.pain_types.length === 1 ? painTree[state.pain_types[0]].label.toLowerCase() : 'that';
+  return '<strong>Ask:</strong> "When you say it\'s ' + painLabel + ', what do you mean by that? ' + unique.slice(0, 1).join(' ') + '"<br><span style="font-size:10px;color:var(--text-muted)">Click the options below that match what they say.</span>';
 }
 
 // v4.9: Get recommended sub-option IDs based on usage
@@ -3388,9 +3394,9 @@ var subPhrases = {
   hidden_fees: { issue:'hidden fees keep adding up on your bill' },
   bundle_confusion: { issue:'the bundle pricing is confusing and you don\'t know what you\'re paying' },
   loyal_customer_penalty: { issue:'new customers get better deals while you\'re paying full price' },
-  hundred_plus: { issue:'paying over $100 a month for slow satellite' },
-  locked_in_satellite: { issue:'locked into a satellite contract' },
-  satellite_not_worth: { issue:'not getting what you pay for with satellite' },
+  hundred_plus: { issue:'paying over $100 a month and it doesn\'t even work right' },
+  locked_in_satellite: { issue:'locked into a contract you can\'t get out of' },
+  satellite_not_worth: { issue:'not getting what you\'re paying for' },
   // keeps_dropping
   daily_drops: { issue:'the internet drops on you every day' },
   evening_slowdown: { issue:'it slows way down every evening' },
@@ -3920,8 +3926,14 @@ function renderSpouseCallback() {
 
 function renderTriggerResponse() {
   var el = document.getElementById('trigger-response');
-  var resp = triggerResponses[state.switch_trigger];
-  if (resp) { el.classList.remove('hidden'); el.innerHTML = resp; }
+  var triggers = state.switch_triggers && state.switch_triggers.length ? state.switch_triggers : (state.switch_trigger ? [state.switch_trigger] : []);
+  if (!triggers.length) { el.classList.add('hidden'); return; }
+  var html = '';
+  triggers.forEach(function(t) {
+    var resp = triggerResponses[t];
+    if (resp) html += '<div style="margin-bottom:6px">' + resp + '</div>';
+  });
+  if (html) { el.classList.remove('hidden'); el.innerHTML = html; }
   else { el.classList.add('hidden'); }
 }
 
@@ -4384,7 +4396,11 @@ function toggleTrigger(el, val) {
       }
     }
   });
-  if (state.switch_triggers.length > 0) document.getElementById('q1-card').classList.add('answered');
+  if (state.switch_triggers.length > 0) {
+    document.getElementById('q1-card').classList.add('answered');
+  } else {
+    document.getElementById('q1-card').classList.remove('answered');
+  }
   saveToLocalStorage();
   renderAll();
 }
@@ -4411,7 +4427,7 @@ function selectPlan(planId) {
   state.recommended_plan = planId;
   var plan = plans[planId];
   state.plan_price = plan.price;
-  document.querySelectorAll('.plan-card').forEach(function(c) { c.classList.remove('selected','recommended'); });
+  document.querySelectorAll('.plan-card').forEach(function(c) { c.classList.remove('selected'); });
   var ids = ['unfiber50','unfiber100','unfiber300'];
   document.querySelectorAll('#plan-grid .plan-card').forEach(function(c, i) {
     if (ids[i] === planId) c.classList.add('selected');
@@ -4810,6 +4826,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.10.0e', date:'2026-03-25', changes:['Fix: Step 2 prompt consolidated into purple box only — no duplication','Fix: satellite references removed from sub-phrase deepeners','Fix: trigger pills now populate response for all selections','Fix: annotation popovers appear to the right instead of below','Fix: recommended badge stays on plan card after selecting different plan','Update: ROI pitch script moved above plan cards — rep reads script first','Update: Step 2 prompt uses pain label: "when you say it\'s too expensive..."'] },
   { ver:'v5.10.0d', date:'2026-03-25', changes:['Fix: price pains no longer default to "price going up" assumption anywhere','Fix: too_expensive deepener is open-ended — "walk me through what\'s going on"','Fix: bill_keeps_changing deepener removes "how long" and "how many times"','Update: Step 2 instruction text now prompts rep to ask open-ended question first'] },
   { ver:'v5.10.0c', date:'2026-03-25', changes:['Fix: too_expensive empathy — no longer assumes internet is broken','Fix: price-only pains skip "how long" and "how often" deepeners','Fix: local support weave hidden for price-only pains','Feature: switch trigger pills are now multi-select with number badges'] },
   { ver:'v5.10.0b', date:'2026-03-25', changes:['Update: household pills — added "Partner" option (Just me / Partner / Whole Household)','Feature: pain deepener steps now annotatable in dev mode (empathy, sub-options, deepener questions)','Fix: dev annotations re-inject after dynamic content renders'] },
@@ -6089,9 +6106,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.0d') {
+  if (annotationVer !== 'v5.10.0e') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.0d');
+    localStorage.setItem('alamo_annotation_version', 'v5.10.0e');
   }
 
   // v5.10: Restore dev mode if previously unlocked
