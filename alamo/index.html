@@ -1076,7 +1076,7 @@ textarea:focus { border-color: var(--accent); }
       <div class="pain-step-num">2</div>
       <div class="pain-step-title">Get Specific &mdash; Click All That Apply</div>
     </div>
-    <div class="pain-step-note">Now that you know their pains, click the specific issues they mentioned. You can select multiple within each pain. This helps tailor the pitch later.</div>
+    <div class="pain-step-note">Ask them to elaborate: <strong>"What do you mean by that? What specifically is happening?"</strong> Then click the issues that match what they say. You can select multiple.</div>
     <div id="step2-suggestion" style="display:none;margin-bottom:8px;padding:8px 12px;background:var(--purple);background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(167,139,250,0.05));border-left:3px solid var(--purple);border-radius:0 var(--radius) var(--radius) 0;font-size:12px;color:var(--text-primary)"></div>
     <div id="pain-sub-container"></div>
   </div>
@@ -2196,7 +2196,7 @@ const painTree = {
       { id:'locked_in_satellite', label:'Locked in satellite contract', quote:'"I\'m stuck in a 2-year contract with Viasat"' },
       { id:'satellite_not_worth', label:'Not worth what I pay', quote:'"For what I\'m paying I should have way better speeds"' }
     ],
-    deepener: ['"When did you first notice the price going up?"', '"Have you called them about it?"', '"What are you paying now vs. what you signed up for?"']
+    deepener: ['"So what\'s going on with the bill? Walk me through it."', '"Have you called them about it?"', '"What are you paying now vs. what you signed up for?"']
   },
   keeps_dropping: {
     label: 'Keeps dropping',
@@ -3446,9 +3446,8 @@ function buildDynamicDeepener(painType, selectedSubs) {
   var issueStr = issues.length ? issues.join(' and ') : tree.label.toLowerCase();
 
   if (painType === 'too_expensive') {
-    questions.push('"So ' + (issues[0] || 'you\'re paying too much') + '? And... how much are you paying now versus what you started at?"');
+    questions.push('"So ' + (issues[0] || 'you\'re paying too much') + '? Walk me through that — what are you paying now?"');
     questions.push('"And for that price, is the service at least good, or are you paying more AND dealing with problems?"');
-    questions.push('"You know... how long have you been dealing with that?"');
   } else if (painType === 'keeps_dropping') {
     questions.push('"So the internet ' + issueStr + ' — and... how often is that happening?"');
     questions.push('"And when it goes out, how long does it take to come back?"');
@@ -3463,9 +3462,8 @@ function buildDynamicDeepener(painType, selectedSubs) {
     questions.push('"Is it worse at certain times of day?"');
     questions.push('"How long has that been going on?"');
   } else if (painType === 'bill_keeps_changing') {
-    questions.push('"So ' + (issues[0] || 'the bill keeps changing') + '? And... how many times has the price gone up?"');
+    questions.push('"So ' + (issues[0] || 'the bill keeps changing') + '? Walk me through that — what are you seeing on the bill?"');
     questions.push('"Do you even know what you\'re paying for at this point?"');
-    questions.push('"How long have you been dealing with that?"');
   } else if (painType === 'storms') {
     questions.push('"So ' + issueStr + ' — how long does it typically take to come back?"');
     questions.push('"Is this with satellite service?"');
@@ -3522,7 +3520,7 @@ function renderPainDeepener() {
 
   if (allIssues.length) {
     if (isPriceOnly) {
-      openingQ = '"So ' + allIssues.slice(0, 3).join(', and ') + ' — how many times has the price gone up since you first signed up?"';
+      openingQ = '"So ' + allIssues.slice(0, 3).join(', and ') + ' — walk me through what\'s going on with the bill."';
     } else {
       openingQ = '"So ' + allIssues.slice(0, 3).join(', and ') + ' — what does that actually look like day to day?"';
     }
@@ -3531,7 +3529,7 @@ function renderPainDeepener() {
     openingQ = tree && tree.deepener && tree.deepener[0] ? tree.deepener[0] : '';
   } else {
     if (isPriceOnly) {
-      openingQ = '"So you\'re dealing with ' + painLabels.join(' and ') + ' — how much has the price gone up since you started?"';
+      openingQ = '"So you\'re dealing with ' + painLabels.join(' and ') + ' — what\'s going on? Walk me through it."';
     } else {
       openingQ = '"So you\'re dealing with ' + painLabels.join(' and ') + ' — walk me through what that looks like on a typical day."';
     }
@@ -4812,7 +4810,8 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
-  { ver:'v5.10.0c', date:'2026-03-25', changes:['Fix: too_expensive empathy — no longer assumes internet is broken','Fix: price-only pains skip "how long" and "how often" deepeners','Fix: local support weave hidden for price-only pains','Feature: switch trigger pills are now multi-select with number badges','Update: Step 2 instructions more open-ended for price pains'] },
+  { ver:'v5.10.0d', date:'2026-03-25', changes:['Fix: price pains no longer default to "price going up" assumption anywhere','Fix: too_expensive deepener is open-ended — "walk me through what\'s going on"','Fix: bill_keeps_changing deepener removes "how long" and "how many times"','Update: Step 2 instruction text now prompts rep to ask open-ended question first'] },
+  { ver:'v5.10.0c', date:'2026-03-25', changes:['Fix: too_expensive empathy — no longer assumes internet is broken','Fix: price-only pains skip "how long" and "how often" deepeners','Fix: local support weave hidden for price-only pains','Feature: switch trigger pills are now multi-select with number badges'] },
   { ver:'v5.10.0b', date:'2026-03-25', changes:['Update: household pills — added "Partner" option (Just me / Partner / Whole Household)','Feature: pain deepener steps now annotatable in dev mode (empathy, sub-options, deepener questions)','Fix: dev annotations re-inject after dynamic content renders'] },
   { ver:'v5.10.0a', date:'2026-03-25', changes:['Fix: outbound opener — "from Alamo Broadband" + casual recorded line after confirmation (annotation feedback)'] },
   { ver:'v5.10.0', date:'2026-03-24', changes:['Feature: Developer Mode with inline annotations','Feature: annotation export to JSON','Feature: Dev Changelog panel','Password-protected (5555) — unlock in Settings'] },
@@ -6090,9 +6089,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.0c') {
+  if (annotationVer !== 'v5.10.0d') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.0c');
+    localStorage.setItem('alamo_annotation_version', 'v5.10.0d');
   }
 
   // v5.10: Restore dev mode if previously unlocked
