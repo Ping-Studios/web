@@ -4003,6 +4003,7 @@ function setCloseResponse(el, response) {
     if (anchor) anchor.classList.remove('hidden');
     renderSpouseAmmo();
     saveToLocalStorage();
+    setTimeout(function() { scrollToSection('sec-close'); }, 300);
   } else if (response === 'objection') {
     openObjectionPanel();
     renderSpouseAmmo();
@@ -4826,6 +4827,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.10.0f', date:'2026-03-25', changes:['Fix: hesitant button auto-scrolls to Advanced Closes (Section 7)'] },
   { ver:'v5.10.0e', date:'2026-03-25', changes:['Fix: Step 2 prompt consolidated into purple box only — no duplication','Fix: satellite references removed from sub-phrase deepeners','Fix: trigger pills now populate response for all selections','Fix: annotation popovers appear to the right instead of below','Fix: recommended badge stays on plan card after selecting different plan','Update: ROI pitch script moved above plan cards — rep reads script first','Update: Step 2 prompt uses pain label: "when you say it\'s too expensive..."'] },
   { ver:'v5.10.0d', date:'2026-03-25', changes:['Fix: price pains no longer default to "price going up" assumption anywhere','Fix: too_expensive deepener is open-ended — "walk me through what\'s going on"','Fix: bill_keeps_changing deepener removes "how long" and "how many times"','Update: Step 2 instruction text now prompts rep to ask open-ended question first'] },
   { ver:'v5.10.0c', date:'2026-03-25', changes:['Fix: too_expensive empathy — no longer assumes internet is broken','Fix: price-only pains skip "how long" and "how often" deepeners','Fix: local support weave hidden for price-only pains','Feature: switch trigger pills are now multi-select with number badges'] },
@@ -6106,9 +6108,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.0e') {
+  if (annotationVer !== 'v5.10.0f') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.0e');
+    localStorage.setItem('alamo_annotation_version', 'v5.10.0f');
   }
 
   // v5.10: Restore dev mode if previously unlocked
