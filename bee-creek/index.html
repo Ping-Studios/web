@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="navy">
+<html lang="en" data-theme="beecreek">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,6 +18,21 @@
   @keyframes devPulse { from { opacity: .6 } to { opacity: 1 } }
   ::-webkit-scrollbar { width: 5px }
   ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 3px }
+
+  /* ─── Bee Creek Brand Theme (Default) ─── */
+  [data-theme="beecreek"] {
+    --bg-primary: #f4f7fb; --bg-secondary: #e9eff7; --bg-card: #ffffff; --bg-card-hover: #f8fafd;
+    --bg-input: #ffffff; --border: #d4dde9; --border-active: #06AAF4;
+    --text-primary: #1e2a3a; --text-secondary: #5a6a7a; --text-muted: #8a96a6;
+    --accent: #3567B8; --accent-hover: #2b57a0; --accent-dim: rgba(53,103,184,.12);
+    --success: #27ae60; --success-dim: rgba(39,174,96,.12);
+    --warning: #e6a817; --danger: #d63031; --danger-dim: rgba(214,48,49,.12);
+    --hero-bg: linear-gradient(160deg,#1e3a5f 0%,#2a5298 50%,#1e3a5f 100%);
+    --hero-text: #ffffff; --hero-muted: rgba(255,255,255,.5);
+    --footer-bg: #1e2a3a; --footer-text: rgba(255,255,255,.55); --footer-accent: #06AAF4;
+    --shadow: 0 2px 10px rgba(30,42,58,.06);
+    --bar-empty: #d4dde9; --link: #06AAF4;
+  }
 
   /* ─── Light Themes (8) ─── */
   [data-theme="cream"] {
@@ -360,6 +375,7 @@ const SAMPLE_ADDRESSES = [
 ];
 
 const THEMES = [
+  { id: "beecreek",   label: "Bee Creek",  group: "brand",  bg: "#f4f7fb", fg: "#1e2a3a", accent: "#3567B8" },
   { id: "cream",      label: "Cream",      group: "light", bg: "#faf6f0", fg: "#5a4a3a", accent: "#c49a6c" },
   { id: "snow",       label: "Snow",       group: "light", bg: "#f8fafc", fg: "#1e293b", accent: "#6366f1" },
   { id: "light",      label: "Light",      group: "light", bg: "#f5f7fa", fg: "#2c3e50", accent: "#4a9eff" },
@@ -551,7 +567,17 @@ function SettingsPanel({ isOpen, theme, customColors, devMode, onThemeChange, on
 
       {/* Themes */}
       <div className="sp-section">
-        <div className="sp-label">Light Themes</div>
+        <div className="sp-label">Brand Theme</div>
+        <div className="theme-grid">
+          {THEMES.filter(t => t.group === "brand").map(t => (
+            <div key={t.id} className={"theme-swatch" + (theme === t.id ? " active" : "")}
+              style={{ background: t.bg, color: t.fg, borderColor: theme === t.id ? t.accent : "transparent", gridColumn: "span 2" }}
+              onClick={() => onThemeChange(t.id)}>
+              <span style={{ borderBottom: "2px solid " + t.accent, paddingBottom: 1 }}>{t.label}</span>
+            </div>
+          ))}
+        </div>
+        <div className="sp-label" style={{ marginTop: 14 }}>Light Themes</div>
         <div className="theme-grid">
           {THEMES.filter(t => t.group === "light").map(t => (
             <div key={t.id} className={"theme-swatch" + (theme === t.id ? " active" : "")}
@@ -622,10 +648,10 @@ function SettingsPanel({ isOpen, theme, customColors, devMode, onThemeChange, on
 
 /* ─── Form Page ─── */
 function FormPage({ onSubmit }) {
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [name, setName] = useState("Sarah Mitchell");
+  const [address, setAddress] = useState("789 Hill Country Dr, Fredericksburg, TX 78624");
+  const [email, setEmail] = useState("sarah.mitchell@email.com");
+  const [phone, setPhone] = useState("(830) 555-4271");
   const [showDrop, setShowDrop] = useState(false);
   const [filtered, setFiltered] = useState([]);
   const [errors, setErrors] = useState({});
@@ -654,13 +680,9 @@ function FormPage({ onSubmit }) {
   };
 
   const validate = () => {
-    const e = {};
-    if (!name.trim()) e.name = true;
-    if (!address.trim()) e.address = true;
-    if (!email.trim() && !phone.trim()) e.contact = true;
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = true;
-    setErrors(e);
-    return !Object.keys(e).length;
+    // Preview mode — no required fields, always allow submission
+    setErrors({});
+    return true;
   };
 
   const submit = () => { if (validate()) onSubmit({ name, address, email, phone }); };
@@ -1044,7 +1066,7 @@ function CongratsPage({ userData, currentZone, zones, plans, devMode, showAllPla
 function App() {
   const [page, setPage] = useState("form");
   const [userData, setUserData] = useState(null);
-  const [theme, setTheme] = useState(() => localStorage.getItem("bcc_theme") || "navy");
+  const [theme, setTheme] = useState(() => localStorage.getItem("bcc_theme") || "beecreek");
   const [customColors, setCustomColors] = useState(() => {
     try { return JSON.parse(localStorage.getItem("bcc_custom_colors")) || {}; } catch { return {}; }
   });
