@@ -266,6 +266,47 @@
 
   input:focus { border-color: var(--accent, #f0c040) !important;
     box-shadow: 0 0 0 3px var(--accent-dim, rgba(240,192,64,.15)); }
+
+  /* ─── Dev Annotation System ─── */
+  .ann-wrap { position: relative; }
+  .ann-wrap:hover { outline: 1px dashed rgba(250,204,21,.4); outline-offset: 2px; }
+  .ann-btn {
+    position: absolute; top: 2px; right: 2px; width: 20px; height: 20px;
+    border-radius: 50%; border: none; font-size: 10px; line-height: 1;
+    cursor: pointer; z-index: 60; display: flex; align-items: center; justify-content: center;
+    transition: opacity .2s, transform .2s; opacity: 0.4;
+    background: var(--accent, #facc15); color: #fff;
+  }
+  .ann-wrap:hover .ann-btn { opacity: 1; }
+  .ann-btn:hover { transform: scale(1.2); opacity: 1; }
+  .ann-btn.has-note { background: #f59e0b; opacity: 1; }
+  .ann-popover {
+    position: absolute; top: 0; right: 28px; width: 300px; z-index: 200;
+    background: var(--bg-card, #fff); border: 2px solid var(--accent, #facc15);
+    border-radius: 10px; padding: 12px; box-shadow: 0 8px 32px rgba(0,0,0,.25);
+  }
+  @media (max-width: 700px) { .ann-popover { right: auto; left: 0; top: 28px; width: 260px; } }
+  .ann-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+  .ann-pill {
+    padding: 3px 9px; font-size: 10px; border: 1px solid var(--border, #ddd); border-radius: 20px;
+    cursor: pointer; background: var(--bg-input, #fff); color: var(--text-secondary, #666);
+    font-family: var(--f-head); font-weight: 600; transition: all .15s;
+  }
+  .ann-pill:hover { border-color: var(--accent); color: var(--accent); }
+  .ann-pill.sel { background: #f59e0b; color: #fff; border-color: #f59e0b; }
+  .ann-popover textarea {
+    width: 100%; min-height: 50px; padding: 8px; background: var(--bg-input, #fff);
+    color: var(--text-primary, #333); border: 1px solid var(--border, #ddd);
+    border-radius: 6px; font-size: 11px; font-family: inherit; resize: vertical;
+    margin-bottom: 8px; box-sizing: border-box;
+  }
+  .ann-save { width: 100%; padding: 6px; background: #22c55e; color: #fff; border: none;
+    border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 700; font-family: var(--f-head); }
+  .ann-del { width: 100%; padding: 5px; background: none; color: #ef4444; border: 1px solid #ef4444;
+    border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: 600; margin-top: 4px; font-family: var(--f-head); }
+  .ann-count { position: fixed; bottom: 56px; right: 16px; z-index: 10000;
+    background: #f59e0b; color: #1a1a2e; font-size: 10px; font-weight: 800; padding: 4px 10px;
+    border-radius: 12px; font-family: var(--f-head); letter-spacing: .5px; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
 </style>
 </head>
 <body>
@@ -414,6 +455,80 @@ function rgbToHex(str) {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   ANNOTATION SYSTEM
+   ═══════════════════════════════════════════════════════════ */
+
+const ANN_ACTIONS = [
+  { key: "remove", label: "Remove" },
+  { key: "move-up", label: "Move Up" },
+  { key: "move-down", label: "Move Down" },
+  { key: "change", label: "Change Wording" },
+  { key: "bug", label: "Bug" },
+  { key: "feature", label: "Feature Request" },
+];
+
+function loadAnnotations() {
+  try { const raw = localStorage.getItem("bcc_dev_annotations"); return raw ? JSON.parse(raw) : []; }
+  catch { return []; }
+}
+function saveAnnotations(anns) {
+  try { localStorage.setItem("bcc_dev_annotations", JSON.stringify(anns)); } catch {}
+}
+
+function AnnotationPopover({ annId, existing, onSave, onDelete, onClose }) {
+  const [action, setAction] = useState(existing ? existing.action : "");
+  const [comment, setComment] = useState(existing ? existing.comment : "");
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const h = e => { if (ref.current && !ref.current.contains(e.target) && !e.target.classList.contains("ann-btn")) onClose(); };
+    setTimeout(() => document.addEventListener("mousedown", h), 10);
+    return () => document.removeEventListener("mousedown", h);
+  }, [onClose]);
+
+  return (
+    <div className="ann-popover" ref={ref} onClick={e => e.stopPropagation()}>
+      <div className="ann-pills">
+        {ANN_ACTIONS.map(a => (
+          <div key={a.key} className={"ann-pill" + (action === a.key ? " sel" : "")}
+            onClick={() => setAction(action === a.key ? "" : a.key)}>{a.label}</div>
+        ))}
+      </div>
+      <textarea value={comment} onChange={e => setComment(e.target.value)} placeholder="Add your notes here..." />
+      <button className="ann-save" onClick={() => { if (action || comment.trim()) onSave(annId, action, comment.trim()); }}>Save Annotation</button>
+      {existing && <button className="ann-del" onClick={() => onDelete(annId)}>Delete Annotation</button>}
+    </div>
+  );
+}
+
+function Annotatable({ id, label, devMode, annotations, onSave, onDelete, children, style }) {
+  const [open, setOpen] = useState(false);
+  if (!devMode) return <div style={style}>{children}</div>;
+
+  const existing = annotations.find(a => a.id === id);
+
+  return (
+    <div className="ann-wrap" style={style}>
+      {children}
+      <button className={"ann-btn" + (existing ? " has-note" : "")}
+        onClick={e => { e.stopPropagation(); setOpen(!open); }}
+        title={existing ? (existing.action + ": " + (existing.comment || "").slice(0, 40)) : "Add annotation"}>
+        {existing ? "!" : "+"}
+      </button>
+      {open && (
+        <AnnotationPopover
+          annId={id}
+          existing={existing}
+          onSave={(annId, action, comment) => { onSave(annId, label, action, comment); setOpen(false); }}
+          onDelete={(annId) => { onDelete(annId); setOpen(false); }}
+          onClose={() => setOpen(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    COMPONENTS
    ═══════════════════════════════════════════════════════════ */
 
@@ -446,10 +561,12 @@ function UploadBars({ filled, total = 8 }) {
 }
 
 /* ─── Broadband Label Modal ─── */
-function BroadbandLabel({ plan, zoneFees, devMode, onEdit, onClose }) {
+function BroadbandLabel({ plan, zoneFees, devMode, annotations, onAnnSave, onAnnDelete, onClose }) {
   const p = plan;
   const monthlyFees = zoneFees ? zoneFees.monthly : [];
   const installFees = zoneFees ? zoneFees.install : [];
+  const a = { annotations: annotations || [], onSave: onAnnSave, onDelete: onAnnDelete };
+  const pid = p.name.replace(/\s/g, "-");
 
   return (
     <div onClick={onClose} style={{
@@ -463,78 +580,66 @@ function BroadbandLabel({ plan, zoneFees, devMode, onEdit, onClose }) {
         maxHeight: "88vh", overflow: "auto", boxShadow: "0 25px 60px rgba(0,0,0,0.35)",
         animation: "bcSlideUp .3s ease"
       }}>
-        <div style={{ background: "var(--text-primary)", color: "var(--hero-text,#fff)", padding: "18px 22px", borderRadius: "14px 14px 0 0", position: "relative" }}>
+        <Annotatable id={"bb-header-" + pid} label={p.name + " broadband label header"} devMode={devMode} {...a}
+          style={{ background: "var(--text-primary)", color: "var(--hero-text,#fff)", padding: "18px 22px", borderRadius: "14px 14px 0 0", position: "relative" }}>
           <button onClick={onClose} style={{ position: "absolute", top: 10, right: 14, background: "none", border: "none", color: "#fff", fontSize: "20px", cursor: "pointer", opacity: .7 }}>{"\u2715"}</button>
           <div style={{ fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", opacity: .6, marginBottom: 2 }}>Broadband Facts</div>
           <div style={{ fontSize: "20px", fontWeight: 800, fontFamily: "var(--f-head)" }}>{p.name}</div>
           <div style={{ fontSize: "12px", opacity: .5 }}>Bee Creek Communications | Residential</div>
-        </div>
+        </Annotatable>
         <div style={{ padding: "18px 22px" }}>
-          <div style={{ background: "var(--accent)", borderRadius: "8px", padding: "12px", textAlign: "center", marginBottom: 14 }}>
+          <Annotatable id={"bb-price-" + pid} label={p.name + " monthly price ($" + p.price + ")"} devMode={devMode} {...a}
+            style={{ background: "var(--accent)", borderRadius: "8px", padding: "12px", textAlign: "center", marginBottom: 14 }}>
             <div style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-primary)", opacity: .7 }}>Monthly Price</div>
             <div style={{ fontSize: "30px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "var(--f-head)" }}>${p.price}</div>
-          </div>
-          <div style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "#999", marginBottom: 8 }}>Speeds Provided</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
-            {[{ l: "Download", v: p.speed + " Mbps" }, { l: "Upload", v: "up to " + p.upload + " Mbps" }, { l: "Latency", v: "40 ms" }].map((s, i) => (
-              <div key={i} style={{ background: "#f7f8fa", borderRadius: "7px", padding: "10px 8px", textAlign: "center" }}>
-                <div style={{ fontSize: "10px", color: "#999", fontWeight: 600 }}>{s.l}</div>
-                <div style={{ fontSize: "13px", fontWeight: 700, color: "#1a1a2e", marginTop: 2 }}>{s.v}</div>
+          </Annotatable>
+          <Annotatable id={"bb-speeds-" + pid} label={p.name + " speeds (DL:" + p.speed + " UL:" + p.upload + ")"} devMode={devMode} {...a}>
+            <div style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "#999", marginBottom: 8 }}>Speeds Provided</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
+              {[{ l: "Download", v: p.speed + " Mbps" }, { l: "Upload", v: "up to " + p.upload + " Mbps" }, { l: "Latency", v: "40 ms" }].map((s, i) => (
+                <div key={i} style={{ background: "#f7f8fa", borderRadius: "7px", padding: "10px 8px", textAlign: "center" }}>
+                  <div style={{ fontSize: "10px", color: "#999", fontWeight: 600 }}>{s.l}</div>
+                  <div style={{ fontSize: "13px", fontWeight: 700, color: "#1a1a2e", marginTop: 2 }}>{s.v}</div>
+                </div>
+              ))}
+            </div>
+          </Annotatable>
+          <Annotatable id={"bb-data-" + pid} label={p.name + " data policy (Unlimited)"} devMode={devMode} {...a}>
+            {[{ l: "Data Included", v: "Unlimited", g: true }, { l: "Additional Data Charges", v: "N/A" }].map((r, i) => (
+              <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderTop: "1px solid #eee" }}>
+                <span style={{ fontSize: "12px", color: "#666" }}>{r.l}</span>
+                <span style={{ fontSize: "12px", fontWeight: 700, color: r.g ? "#27ae60" : "#1a1a2e" }}>{r.v}</span>
               </div>
             ))}
-          </div>
-          {[{ l: "Data Included", v: "Unlimited", g: true }, { l: "Additional Data Charges", v: "N/A" }].map((r, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderTop: "1px solid #eee" }}>
-              <span style={{ fontSize: "12px", color: "#666" }}>{r.l}</span>
-              <span style={{ fontSize: "12px", fontWeight: 700, color: r.g ? "#27ae60" : "#1a1a2e" }}>{r.v}</span>
-            </div>
-          ))}
+          </Annotatable>
 
           <div style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "#999", margin: "14px 0 8px" }}>Provider Monthly Fees</div>
-          <div style={{ display: "flex", justifyContent: "space-between", padding: "7px 0" }}>
+          <Annotatable id={"bb-internet-" + pid} label={p.name + " internet base fee ($" + p.internet + ")"} devMode={devMode} {...a}
+            style={{ display: "flex", justifyContent: "space-between", padding: "7px 0" }}>
             <span style={{ fontSize: "11px", color: "#666" }}>Internet</span>
             <span style={{ fontSize: "11px", fontWeight: 600, color: "#1a1a2e" }}>${p.internet}</span>
-          </div>
+          </Annotatable>
           {monthlyFees.map((f, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderTop: "1px solid #f0f0f0" }}>
-              {devMode ? (
-                <>
-                  <input value={f.label} onChange={e => onEdit && onEdit('monthly', i, 'label', e.target.value)}
-                    style={{ fontSize: "11px", color: "#666", border: "1px dashed #facc15", borderRadius: 3, padding: "2px 4px", flex: 1, marginRight: 8 }} />
-                  <input value={f.amount} onChange={e => onEdit && onEdit('monthly', i, 'amount', e.target.value)}
-                    style={{ fontSize: "11px", fontWeight: 600, border: "1px dashed #facc15", borderRadius: 3, padding: "2px 4px", width: 70, textAlign: "right" }} />
-                </>
-              ) : (
-                <>
-                  <span style={{ fontSize: "11px", color: "#666" }}>{f.label}</span>
-                  <span style={{ fontSize: "11px", fontWeight: 600, color: "#1a1a2e" }}>${f.amount}</span>
-                </>
-              )}
-            </div>
+            <Annotatable key={i} id={"bb-mfee-" + pid + "-" + i} label={f.label + " ($" + f.amount + ")"} devMode={devMode} {...a}
+              style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderTop: "1px solid #f0f0f0" }}>
+              <span style={{ fontSize: "11px", color: "#666" }}>{f.label}</span>
+              <span style={{ fontSize: "11px", fontWeight: 600, color: "#1a1a2e" }}>${f.amount}</span>
+            </Annotatable>
           ))}
 
           <div style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "#999", margin: "14px 0 8px" }}>One-Time Fees</div>
           {installFees.map((f, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderTop: i ? "1px solid #f0f0f0" : "none" }}>
-              {devMode ? (
-                <>
-                  <input value={f.label} onChange={e => onEdit && onEdit('install', i, 'label', e.target.value)}
-                    style={{ fontSize: "11px", color: "#666", border: "1px dashed #facc15", borderRadius: 3, padding: "2px 4px", flex: 1, marginRight: 8 }} />
-                  <input value={f.amount} onChange={e => onEdit && onEdit('install', i, 'amount', e.target.value)}
-                    style={{ fontSize: "11px", fontWeight: 600, border: "1px dashed #facc15", borderRadius: 3, padding: "2px 4px", width: 70, textAlign: "right" }} />
-                </>
-              ) : (
-                <>
-                  <span style={{ fontSize: "11px", color: "#666" }}>{f.label}</span>
-                  <span style={{ fontSize: "11px", fontWeight: 600, color: "#1a1a2e" }}>${f.amount}</span>
-                </>
-              )}
-            </div>
+            <Annotatable key={i} id={"bb-ifee-" + pid + "-" + i} label={f.label + " ($" + f.amount + ")"} devMode={devMode} {...a}
+              style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderTop: i ? "1px solid #f0f0f0" : "none" }}>
+              <span style={{ fontSize: "11px", color: "#666" }}>{f.label}</span>
+              <span style={{ fontSize: "11px", fontWeight: 600, color: "#1a1a2e" }}>${f.amount}</span>
+            </Annotatable>
           ))}
 
-          <div style={{ marginTop: 12, padding: 10, background: "#f7f8fa", borderRadius: 7, fontSize: "10px", color: "#999", lineHeight: 1.5, textAlign: "center" }}>
+          <Annotatable id={"bb-support-" + pid} label="Broadband label support footer" devMode={devMode} {...a}
+            style={{ marginTop: 12, padding: 10, background: "#f7f8fa", borderRadius: 7, fontSize: "10px", color: "#999", lineHeight: 1.5, textAlign: "center" }}>
             Support: <strong style={{ color: "#1a1a2e" }}>(866) 990-1258</strong> | beecreek.net | fcc.gov/consumer
-          </div>
+          </Annotatable>
         </div>
       </div>
     </div>
@@ -542,7 +647,7 @@ function BroadbandLabel({ plan, zoneFees, devMode, onEdit, onClose }) {
 }
 
 /* ─── Settings Panel ─── */
-function SettingsPanel({ isOpen, theme, customColors, devMode, onThemeChange, onCustomColor, onResetColors, onDevUnlock, onDevLock, onClose }) {
+function SettingsPanel({ isOpen, theme, customColors, devMode, annotationCount, onThemeChange, onCustomColor, onResetColors, onDevUnlock, onDevLock, onAnnClear, onExport, onClose }) {
   const [devPw, setDevPw] = useState("");
   const [devErr, setDevErr] = useState(false);
 
@@ -638,6 +743,11 @@ function SettingsPanel({ isOpen, theme, customColors, devMode, onThemeChange, on
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
               <span className="dev-badge">DEV MODE ACTIVE</span>
             </div>
+            <div style={{ fontSize: "11px", color: "var(--text-muted)", marginBottom: 8 }}>
+              {annotationCount} annotation{annotationCount !== 1 ? "s" : ""} &mdash; click <strong style={{color:"#f59e0b"}}>+</strong> buttons on any element to annotate
+            </div>
+            <button className="sp-btn sp-btn-primary" onClick={onExport} style={{ width: "100%", marginBottom: 6 }}>Export Config + Annotations (JSON)</button>
+            <button className="sp-btn sp-btn-ghost" onClick={onAnnClear} style={{ width: "100%", marginBottom: 6, color: "var(--danger)", borderColor: "var(--danger)" }}>Clear All Annotations</button>
             <button className="sp-btn sp-btn-ghost" onClick={onDevLock} style={{ width: "100%" }}>Lock Dev Mode</button>
           </div>
         )}
@@ -750,7 +860,8 @@ function FormPage({ onSubmit }) {
 }
 
 /* ─── Congrats / Plans Page ─── */
-function CongratsPage({ userData, currentZone, zones, plans, devMode, showAllPlansToggle, onZoneChange, onToggleShowAll, onFeeEdit, onPlanEdit }) {
+function CongratsPage({ userData, currentZone, zones, plans, devMode, showAllPlansToggle, onZoneChange, onToggleShowAll, onFeeEdit, onPlanEdit, annotations, onAnnSave, onAnnDelete }) {
+  const ann = { annotations: annotations || [], onSave: onAnnSave, onDelete: onAnnDelete };
   const [labelPlan, setLabelPlan] = useState(null);
   const [vis, setVis] = useState(false);
   const [showAllTable, setShowAllTable] = useState(false);
@@ -769,13 +880,15 @@ function CongratsPage({ userData, currentZone, zones, plans, devMode, showAllPla
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg-primary)", fontFamily: "var(--f-body)" }}>
-      <div style={{ background: "var(--accent)", padding: "6px 0", textAlign: "center", fontSize: "12px", fontWeight: 700, color: "var(--text-primary)", fontFamily: "var(--f-head)", display: "flex", justifyContent: "center", gap: "24px", flexWrap: "wrap" }}>
+      <Annotatable id="banner-bar" label="Top banner bar" devMode={devMode} {...ann}
+        style={{ background: "var(--accent)", padding: "6px 0", textAlign: "center", fontSize: "12px", fontWeight: 700, color: "var(--text-primary)", fontFamily: "var(--f-head)", display: "flex", justifyContent: "center", gap: "24px", flexWrap: "wrap" }}>
         <span>Top Rated Local Service</span>
         <span>Unlimited Data</span>
         <span>Connecting You Since '52</span>
-      </div>
+      </Annotatable>
 
-      <div style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--border)", padding: "12px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <Annotatable id="header-bar" label="Header / logo bar" devMode={devMode} {...ann}
+        style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--border)", padding: "12px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ fontSize: "18px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "var(--f-head)", letterSpacing: ".3px" }}>
           Bee Creek <span style={{ color: "var(--accent)" }}>Communications</span>
           {devMode && <span className="dev-badge">DEV</span>}
@@ -783,7 +896,7 @@ function CongratsPage({ userData, currentZone, zones, plans, devMode, showAllPla
         <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-primary)", fontSize: "13px", fontWeight: 600, fontFamily: "var(--f-head)" }}>
           <a href="tel:8669901258" style={{ color: "var(--text-primary)", textDecoration: "none" }}>(866) 990-1258</a>
         </div>
-      </div>
+      </Annotatable>
 
       {/* Dev Mode Zone Switcher */}
       {devMode && (
@@ -802,7 +915,8 @@ function CongratsPage({ userData, currentZone, zones, plans, devMode, showAllPla
         </div>
       )}
 
-      <div style={{ display: "flex", justifyContent: "center", gap: 0, padding: "18px 20px 0", maxWidth: 480, margin: "0 auto" }}>
+      <Annotatable id="step-indicator" label="Step indicator (Choose Plan / Schedule / Confirm)" devMode={devMode} {...ann}
+        style={{ display: "flex", justifyContent: "center", gap: 0, padding: "18px 20px 0", maxWidth: 480, margin: "0 auto" }}>
         {["CHOOSE PLAN", "SCHEDULE", "CONFIRM"].map((s, i) => (
           <div key={i} style={{ display: "flex", alignItems: "center", flex: i < 2 ? 1 : "none" }}>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, minWidth: 70 }}>
@@ -818,41 +932,46 @@ function CongratsPage({ userData, currentZone, zones, plans, devMode, showAllPla
             {i < 2 && <div style={{ flex: 1, height: 2, background: "var(--bar-empty)", margin: "0 8px", marginBottom: 16 }} />}
           </div>
         ))}
-      </div>
+      </Annotatable>
 
       <div style={{
         textAlign: "center", padding: "14px 20px 0",
         opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(12px)", transition: "all .5s ease"
       }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "var(--success-dim)", color: "var(--success)", fontSize: "12px", fontWeight: 700, padding: "5px 14px", borderRadius: "16px", marginBottom: 8, fontFamily: "var(--f-head)" }}>
+        <Annotatable id="verified-badge" label="Address Verified badge" devMode={devMode} {...ann}
+          style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "var(--success-dim)", color: "var(--success)", fontSize: "12px", fontWeight: 700, padding: "5px 14px", borderRadius: "16px", marginBottom: 8, fontFamily: "var(--f-head)" }}>
           <span style={{ fontSize: "10px" }}>&#9679;</span> Address Verified in Your Area
-        </div>
-        <h1 style={{ fontSize: "clamp(28px,5vw,42px)", fontWeight: 800, color: "var(--text-primary)", margin: "0 0 4px", fontFamily: "var(--f-head)", lineHeight: 1.1 }}>
-          Great News! <span style={{ color: "var(--accent)" }}>You're Covered.</span>
-        </h1>
+        </Annotatable>
+        <Annotatable id="headline" label="Great News headline" devMode={devMode} {...ann}>
+          <h1 style={{ fontSize: "clamp(28px,5vw,42px)", fontWeight: 800, color: "var(--text-primary)", margin: "0 0 4px", fontFamily: "var(--f-head)", lineHeight: 1.1 }}>
+            Great News! <span style={{ color: "var(--accent)" }}>You're Covered.</span>
+          </h1>
+        </Annotatable>
         {devMode && zone && <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: 4 }}>{zone.name} &mdash; {zone.description} &mdash; ZIPs: {zone.zipCodes.join(", ")}</div>}
 
         <div style={{ display: "flex", justifyContent: "center", gap: 14, flexWrap: "wrap", margin: "14px auto 8px", maxWidth: 620 }}>
           {[
-            { icon: "\u2713", title: "Professional Install", desc: "Expert Technicians" },
-            { icon: "Unlimited", title: "Unlimited Data", desc: "No Caps, Ever" },
-            { icon: "30-Day", title: "Satisfaction Guarantee", desc: "Money Back Promise" },
+            { icon: "\u2713", title: "Professional Install", desc: "Expert Technicians", aid: "badge-install" },
+            { icon: "Unlimited", title: "Unlimited Data", desc: "No Caps, Ever", aid: "badge-unlimited" },
+            { icon: "30-Day", title: "Satisfaction Guarantee", desc: "Money Back Promise", aid: "badge-guarantee" },
           ].map((f, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "10px", padding: "9px 14px" }}>
+            <Annotatable key={i} id={f.aid} label={f.title + " badge"} devMode={devMode} {...ann}
+              style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "10px", padding: "9px 14px" }}>
               <div style={{ width: 30, height: 30, borderRadius: "50%", background: "var(--success-dim)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", color: "var(--success)", fontWeight: 700, flexShrink: 0 }}>{f.icon}</div>
               <div style={{ textAlign: "left" }}>
                 <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--text-primary)", fontFamily: "var(--f-head)" }}>{f.title}</div>
                 <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>{f.desc}</div>
               </div>
-            </div>
+            </Annotatable>
           ))}
         </div>
 
-        <div style={{ display: "flex", justifyContent: "center", gap: 18, flexWrap: "wrap", marginBottom: 2 }}>
+        <Annotatable id="tagline-row" label="Tagline row (Truly Unlimited / Local Support / Email)" devMode={devMode} {...ann}
+          style={{ display: "flex", justifyContent: "center", gap: 18, flexWrap: "wrap", marginBottom: 2 }}>
           {[["TRULY UNLIMITED"], ["#1 LOCAL SUPPORT"], ["EMAIL INCLUDED"]].map(([t], i) => (
             <span key={i} style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "1px", color: "var(--text-muted)", fontFamily: "var(--f-head)" }}>{t}</span>
           ))}
-        </div>
+        </Annotatable>
       </div>
 
       {/* Plan Cards */}
@@ -863,79 +982,62 @@ function CongratsPage({ userData, currentZone, zones, plans, devMode, showAllPla
         gap: 14, maxWidth: showAllPlansToggle && devMode ? 1200 : 1000, margin: "14px auto", padding: "0 20px"
       }}>
         {(showAllPlansToggle && devMode ? allPlansList : featured).map((p, i) => (
-          <div key={p.name} style={{
-            background: "var(--bg-card)", borderRadius: "14px", padding: "22px 18px 18px",
-            border: p.popular ? "2px solid var(--text-primary)" : "1px solid var(--border)",
-            position: "relative", transition: "all .25s",
-            opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(16px)",
-            transitionDelay: (i * .07 + .15) + "s",
-            boxShadow: p.popular ? "0 8px 30px rgba(0,0,0,.08)" : "var(--shadow)"
-          }}
-          onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,.1)"; }}
-          onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = p.popular ? "0 8px 30px rgba(0,0,0,.08)" : ""; }}>
+          <Annotatable key={p.name} id={"plan-" + p.name.replace(/\s/g,"-")} label={p.name + " plan card ($" + p.price + "/mo)"} devMode={devMode} {...ann}
+            style={{
+              background: "var(--bg-card)", borderRadius: "14px", padding: "22px 18px 18px",
+              border: p.popular ? "2px solid var(--text-primary)" : "1px solid var(--border)",
+              position: "relative", transition: "all .25s",
+              opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(16px)",
+              transitionDelay: (i * .07 + .15) + "s",
+              boxShadow: p.popular ? "0 8px 30px rgba(0,0,0,.08)" : "var(--shadow)"
+          }}>
             {p.popular && (
               <div style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", background: "var(--text-primary)", color: "var(--bg-card)", fontSize: "10px", fontWeight: 700, padding: "4px 16px", borderRadius: "10px", letterSpacing: "1.2px", fontFamily: "var(--f-head)", whiteSpace: "nowrap" }}>MOST POPULAR</div>
             )}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 2 }}>
               <div>
-                {devMode ? (
-                  <>
-                    <input value={p.tier} onChange={e => onPlanEdit && onPlanEdit(p.name, 'tier', e.target.value)}
-                      style={{ fontSize: "19px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "var(--f-head)", border: "1px dashed #facc15", borderRadius: 3, padding: "2px 4px", width: "100%" }} />
-                    <input value={p.sub} onChange={e => onPlanEdit && onPlanEdit(p.name, 'sub', e.target.value)}
-                      style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "1.2px", color: "var(--text-muted)", fontFamily: "var(--f-head)", border: "1px dashed #facc15", borderRadius: 3, padding: "2px 4px", width: "100%", marginTop: 2 }} />
-                  </>
-                ) : (
-                  <>
-                    <div style={{ fontSize: "19px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "var(--f-head)" }}>{p.tier}</div>
-                    <div style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "1.2px", color: "var(--text-muted)", fontFamily: "var(--f-head)" }}>{p.sub}</div>
-                  </>
-                )}
+                <div style={{ fontSize: "19px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "var(--f-head)" }}>{p.tier}</div>
+                <div style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "1.2px", color: "var(--text-muted)", fontFamily: "var(--f-head)" }}>{p.sub}</div>
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 1, margin: "8px 0 2px" }}>
               <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600, alignSelf: "flex-start", marginTop: 4 }}>$</span>
-              {devMode ? (
-                <input value={p.price} onChange={e => onPlanEdit && onPlanEdit(p.name, 'price', e.target.value)}
-                  style={{ fontSize: "32px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "var(--f-head)", border: "1px dashed #facc15", borderRadius: 3, width: 100, lineHeight: 1 }} />
-              ) : (
-                <>
-                  <span style={{ fontSize: "40px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "var(--f-head)", lineHeight: 1 }}>{p.price.split(".")[0]}</span>
-                  <span style={{ fontSize: "15px", fontWeight: 700, color: "var(--text-primary)", fontFamily: "var(--f-head)" }}>.{p.price.split(".")[1]}</span>
-                </>
-              )}
+              <span style={{ fontSize: "40px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "var(--f-head)", lineHeight: 1 }}>{p.price.split(".")[0]}</span>
+              <span style={{ fontSize: "15px", fontWeight: 700, color: "var(--text-primary)", fontFamily: "var(--f-head)" }}>.{p.price.split(".")[1]}</span>
               <span style={{ fontSize: "12px", color: "var(--text-muted)", marginLeft: 2 }}>/mo</span>
             </div>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 4, color: "var(--success)", fontSize: "10px", fontWeight: 600, marginBottom: 12 }}>
               <span style={{ fontSize: "9px" }}>&#9679;</span> Unlimited Data
             </div>
-            <div style={{ marginBottom: 6 }}>
+            <Annotatable id={"speed-" + p.name.replace(/\s/g,"-")} label={p.name + " download speed (" + p.speed + " Mbps)"} devMode={devMode} {...ann} style={{ marginBottom: 6 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
                 <span style={{ fontSize: "10px", fontWeight: 600, color: "var(--text-muted)", letterSpacing: ".3px" }}>DOWNLOAD SPEED</span>
                 <span style={{ fontSize: "14px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "var(--f-head)" }}>{p.speed} Mbps</span>
               </div>
               <SpeedBars filled={p.bars} />
-            </div>
-            <div style={{ marginBottom: 14 }}>
+            </Annotatable>
+            <Annotatable id={"upload-" + p.name.replace(/\s/g,"-")} label={p.name + " upload speed (" + p.upload + " Mbps)"} devMode={devMode} {...ann} style={{ marginBottom: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
                 <span style={{ fontSize: "10px", fontWeight: 600, color: "var(--text-muted)", letterSpacing: ".3px" }}>UPLOAD SPEED</span>
                 <span style={{ fontSize: "14px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "var(--f-head)" }}>{p.upload} Mbps</span>
               </div>
               <UploadBars filled={Math.max(1, Math.floor(p.bars * .5))} />
-            </div>
-            <button onClick={() => setLabelPlan(p)} style={{
-              width: "100%", padding: "11px",
-              background: p.popular ? "var(--text-primary)" : "var(--bg-secondary)",
-              color: p.popular ? "var(--bg-card)" : "var(--text-primary)",
-              border: p.popular ? "none" : "1px solid var(--border)",
-              borderRadius: "9px", fontSize: "13px", fontWeight: 700,
-              cursor: "pointer", fontFamily: "var(--f-head)",
-              transition: "all .2s", letterSpacing: ".3px"
-            }}
-            onMouseEnter={e => e.target.style.opacity = ".85"}
-            onMouseLeave={e => e.target.style.opacity = "1"}>
-              {"Select " + p.tier}
-            </button>
+            </Annotatable>
+            <Annotatable id={"select-btn-" + p.name.replace(/\s/g,"-")} label={"Select " + p.tier + " button"} devMode={devMode} {...ann}>
+              <button onClick={() => setLabelPlan(p)} style={{
+                width: "100%", padding: "11px",
+                background: p.popular ? "var(--text-primary)" : "var(--bg-secondary)",
+                color: p.popular ? "var(--bg-card)" : "var(--text-primary)",
+                border: p.popular ? "none" : "1px solid var(--border)",
+                borderRadius: "9px", fontSize: "13px", fontWeight: 700,
+                cursor: "pointer", fontFamily: "var(--f-head)",
+                transition: "all .2s", letterSpacing: ".3px"
+              }}
+              onMouseEnter={e => e.target.style.opacity = ".85"}
+              onMouseLeave={e => e.target.style.opacity = "1"}>
+                {"Select " + p.tier}
+              </button>
+            </Annotatable>
             <button onClick={() => setLabelPlan(p)} style={{
               width: "100%", padding: "6px", background: "none", border: "none",
               color: "var(--link)", fontSize: "11px", fontWeight: 600, cursor: "pointer",
@@ -943,7 +1045,7 @@ function CongratsPage({ userData, currentZone, zones, plans, devMode, showAllPla
             }}>
               View Broadband Facts
             </button>
-          </div>
+          </Annotatable>
         ))}
       </div>
 
@@ -989,51 +1091,52 @@ function CongratsPage({ userData, currentZone, zones, plans, devMode, showAllPla
       <div style={{ background: "var(--footer-bg)", padding: "28px 20px 20px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 24, maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
           {[
-            { t: "Local Support", d: "Real people right here in Central Texas. No massive call centers, just neighbors helping neighbors." },
-            { t: "Unlimited Means Unlimited", d: "No data caps, no throttling, and no surprise overage fees. Just pure speed." },
-            { t: "Satisfaction Guaranteed", d: "30-Day Money-Back Guarantee. We're confident you'll love Bee Creek." },
+            { t: "Local Support", d: "Real people right here in Central Texas. No massive call centers, just neighbors helping neighbors.", aid: "footer-local" },
+            { t: "Unlimited Means Unlimited", d: "No data caps, no throttling, and no surprise overage fees. Just pure speed.", aid: "footer-unlimited" },
+            { t: "Satisfaction Guaranteed", d: "30-Day Money-Back Guarantee. We're confident you'll love Bee Creek.", aid: "footer-guarantee" },
           ].map((b, i) => (
-            <div key={i}>
+            <Annotatable key={i} id={b.aid} label={"Footer: " + b.t} devMode={devMode} {...ann}>
               <div style={{ fontSize: "14px", fontWeight: 700, color: "#fff", fontFamily: "var(--f-head)", marginBottom: 5 }}>{b.t}</div>
               <div style={{ fontSize: "12px", color: "var(--footer-text)", lineHeight: 1.6 }}>{b.d}</div>
-            </div>
+            </Annotatable>
           ))}
         </div>
 
-        <div style={{ textAlign: "center", marginTop: 24, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,.08)" }}>
+        <Annotatable id="footer-cta" label="Footer CTA (rep will reach out + phone)" devMode={devMode} {...ann}
+          style={{ textAlign: "center", marginTop: 24, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,.08)" }}>
           <p style={{ fontSize: "13px", color: "var(--footer-text)", margin: "0 0 4px" }}>A Bee Creek representative will reach out shortly to get you connected.</p>
           <a href="tel:8669901258" style={{ color: "var(--footer-accent)", fontWeight: 700, fontSize: "15px", textDecoration: "none", fontFamily: "var(--f-head)" }}>(866) 990-1258</a>
-        </div>
+        </Annotatable>
 
         <div style={{
           maxWidth: 700, margin: "24px auto 0",
           display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
           gap: 20, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,.08)"
         }}>
-          <div>
+          <Annotatable id="footer-contact" label="Footer: Contact info (phone numbers, fax)" devMode={devMode} {...ann}>
             <div style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "1px", color: "var(--footer-accent)", fontFamily: "var(--f-head)", marginBottom: 6 }}>CONTACT</div>
             <div style={{ fontSize: "12px", color: "var(--footer-text)", lineHeight: 1.8 }}>
               <div>Toll Free: <a href="tel:8669901258" style={{ color: "rgba(255,255,255,.7)", textDecoration: "none" }}>(866) 990-1258</a></div>
               <div>Local: <a href="tel:8309901258" style={{ color: "rgba(255,255,255,.7)", textDecoration: "none" }}>(830) 990-1258</a></div>
               <div>Fax: (830) 990-5088</div>
             </div>
-          </div>
-          <div>
+          </Annotatable>
+          <Annotatable id="footer-address" label="Footer: Physical address" devMode={devMode} {...ann}>
             <div style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "1px", color: "var(--footer-accent)", fontFamily: "var(--f-head)", marginBottom: 6 }}>ADDRESS</div>
             <div style={{ fontSize: "12px", color: "var(--footer-text)", lineHeight: 1.8 }}>
               <div>603 FM 2093 Ste #1103</div>
               <div>Fredericksburg, TX 78624</div>
               <div>P.O. Box 1757</div>
             </div>
-          </div>
-          <div>
+          </Annotatable>
+          <Annotatable id="footer-hours" label="Footer: Business hours" devMode={devMode} {...ann}>
             <div style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "1px", color: "var(--footer-accent)", fontFamily: "var(--f-head)", marginBottom: 6 }}>HOURS</div>
             <div style={{ fontSize: "12px", color: "var(--footer-text)", lineHeight: 1.8 }}>
               <div>Mon - Fri</div>
               <div>8:00 AM - 5:00 PM</div>
               <div style={{ color: "var(--footer-accent)", fontSize: "11px", fontWeight: 600 }}>After Hours Support Available</div>
             </div>
-          </div>
+          </Annotatable>
         </div>
 
         <div style={{ textAlign: "center", marginTop: 24, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,.06)" }}>
@@ -1051,7 +1154,9 @@ function CongratsPage({ userData, currentZone, zones, plans, devMode, showAllPla
           plan={labelPlan}
           zoneFees={zone ? zone.fees : null}
           devMode={devMode}
-          onEdit={handleFeeEdit}
+          annotations={ann.annotations}
+          onAnnSave={ann.onSave}
+          onAnnDelete={ann.onDelete}
           onClose={() => setLabelPlan(null)}
         />
       )}
@@ -1082,6 +1187,7 @@ function App() {
     catch { return deepClone(DEFAULT_PLANS); }
   });
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [annotations, setAnnotations] = useState(() => loadAnnotations());
 
   // Apply theme
   useEffect(() => {
@@ -1158,6 +1264,28 @@ function App() {
     window.scrollTo(0, 0);
   };
 
+  // Annotation handlers
+  const handleAnnSave = (annId, label, action, comment) => {
+    setAnnotations(prev => {
+      const next = prev.filter(a => a.id !== annId);
+      next.push({ id: annId, label, action, comment, timestamp: new Date().toISOString() });
+      saveAnnotations(next);
+      return next;
+    });
+  };
+  const handleAnnDelete = (annId) => {
+    setAnnotations(prev => {
+      const next = prev.filter(a => a.id !== annId);
+      saveAnnotations(next);
+      return next;
+    });
+  };
+  const handleAnnClear = () => {
+    if (!annotations.length || !confirm("Clear all " + annotations.length + " annotations?")) return;
+    setAnnotations([]);
+    saveAnnotations([]);
+  };
+
   const exportConfig = () => {
     const config = {
       exportDate: new Date().toISOString(),
@@ -1165,7 +1293,8 @@ function App() {
       theme,
       customColors,
       zones,
-      plans
+      plans,
+      annotations
     };
     const blob = new Blob([JSON.stringify(config, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -1207,15 +1336,21 @@ function App() {
         theme={theme}
         customColors={customColors}
         devMode={devMode}
+        annotationCount={annotations.length}
         onThemeChange={handleThemeChange}
         onCustomColor={handleCustomColor}
         onResetColors={handleResetColors}
         onDevUnlock={() => setDevMode(true)}
         onDevLock={() => setDevMode(false)}
+        onAnnClear={handleAnnClear}
+        onExport={exportConfig}
         onClose={toggleSettings}
       />
 
-      {/* Dev Export Button (floating) */}
+      {/* Dev floating controls */}
+      {devMode && annotations.length > 0 && (
+        <div className="ann-count">{annotations.length} annotation{annotations.length !== 1 ? "s" : ""}</div>
+      )}
       {devMode && (
         <button onClick={exportConfig} style={{
           position: "fixed", bottom: 16, right: 16, zIndex: 10000,
@@ -1241,6 +1376,9 @@ function App() {
             onToggleShowAll={() => setShowAllPlans(p => !p)}
             onFeeEdit={handleFeeEdit}
             onPlanEdit={handlePlanEdit}
+            annotations={annotations}
+            onAnnSave={handleAnnSave}
+            onAnnDelete={handleAnnDelete}
           />
       }
     </>
