@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.11.2</title>
+<title>Alamo Broadband — Sales Intelligence v5.11.3</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -3338,7 +3338,7 @@ function buildStep2Suggestion() {
     too_slow: { streaming:'Slow when you stream?', gaming:'Lag when you play?', wfh:'Calls freezing? Upload bad?', _default:'Not getting promised speeds?' },
     keeps_dropping: { streaming:'Cuts out mid-show?', gaming:'Kicked out of matches?', wfh:'Zoom disconnecting?', _default:'Slows in evenings? Random outages?' },
     laggy: { gaming:'High ping? Delayed?', wfh:'Calls delayed? Talking over people?', _default:'Everything feels delayed?' },
-    too_expensive: { _default:'Price jump after promo? Hidden fees? Overpaying for satellite?' },
+    too_expensive: { _default:'Price jump after promo? Hidden fees? Not worth what you pay?' },
     bill_keeps_changing: { _default:'Promo expired? Surprise fees? Rate creeping up?' },
     storms: { _default:'Out in rain? Hours to recover?' },
     no_options: { _default:'Only satellite? No cable/fiber?' },
@@ -3350,7 +3350,7 @@ function buildStep2Suggestion() {
     too_slow: { streaming:'Slow when everyone streams?', gaming:'Lag when the whole house is on?', wfh:'Work calls die when kids get on?', _default:'Dies when multiple people connect?' },
     keeps_dropping: { streaming:'Cuts out on the whole house?', gaming:'Everyone loses connection?', wfh:'Drops during work calls?', _default:'Drops for everyone or just one person?' },
     laggy: { gaming:'Lag when the family\'s online?', wfh:'Delayed when everyone\'s connected?', _default:'Whole house feels the lag?' },
-    too_expensive: { _default:'Price jump after promo? Hidden fees? Overpaying for satellite?' },
+    too_expensive: { _default:'Price jump after promo? Hidden fees? Not worth what you pay?' },
     bill_keeps_changing: { _default:'Promo expired? Surprise fees? Rate creeping up?' },
     storms: { _default:'Out in rain? Hours to recover?' },
     no_options: { _default:'Only satellite? No cable/fiber?' },
@@ -5043,6 +5043,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.11.3', date:'2026-03-27', changes:['Fix: removed "Overpaying for satellite?" from Step 2 hint text (both single + multi maps)'] },
   { ver:'v5.11.2', date:'2026-03-27', changes:['Fix: removed ALL 6 remaining "walk me through" instances across all deepener paths','Fix: referral "Not Right Now" now scrolls to "No worries" response instead of skipping past it'] },
   { ver:'v5.11.1', date:'2026-03-27', changes:['Update: outbound opener — "at Alamo Broadband" + "looking for better internet"','Update: inbound script — natural flow: greeting → get name/address → "call is recorded" after Sound good','Remove: satellite subs from too_expensive (locked_in_satellite removed, satellite_not_worth → not_worth_it)','Update: price-only deepener "walk me through what\'s going on with the bill" → "that\'s no fun"'] },
   { ver:'v5.11.0', date:'2026-03-27', changes:['Fix: "Still Hesitant" after anchor close now expands Closing Techniques + shows pivot coaching instead of routing to Referral','Fix: Savings Math Close #8 swaps to value-play script when plan costs more than current price (no more broken dashes)','Fix: send_contract_first reframe removes unfulfillable "send by email right now" promise — redirects to alamobroadband.com','Feature: HughesNet competitor card now includes Weather Impact row (matches Viasat card)','Feature: Mining → Standard promotion prompt added to "Interested" response','Feature: "Skeptical of us" spouse feeling state added (6th option) with social-proof reframe in handler + spouse ammo','Feature: Standard mode "Requested Call-Back" now shows date/time capture (parity with Mining mode)','Feature: Manufactured Home selection triggers lot-owner approval flag in Post-Close Details'] },
@@ -5305,7 +5306,7 @@ function exportAnnotations() {
   }
   var data = {
     tool: 'Alamo Broadband Sales Intelligence',
-    version: 'v5.11.2',
+    version: 'v5.11.3',
     exportDate: new Date().toISOString(),
     exportedBy: state.team_member || 'Unknown',
     totalAnnotations: devAnnotations.length,
@@ -6390,9 +6391,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.11.2') {
+  if (annotationVer !== 'v5.11.3') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.11.2');
+    localStorage.setItem('alamo_annotation_version', 'v5.11.3');
   }
 
   // v5.10: Restore dev mode if previously unlocked
