@@ -2277,10 +2277,7 @@ const state = {
   worst_affected_usage: '',
   adult_present: '',
   has_existing_fiber: '',
-  offer_free_install: true,
-  offer_no_contract: true,
-  offer_first_month_due_at_install: true,
-  offer_router_included: true
+  plan_benefits: 'Free Install, No Contract, First Month Due at Install, Router Included'
 };
 
 // ===== CHECKLIST CONFIG =====
@@ -5201,6 +5198,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 
 var devChangelog = [
   { ver:'v5.11.4', date:'2026-03-27', changes:['Feature: Opening outbound script — Yes/No confirmation pills after "right?" — Yes reveals call-recorded script, No shows Facebook/Instagram memory jog','Fix: Price Lock weave shortened to "One big difference with us: the price I give you today never goes up. Period."','Fix: Closing Techniques reordered — #1 Tentative Appointment, #2 Month-to-Month, #3 Site Survey moved to top (best for Still Hesitant leads); original #1-3 become #4-6','Fix: Still Hesitant coach note updated to reference new numbers (#1/#2/#3 instead of #4/#7/#5)','Fix: Anchor close script now uses subPhrases natural language instead of raw pain label (e.g. "not getting what you\'re paying for" instead of "not worth what I pay")'] },
+  { ver:'v5.11.11', date:'2026-03-27', changes:['Update: consolidate offer_free_install / offer_no_contract / offer_first_month_due_at_install / offer_router_included → single plan_benefits string in JSON payload'] },
   { ver:'v5.11.10', date:'2026-03-27', changes:['Remove: Yes/Hesitant/Objection inline branches from sched-confirm-install (revert to plain script)','Update: Schedule response button "Scheduled!" → "Yes"'] },
   { ver:'v5.11.9', date:'2026-03-27', changes:['Remove: existing fiber connection question from housekeeping (annotation)','Update: sched-confirm-install now shows Yes/Hesitant/Objection inline response branches','Update: setup fee script now cohesive — installation free, first month due at install, router included, no contract, 30-day guarantee','Update: disposition pills — added Survey Scheduled, Rescheduled, Send Info to standard; added Rescheduled to mining'] },
   { ver:'v5.11.8', date:'2026-03-27', changes:['Fix: Finalize & Submit button now always visible in live modes (was never showing)','Feature: 3-type schedule toggle (Installation / Survey+Install / Site Survey) with correct time slots per type','Feature: Today\'s Commitment block in wrap-up (free install, no contract, 1st month due at install, router included + plan summary)','Feature: Offer badge row in Setup Fee section','Feature: Adult 18+ present question in housekeeping','Feature: New state fields: adult_present, offer_* (in JSON payload)'] },
@@ -5471,7 +5469,7 @@ function exportAnnotations() {
   }
   var data = {
     tool: 'Alamo Broadband Sales Intelligence',
-    version: 'v5.11.10',
+    version: 'v5.11.11',
     exportDate: new Date().toISOString(),
     exportedBy: state.team_member || 'Unknown',
     totalAnnotations: devAnnotations.length,
