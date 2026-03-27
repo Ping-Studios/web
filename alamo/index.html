@@ -4317,7 +4317,7 @@ function setOpeningConfirm(yes) {
   var jogEl = document.getElementById('opening-no-jog');
   var contEl = document.getElementById('opening-yes-continue');
   if (jogEl) jogEl.classList.toggle('hidden', yes);
-  if (contEl) contEl.classList.toggle('hidden', !yes);
+  if (contEl) contEl.classList.remove('hidden');
 }
 
 function setScore(n) {
