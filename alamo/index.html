@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.10.7</title>
+<title>Alamo Broadband — Sales Intelligence v5.10.8</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -1418,14 +1418,14 @@ textarea:focus { border-color: var(--accent); }
   <div id="dont-cancel-block" class="hidden" style="margin-top:12px">
     <div class="script-block" style="border-left-color:var(--warning)">
       <strong>"Don't Cancel":</strong><br>
-      "Don't cancel <span class="var" data-var="current_provider">[Provider]</span> yet. Run them both side by side for 30 days. If we don't blow them away, full refund &mdash; nothing changes for you."
+      "Don't cancel <span class="var" data-var="current_provider">[Provider]</span> yet. Run us both side by side for 30 days. If we don't blow them away, full refund &mdash; nothing changes for you."
     </div>
   </div>
 
   <!-- Trial close — temperature check after pitch -->
   <div id="roi-trial-close" class="hidden" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
     <div class="script-block" style="border-left-color:var(--accent)">
-      "Does that sound like what you're looking for?"
+      "Not bad, right?"
     </div>
     <div style="display:flex;gap:8px;margin-top:8px">
       <div class="pill" style="border-color:var(--success);color:var(--success)" onclick="setROITrialClose(this,'yes')">Yeah, let's do it</div>
@@ -1642,7 +1642,7 @@ textarea:focus { border-color: var(--accent); }
   <div id="schedule-area">
     <!-- Install script (default) -->
     <div id="sched-install-script" class="script-block">
-      "Awesome, let's schedule a time for the tech to come set you up. I've got mornings and afternoons available &mdash; which works better for you?"
+      "Let's get you on the calendar. Mornings or afternoons &mdash; which works better?"
     </div>
     <!-- Site survey script (hidden by default) -->
     <div id="sched-survey-script" class="hidden script-block" style="border-left-color:var(--purple)">
@@ -1675,8 +1675,7 @@ textarea:focus { border-color: var(--accent); }
 
     <!-- Install confirmation (default) -->
     <div id="sched-confirm-install" class="script-block" style="margin-top:8px;font-size:13px">
-      "I've got you down for <span class="var" data-var="install_date">[date]</span>. The tech will give you a heads-up call about 30 minutes before they arrive. Sound good?"<br>
-      <span class="coaching">Be assumptive. Don't ask IF they want to schedule &mdash; confirm the details and move forward.</span>
+      "Got you down for <span class="var" data-var="install_date">[date]</span>. Tech will call about 30 minutes before they arrive. Sound good?"
     </div>
     <!-- Site survey confirmation (hidden by default) -->
     <div id="sched-confirm-survey" class="hidden script-block" style="margin-top:8px;font-size:13px;border-left-color:var(--purple)">
@@ -1707,7 +1706,7 @@ textarea:focus { border-color: var(--accent); }
   <div class="coach-note">Asked on 10.5% of sold calls, 0% of lost calls. Takes 15 seconds. Never skip on a sold call.</div>
 
   <div class="script-block">
-    "Awesome, you're all set! Oh &mdash; quick question: do you know anyone else in the neighborhood dealing with the same kind of issues? We've got a <strong>Connect-A-Friend</strong> perk &mdash; when you refer someone and they sign up and mention your name, you get a <strong style="color:var(--success)">free month of service</strong>."
+    "You're all set! Quick question &mdash; know anyone else in the neighborhood with bad internet? If they sign up and mention your name, you get a <strong style="color:var(--success)">free month</strong>."
   </div>
 
   <div class="response-group">
@@ -2886,7 +2885,7 @@ const REFLECT_MAP = {
 const FLIP_MAP = {
   too_expensive: 'the price I quote you today is locked in — it never goes up, no surprise fees',
   keeps_dropping: 'that just stops happening — your internet stays on, period. 99.99% uptime',
-  too_slow: 'your speed stays consistent whether it\'s noon or 8 PM with the whole family on',
+  too_slow: 'your speed stays consistent whether it\'s noon or 8 PM — everyone can be on at once',
   buffering: 'the buffering stops — you hit play and it just plays, no spinning wheel',
   bill_keeps_changing: 'your bill is the same every month — the price I quote you is the price you keep, period',
   storms: 'your internet works in the rain — our towers are local, not 22,000 miles in space',
@@ -3941,7 +3940,7 @@ function renderROI() {
     [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--success-dim)'; b.style.borderColor='var(--success)'; });
     roiMonthly.style.color = 'var(--success)';
     roiAnnual.style.color = 'var(--success)';
-    roiScript.innerHTML = personalCallback + 'Right now you\'re paying $' + cp.toFixed(0) + ' a month, so that\'s <strong>$' + diff.toFixed(0) + ' back in your pocket every month, $' + annual.toFixed(0) + ' a year</strong>. Unlimited data, no throttling, and that price is locked \u2014 so it never goes up on you like it did with ' + providerName + '."';
+    roiScript.innerHTML = personalCallback + 'Right now you\'re paying $' + cp.toFixed(0) + '/month, so that\'s <strong>$' + diff.toFixed(0) + ' back in your pocket every month, $' + annual.toFixed(0) + '/year</strong>. Unlimited data, no throttling, and that price is locked \u2014 it never goes up."';
 
   } else if (diff === 0) {
     // Same price
@@ -5000,6 +4999,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.10.8', date:'2026-03-27', changes:['Fix: FLIP_MAP too_slow removes "whole family" — now household-neutral','Fix: ROI savings script removes hardcoded provider price comparison','Fix: Don\'t Cancel "run us both" instead of "run them both"','Update: trial close "Not bad, right?" replaces "Does that sound like what you\'re looking for?"','Update: schedule script tightened','Update: confirm install tightened','Update: referral ask tightened'] },
   { ver:'v5.10.7', date:'2026-03-27', changes:['Fix: Step 3 deepener now updates when Step 2 sub-options are clicked','Priority: sub-option-specific questions take precedence over generic scenario when subs are selected'] },
   { ver:'v5.10.6', date:'2026-03-27', changes:['Fix: Partner scenario says "you guys are streaming" instead of "the family\'s streaming"','Feature: new usageActivityPartner map for 2-person household phrasing','Fix: buildScenarioQuestion picks activity map based on household_type (partner vs whole_household vs single)'] },
   { ver:'v5.10.5', date:'2026-03-27', changes:['Remove: "UnFiber" from plan names — now Essentials/Plus/Pro','Fix: "1 people in the house" → "just you" for single-person household','Update: Value Match flip "Does that make sense?" → "How does that sound?"','Update: ROI script tightened','Update: Don\'t Cancel script tightened','Update: Setup Fee script tightened','Remove: UnFiber from objection handler scripts'] },
@@ -5257,7 +5257,7 @@ function exportAnnotations() {
   }
   var data = {
     tool: 'Alamo Broadband Sales Intelligence',
-    version: 'v5.10.7',
+    version: 'v5.10.8',
     exportDate: new Date().toISOString(),
     exportedBy: state.team_member || 'Unknown',
     totalAnnotations: devAnnotations.length,
@@ -6309,9 +6309,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.7') {
+  if (annotationVer !== 'v5.10.8') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.7');
+    localStorage.setItem('alamo_annotation_version', 'v5.10.8');
   }
 
   // v5.10: Restore dev mode if previously unlocked
