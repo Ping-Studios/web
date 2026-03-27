@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiM1QkE4NEMiLz4KICA8cmVjdCB4PSI3IiB5PSIxOSIgd2lkdGg9IjQiIGhlaWdodD0iNiIgcng9IjAuNSIgZmlsbD0id2hpdGUiLz4KICA8cmVjdCB4PSIxMi41IiB5PSIxNSIgd2lkdGg9IjQiIGhlaWdodD0iMTAiIHJ4PSIwLjUiIGZpbGw9IndoaXRlIi8+CiAgPHJlY3QgeD0iMTgiIHk9IjExIiB3aWR0aD0iNCIgaGVpZ2h0PSIxNCIgcng9IjAuNSIgZmlsbD0id2hpdGUiLz4KICA8cG9seWdvbiBwb2ludHM9IjIyLDcgMjcsNyAyNywxMiIgZmlsbD0id2hpdGUiLz4KICA8cmVjdCB4PSIyMSIgeT0iNi41IiB3aWR0aD0iNi41IiBoZWlnaHQ9IjIuNSIgcng9IjAuMyIgZmlsbD0id2hpdGUiIHRyYW5zZm9ybT0icm90YXRlKC00NSAyNC41IDgpIi8+Cjwvc3ZnPgo=">
-<title>Mojo Broadband — Sales Intelligence v5.11.5</title>
+<title>Mojo Broadband — Sales Intelligence v5.11.8</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -1451,7 +1451,13 @@ textarea:focus { border-color: var(--accent); }
   <div class="section-label">Section 6</div>
   <div class="section-title">Setup Fee + Close</div>
   <div class="script-block">
-    "Normally there's a $99 installation fee, but signing up on the call today &mdash; <strong style="color:var(--success)">we waive that</strong>. We just charge the first month to get started. No contract, month-to-month, cancel anytime. And you get a 30-day money-back guarantee &mdash; don't love it, full refund."
+    "Good news &mdash; installation is waived when you sign up on this call. Your first month's payment is due at the time of install, and that includes your router &mdash; no extra charge. No contract, month-to-month, cancel anytime."
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;margin-bottom:4px">
+    <span style="padding:4px 10px;background:var(--success-dim);border:1px solid var(--success);border-radius:20px;font-size:11px;font-weight:700;color:var(--success)">&#10003; Install Waived</span>
+    <span style="padding:4px 10px;background:var(--success-dim);border:1px solid var(--success);border-radius:20px;font-size:11px;font-weight:700;color:var(--success)">&#10003; No Contract</span>
+    <span style="padding:4px 10px;background:var(--accent-dim);border:1px solid var(--accent);border-radius:20px;font-size:11px;font-weight:700;color:var(--accent)">1st Month Due at Install</span>
+    <span style="padding:4px 10px;background:var(--success-dim);border:1px solid var(--success);border-radius:20px;font-size:11px;font-weight:700;color:var(--success)">&#10003; Router Included</span>
   </div>
   <div class="coach-note" style="margin-top:6px">Installation is $99, waived for signups on the call. First month charged to start service. We accept credit, debit, and ACH only &mdash; no cash, no paper bills.
     <span style="display:block;margin-top:4px;font-size:11px;color:var(--text-muted);cursor:pointer;text-decoration:underline" onclick="this.nextElementSibling.classList.toggle('hidden')">Pole fees?</span>
@@ -1708,7 +1714,7 @@ textarea:focus { border-color: var(--accent); }
 
     <div style="margin-top:12px">
       <div class="response-group">
-        <button class="resp-btn positive" onclick="setScheduleResponse(this,'scheduled')">Scheduled!</button>
+        <button class="resp-btn positive" onclick="setScheduleResponse(this,'scheduled')">Yes</button>
         <button class="resp-btn neutral" onclick="setScheduleResponse(this,'hesitant')">Hesitant</button>
         <button class="resp-btn objection" onclick="setScheduleResponse(this,'objection')">Objection</button>
       </div>
@@ -1840,6 +1846,17 @@ textarea:focus { border-color: var(--accent); }
       <input type="text" placeholder="Special instructions or hazards for the tech..." oninput="updateState('install_notes',this.value)" style="width:100%">
     </div>
 
+    <div style="margin-top:12px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:6px">Will someone 18 or older be present at the location?</div>
+      <div class="pill-group" style="margin-top:6px">
+        <div class="pill" onclick="setProperty(this,'adult_present','yes')">Yes</div>
+        <div class="pill" onclick="setProperty(this,'adult_present','no')">No — needs reschedule</div>
+      </div>
+      <div id="adult-not-present-note" class="hidden" style="margin-top:6px;padding:8px 12px;background:var(--warning-dim);border:1px solid var(--warning);border-radius:var(--radius);font-size:12px;color:var(--warning)">
+        &#9888; Please confirm an adult will be present — we may need to adjust the appointment time.
+      </div>
+    </div>
+
     <!-- Roof type — collapsed, for edge cases -->
     <div style="margin-top:8px">
       <span style="font-size:11px;color:var(--text-muted);cursor:pointer;text-decoration:underline" onclick="this.nextElementSibling.classList.toggle('hidden')">Add roof type or other details</span>
@@ -1896,6 +1913,21 @@ textarea:focus { border-color: var(--accent); }
   </div>
   <div class="coach-note">End the call on a high note. Don't ramble. Don't re-sell. They already said yes.</div>
 
+  <!-- TODAY'S COMMITMENT SUMMARY -->
+  <div style="margin-top:16px;padding:16px;background:var(--success-dim);border:1px solid var(--success);border-radius:var(--radius-lg)">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--success);margin-bottom:10px">Today's Commitment</div>
+    <div style="display:flex;flex-direction:column;gap:7px;font-size:13px">
+      <div style="display:flex;align-items:flex-start;gap:8px"><span style="color:var(--success);font-weight:700;flex-shrink:0">✓</span><span>Installation Waived <span style="font-size:11px;color:var(--text-muted)">(on-call signup — $99 waived)</span></span></div>
+      <div style="display:flex;align-items:flex-start;gap:8px"><span style="color:var(--success);font-weight:700;flex-shrink:0">✓</span><span>No Contract — cancel anytime</span></div>
+      <div style="display:flex;align-items:flex-start;gap:8px"><span style="color:var(--success);font-weight:700;flex-shrink:0">✓</span><span>First month's service payment due at time of installation</span></div>
+      <div style="display:flex;align-items:flex-start;gap:8px"><span style="color:var(--success);font-weight:700;flex-shrink:0">✓</span><span>Router included — no additional charge</span></div>
+    </div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--success)">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:6px">Plan Selected</div>
+      <div id="commitment-plan-display" style="font-size:14px;font-weight:700;color:var(--accent)">—</div>
+    </div>
+  </div>
+
   <button class="next-btn" onclick="scrollToSection('sec-disposition')">Continue to Disposition &darr;</button>
 </div>
 
@@ -1908,6 +1940,9 @@ textarea:focus { border-color: var(--accent); }
   <!-- Standard mode dispositions -->
   <div class="pill-group standard-only" style="flex-wrap:wrap;margin-bottom:16px">
     <div class="pill" onclick="setDisposition(this,'install_scheduled')">Install Scheduled</div>
+    <div class="pill" onclick="setDisposition(this,'survey_scheduled')">Survey Scheduled</div>
+    <div class="pill" onclick="setDisposition(this,'rescheduled')">Rescheduled</div>
+    <div class="pill" onclick="setDisposition(this,'send_info')">Send Info</div>
     <div class="pill" onclick="setDisposition(this,'callback')">Requested Call-Back</div>
     <div class="pill" onclick="setDisposition(this,'pending')">Pending</div>
     <div class="pill" onclick="setDisposition(this,'not_interested')">Not Interested</div>
@@ -1944,6 +1979,7 @@ textarea:focus { border-color: var(--accent); }
       <div class="pill" onclick="setDisposition(this,'scheduled_confident')" style="border-color:var(--success)">Scheduled &mdash; Confident</div>
       <div class="pill" onclick="setDisposition(this,'scheduled_hesitant')" style="border-color:var(--warning)">Scheduled &mdash; Hesitant</div>
       <div class="pill" onclick="setDisposition(this,'site_survey')">Site Survey Scheduled</div>
+      <div class="pill" onclick="setDisposition(this,'rescheduled')">Rescheduled</div>
       <div class="pill" onclick="setDisposition(this,'send_info')">Send Info</div>
       <div class="pill" onclick="setDisposition(this,'mining_callback')">Callback</div>
       <div class="pill" onclick="setDisposition(this,'not_interested')">Not Interested</div>
@@ -2035,7 +2071,6 @@ textarea:focus { border-color: var(--accent); }
   </div>
 
   <div style="margin-top:16px">
-    <button class="complete-btn" id="finalize-btn" onclick="finalizeAndSubmit()" style="display:none">Finalize &amp; Submit &#10148;</button>
     <div id="webhook-status" style="font-size:12px;margin-top:6px;display:none;padding:8px 12px;border-radius:var(--radius);font-weight:600"></div>
     <div id="mock-training-notice" style="width:100%;padding:16px 24px;background:rgba(168,85,247,0.12);border:2px solid #a855f7;border-radius:var(--radius-lg);color:#a855f7;font-size:13px;font-weight:800;text-align:center;text-transform:uppercase;letter-spacing:1px">⚠ Training Mode — Submission Disabled</div>
     <button class="next-btn" style="width:100%;margin-top:12px;background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border)" onclick="newCall()">Start New Call</button>
@@ -2192,7 +2227,9 @@ const state = {
   household_multi: false,
   household_type: '',
   pain_usage_scenario: '',
-  worst_affected_usage: ''
+  worst_affected_usage: '',
+  adult_present: '',
+  plan_benefits: 'Install Waived for On-Call Signups, No Contract, First Month Due at Install, Router Included'
 };
 
 // ===== CHECKLIST CONFIG =====
@@ -3265,6 +3302,7 @@ function renderAll() {
   renderMiningProviderCoach();
   renderCloseSavings();
   renderSpouseScheduleNote();
+  renderCommitmentPlan();
   updateChecklist();
   // v5.10: Re-inject dev annotations after dynamic content renders
   if (localStorage.getItem('mojo_dev_mode') === 'true') {
@@ -4098,6 +4136,13 @@ function renderSummary() {
   var feeEl = document.getElementById('sum-fee');
   var fee = state.install_fee ? '$' + state.install_fee : '$99';
   feeEl.textContent = fee;
+}
+
+function renderCommitmentPlan() {
+  var el = document.getElementById('commitment-plan-display');
+  if (!el) return;
+  var plan = plans[state.recommended_plan];
+  el.textContent = plan ? plan.name + ' — $' + plan.price + '/mo' : '—';
 }
 
 
@@ -5060,6 +5105,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.11.8', date:'2026-03-27', changes:['Feature: plan_benefits state field added — Install Waived for On-Call Signups, No Contract, First Month Due at Install, Router Included','Feature: adult_present state field + pill question in Post-Close Details — shows warning note if no adult present','Feature: Today\'s Commitment summary block in Wrap-Up section — shows all offer terms + selected plan','Feature: renderCommitmentPlan() — populates commitment block with plan name + price','Feature: Offer badge row in Setup Fee section — visual badges for Install Waived, No Contract, 1st Month Due at Install, Router Included','Update: Setup Fee script — "Good news — installation is waived when you sign up on this call..." (cohesive statement covering all terms)','Feature: Finalize & Submit button moved to fixed footer (visible in Standard + Mining, hidden in mock/training modes)','Feature: Standard disposition pills — Survey Scheduled, Rescheduled, Send Info added after Install Scheduled','Feature: Mining disposition pills — Rescheduled added after Site Survey Scheduled','Fix: Schedule confirm button renamed from "Scheduled!" to "Yes"'] },
   { ver:'v5.11.4', date:'2026-03-27', changes:['Feature: Opening outbound script — Yes/No confirmation pills after "right?" — Yes reveals call-recorded script, No shows Facebook/Instagram memory jog','Fix: Price Lock weave shortened to "One big difference with us: the price I give you today is locked for 3 years. Period."','Fix: Closing Techniques reordered — #1 Tentative Appointment, #2 Month-to-Month, #3 Site Survey moved to top (best for Still Hesitant leads); original #1-3 become #4-6','Fix: Still Hesitant coach note updated to reference new numbers (#1/#2/#3 instead of #4/#7/#5)','Fix: Anchor close script now uses subPhrases natural language instead of raw pain label (e.g. "not getting what you\'re paying for" instead of "not worth what I pay")'] },
   { ver:'v5.11.7', date:'2026-03-27', changes:['Feature: Mock Inbound + Mock Outbound mode buttons in header toggle — disables Finalize & Submit in training mode','Remove: red Mock Call Complete button replaced by purple training notice'] },
   { ver:'v5.11.6', date:'2026-03-27', changes:['Fix: serviceability result display — SERVICE AVAILABLE / NOT IN SERVICE AREA with color coding'] },
@@ -5465,6 +5511,10 @@ function setProperty(el, key, val) {
       }
     }
   }
+  if (key === 'adult_present') {
+    var adultNote = document.getElementById('adult-not-present-note');
+    if (adultNote) adultNote.classList.toggle('hidden', val !== 'no');
+  }
   saveToLocalStorage();
   if (state.home_type || state.roof_type) {
     checkState.house = 'completed';
@@ -5610,6 +5660,8 @@ function toggleSidebar() {
   var main = document.getElementById('main');
   sidebar.classList.toggle('closed');
   main.classList.toggle('sidebar-closed');
+  var fb = document.getElementById('finalize-btn');
+  if (fb) fb.style.left = main.classList.contains('sidebar-closed') ? '0' : 'var(--sidebar-w)';
 }
 
 // ===== CHECKLIST =====
@@ -6438,5 +6490,8 @@ function init() {
 document.addEventListener('DOMContentLoaded', init);
 
 </script>
+
+<!-- FINALIZE BUTTON — sticky footer, hidden in mock/training mode -->
+<button class="complete-btn" id="finalize-btn" onclick="finalizeAndSubmit()" style="position:fixed;bottom:0;left:var(--sidebar-w);right:0;border-radius:0;z-index:85;font-size:15px;transition:left .3s ease">Finalize &amp; Submit &#10148;</button>
 </body>
 </html>
