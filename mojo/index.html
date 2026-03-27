@@ -5660,8 +5660,6 @@ function toggleSidebar() {
   var main = document.getElementById('main');
   sidebar.classList.toggle('closed');
   main.classList.toggle('sidebar-closed');
-  var fb = document.getElementById('finalize-btn');
-  if (fb) fb.style.left = main.classList.contains('sidebar-closed') ? '0' : 'var(--sidebar-w)';
 }
 
 // ===== CHECKLIST =====
@@ -6491,7 +6489,7 @@ document.addEventListener('DOMContentLoaded', init);
 
 </script>
 
-<!-- FINALIZE BUTTON — sticky footer, hidden in mock/training mode -->
-<button class="complete-btn" id="finalize-btn" onclick="finalizeAndSubmit()" style="position:fixed;bottom:0;left:var(--sidebar-w);right:0;border-radius:0;z-index:85;font-size:15px;transition:left .3s ease">Finalize &amp; Submit &#10148;</button>
+<!-- FINALIZE BUTTON — bottom of page, hidden in mock/training mode -->
+<div style="max-width:860px;margin:24px auto;padding:0 24px 40px"><button class="complete-btn" id="finalize-btn" onclick="finalizeAndSubmit()">Finalize &amp; Submit &#10148;</button></div>
 </body>
 </html>
