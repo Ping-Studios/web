@@ -1465,6 +1465,13 @@ textarea:focus { border-color: var(--accent); }
   <div class="script-block">
     "Normally there's a $99 setup fee, but signing up today &mdash; <strong style="color:var(--success)">installation is free</strong>. No contract, month-to-month, cancel anytime. And you get a 30-day money-back guarantee &mdash; don't love it, full refund."
   </div>
+  <!-- Offer badge row -->
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;margin-bottom:4px">
+    <span style="padding:4px 10px;background:var(--success-dim);border:1px solid var(--success);border-radius:20px;font-size:11px;font-weight:700;color:var(--success)">&#10003; Free Install</span>
+    <span style="padding:4px 10px;background:var(--success-dim);border:1px solid var(--success);border-radius:20px;font-size:11px;font-weight:700;color:var(--success)">&#10003; No Contract</span>
+    <span style="padding:4px 10px;background:var(--accent-dim);border:1px solid var(--accent);border-radius:20px;font-size:11px;font-weight:700;color:var(--accent)">1st Month Due at Install</span>
+    <span style="padding:4px 10px;background:var(--success-dim);border:1px solid var(--success);border-radius:20px;font-size:11px;font-weight:700;color:var(--success)">&#10003; Router Included</span>
+  </div>
   <div class="coach-note" style="margin-top:6px">Installation is free for same-day signups. We accept card, cash, and check &mdash; due at time of installation.
     <span style="display:block;margin-top:4px;font-size:11px;color:var(--text-muted);cursor:pointer;text-decoration:underline" onclick="this.nextElementSibling.classList.toggle('hidden')">Pole fees?</span>
     <div class="hidden" style="margin-top:4px;font-size:11px;color:var(--text-secondary)">20ft pole: +$50 | 30ft pole: +$100 | Tripod: included</div>
@@ -1649,16 +1656,21 @@ textarea:focus { border-color: var(--accent); }
   <div class="coach-note">Assume the sale. Don't ask IF &mdash; just ask WHEN.</div>
 
   <!-- Schedule Type Toggle -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-    <div id="sched-install-btn" class="plan-card selected" onclick="setScheduleType('install')" style="cursor:pointer;text-align:center;padding:16px">
-      <div style="font-size:24px;margin-bottom:4px">&#128268;</div>
-      <div style="font-size:16px;font-weight:700">Schedule Installation</div>
-      <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Full install &mdash; tech comes out, sets up equipment, you're connected same day</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+    <div id="sched-install-btn" class="plan-card selected" onclick="setScheduleType('install')" style="cursor:pointer;text-align:center;padding:12px">
+      <div style="font-size:20px;margin-bottom:4px">&#128268;</div>
+      <div style="font-size:13px;font-weight:700">Installation</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px">Full install, same-day connected</div>
     </div>
-    <div id="sched-survey-btn" class="plan-card" onclick="setScheduleType('survey')" style="cursor:pointer;text-align:center;padding:16px">
-      <div style="font-size:24px;margin-bottom:4px">&#128269;</div>
-      <div style="font-size:16px;font-weight:700">Schedule Site Survey</div>
-      <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Free signal test &mdash; no charge, no commitment, about 30 minutes</div>
+    <div id="sched-survey-intent-btn" class="plan-card" onclick="setScheduleType('survey_intent')" style="cursor:pointer;text-align:center;padding:12px">
+      <div style="font-size:20px;margin-bottom:4px">&#128270;</div>
+      <div style="font-size:13px;font-weight:700">Survey + Install</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px">Survey with intent to install same day</div>
+    </div>
+    <div id="sched-survey-btn" class="plan-card" onclick="setScheduleType('survey')" style="cursor:pointer;text-align:center;padding:12px">
+      <div style="font-size:20px;margin-bottom:4px">&#128269;</div>
+      <div style="font-size:13px;font-weight:700">Site Survey</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px">Signal test only, no commitment</div>
     </div>
   </div>
 
@@ -1694,12 +1706,37 @@ textarea:focus { border-color: var(--accent); }
       <div id="cal-events" class="hidden" style="margin-top:8px"></div>
     </div>
 
-    <div style="margin-top:12px">
-      <div class="section-label">Installation Time Slot</div>
+    <!-- Installation time slots -->
+    <div id="install-slots" style="margin-top:12px">
+      <div class="section-label">Alamo Broadband Installation Time</div>
       <div class="pill-group" style="margin:8px 0">
-        <div class="pill" onclick="setTimeSlot(this,'9-11am')" id="pill-slot1">9:00 - 11:00 AM</div>
-        <div class="pill" onclick="setTimeSlot(this,'10-2pm')" id="pill-slot2">10:00 - 2:00 PM</div>
-        <div class="pill" onclick="setTimeSlot(this,'1-4pm')" id="pill-slot3">1:00 - 4:00 PM</div>
+        <div class="pill" onclick="setTimeSlot(this,'9:00 AM – 11:00 AM')">9:00 AM – 11:00 AM</div>
+        <div class="pill" onclick="setTimeSlot(this,'10:00 AM – 2:00 PM')">10:00 AM – 2:00 PM</div>
+        <div class="pill" onclick="setTimeSlot(this,'1:00 PM – 4:00 PM')">1:00 PM – 4:00 PM</div>
+      </div>
+    </div>
+
+    <!-- Site Survey + Intent to Install time slots -->
+    <div id="survey-intent-slots" class="hidden" style="margin-top:12px">
+      <div class="section-label">Alamo Broadband Site Survey + Intent to Install Time</div>
+      <div class="pill-group" style="margin:8px 0">
+        <div class="pill" onclick="setTimeSlot(this,'9:00 AM – 11:00 AM')">9:00 AM – 11:00 AM</div>
+        <div class="pill" onclick="setTimeSlot(this,'12:00 PM – 2:00 PM')">12:00 PM – 2:00 PM</div>
+      </div>
+    </div>
+
+    <!-- Site Survey only time slots -->
+    <div id="survey-slots" class="hidden" style="margin-top:12px">
+      <div class="section-label">Alamo Broadband Site Survey Time</div>
+      <div class="pill-group" style="margin:8px 0;flex-wrap:wrap">
+        <div class="pill" onclick="setTimeSlot(this,'8:00 AM – 9:00 AM')">8:00 – 9:00 AM</div>
+        <div class="pill" onclick="setTimeSlot(this,'9:00 AM – 10:00 AM')">9:00 – 10:00 AM</div>
+        <div class="pill" onclick="setTimeSlot(this,'10:00 AM – 11:00 AM')">10:00 – 11:00 AM</div>
+        <div class="pill" onclick="setTimeSlot(this,'11:00 AM – 12:00 PM')">11:00 AM – 12:00 PM</div>
+        <div class="pill" onclick="setTimeSlot(this,'12:00 PM – 1:00 PM')">12:00 – 1:00 PM</div>
+        <div class="pill" onclick="setTimeSlot(this,'1:00 PM – 2:00 PM')">1:00 – 2:00 PM</div>
+        <div class="pill" onclick="setTimeSlot(this,'2:00 PM – 3:00 PM')">2:00 – 3:00 PM</div>
+        <div class="pill" onclick="setTimeSlot(this,'3:00 PM – 4:00 PM')">3:00 – 4:00 PM</div>
       </div>
     </div>
 
@@ -1867,6 +1904,34 @@ textarea:focus { border-color: var(--accent); }
       </div>
     </div>
   </div>
+  <!-- 18+ Adult Present -->
+  <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+    <div class="script-block" style="font-size:13px">
+      "Will someone 18 or older be home at the time of the appointment?"
+    </div>
+    <div class="pill-group" style="margin-top:6px">
+      <div class="pill" onclick="setProperty(this,'adult_present','yes')">Yes &#10003;</div>
+      <div class="pill" onclick="setProperty(this,'adult_present','no')">No &mdash; needs reschedule</div>
+    </div>
+    <div id="adult-not-present-note" class="hidden" style="margin-top:6px;padding:8px 12px;background:var(--warning-dim);border:1px solid var(--warning);border-radius:var(--radius);font-size:12px;color:var(--warning)">
+      &#9888; Please confirm an adult will be present &mdash; we may need to adjust the appointment time.
+    </div>
+  </div>
+
+  <!-- Existing Fiber Connection -->
+  <div style="margin-top:12px">
+    <div class="script-block" style="font-size:13px">
+      "Do you currently have any existing fiber cables or internet equipment at the address?"
+    </div>
+    <div class="pill-group" style="margin-top:6px">
+      <div class="pill" onclick="setProperty(this,'has_existing_fiber','yes')">Yes</div>
+      <div class="pill" onclick="setProperty(this,'has_existing_fiber','no')">No</div>
+    </div>
+    <div id="existing-fiber-note" class="hidden" style="margin-top:6px;padding:8px 12px;background:var(--accent-dim);border:1px solid var(--accent);border-radius:var(--radius);font-size:12px;color:var(--accent)">
+      Good to know &mdash; noting for the tech. They'll work with what's there or advise on the best setup.
+    </div>
+  </div>
+
   <button class="next-btn" onclick="scrollToSection('sec-wrapup')">Continue to Wrap-Up &darr;</button>
 </div>
 
@@ -1907,6 +1972,21 @@ textarea:focus { border-color: var(--accent); }
     "Welcome to Alamo Broadband, <span class="var" data-var="lead_name">[Name]</span>. I think you're going to notice a huge difference. Have a great <span id="sum-daypart">day</span>!"
   </div>
   <div class="coach-note">End the call on a high note. Don't ramble. Don't re-sell. They already said yes.</div>
+
+  <!-- TODAY'S COMMITMENT SUMMARY -->
+  <div style="margin-top:16px;padding:16px;background:var(--success-dim);border:1px solid var(--success);border-radius:var(--radius-lg)">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--success);margin-bottom:10px">Today's Commitment</div>
+    <div style="display:flex;flex-direction:column;gap:7px;font-size:13px">
+      <div style="display:flex;align-items:flex-start;gap:8px"><span style="color:var(--success);font-weight:700;flex-shrink:0">&#10003;</span><span>Free Installation <span style="font-size:11px;color:var(--text-muted)">(same-day signup — $99 waived)</span></span></div>
+      <div style="display:flex;align-items:flex-start;gap:8px"><span style="color:var(--success);font-weight:700;flex-shrink:0">&#10003;</span><span>No Contract — cancel anytime</span></div>
+      <div style="display:flex;align-items:flex-start;gap:8px"><span style="color:var(--success);font-weight:700;flex-shrink:0">&#10003;</span><span>First month's service payment due at time of installation</span></div>
+      <div style="display:flex;align-items:flex-start;gap:8px"><span style="color:var(--success);font-weight:700;flex-shrink:0">&#10003;</span><span>Router included — no additional charge</span></div>
+    </div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--success)">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:6px">Plan Selected</div>
+      <div id="commitment-plan-display" style="font-size:14px;font-weight:700;color:var(--accent)">—</div>
+    </div>
+  </div>
 
   <button class="next-btn" onclick="scrollToSection('sec-disposition')">Continue to Disposition &darr;</button>
 </div>
@@ -2047,7 +2127,7 @@ textarea:focus { border-color: var(--accent); }
   </div>
 
   <div style="margin-top:16px">
-    <button class="complete-btn" id="finalize-btn" onclick="finalizeAndSubmit()" style="display:none">Finalize &amp; Submit &#10148;</button>
+    <button class="complete-btn" id="finalize-btn" onclick="finalizeAndSubmit()">Finalize &amp; Submit &#10148;</button>
     <div id="webhook-status" style="font-size:12px;margin-top:6px;display:none;padding:8px 12px;border-radius:var(--radius);font-weight:600"></div>
     <div id="mock-training-notice" style="width:100%;padding:16px 24px;background:rgba(168,85,247,0.12);border:2px solid #a855f7;border-radius:var(--radius-lg);color:#a855f7;font-size:13px;font-weight:800;text-align:center;text-transform:uppercase;letter-spacing:1px">⚠ Training Mode — Submission Disabled</div>
     <button class="next-btn" style="width:100%;margin-top:12px;background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border)" onclick="newCall()">Start New Call</button>
@@ -2204,7 +2284,13 @@ const state = {
   household_multi: false,
   household_type: '',
   pain_usage_scenario: '',
-  worst_affected_usage: ''
+  worst_affected_usage: '',
+  adult_present: '',
+  has_existing_fiber: '',
+  offer_free_install: true,
+  offer_no_contract: true,
+  offer_first_month_due_at_install: true,
+  offer_router_included: true
 };
 
 // ===== CHECKLIST CONFIG =====
@@ -3291,10 +3377,22 @@ function renderAll() {
   renderMiningProviderCoach();
   renderCloseSavings();
   renderSpouseScheduleNote();
+  renderCommitmentPlan();
   updateChecklist();
   // v5.10: Re-inject dev annotations after dynamic content renders
   if (localStorage.getItem('alamo_dev_mode') === 'true') {
     injectAnnotationButtons();
+  }
+}
+
+function renderCommitmentPlan() {
+  var el = document.getElementById('commitment-plan-display');
+  if (!el) return;
+  if (state.recommended_plan && plans[state.recommended_plan]) {
+    var p = plans[state.recommended_plan];
+    el.innerHTML = p.name + ' &mdash; <strong>$' + p.price.toFixed(2) + '/mo</strong> &nbsp;<span style="font-size:11px;color:var(--text-muted)">' + p.speed + ' down / ' + p.upload + ' up</span>';
+  } else {
+    el.textContent = 'No plan selected';
   }
 }
 
@@ -4198,30 +4296,55 @@ function setAnchorResponse(el, response) {
 function setScheduleType(type) {
   state.schedule_type = type;
   var installBtn = document.getElementById('sched-install-btn');
+  var surveyIntentBtn = document.getElementById('sched-survey-intent-btn');
   var surveyBtn = document.getElementById('sched-survey-btn');
   var installScript = document.getElementById('sched-install-script');
   var surveyScript = document.getElementById('sched-survey-script');
   var surveyDesc = document.getElementById('site-survey-description');
   var confirmInstall = document.getElementById('sched-confirm-install');
   var confirmSurvey = document.getElementById('sched-confirm-survey');
+  var installSlots = document.getElementById('install-slots');
+  var surveyIntentSlots = document.getElementById('survey-intent-slots');
+  var surveySlots = document.getElementById('survey-slots');
 
-  if (type === 'survey') {
-    installBtn.classList.remove('selected');
-    surveyBtn.classList.add('selected');
-    installScript.classList.add('hidden');
-    surveyScript.classList.remove('hidden');
-    surveyDesc.classList.remove('hidden');
-    if (confirmInstall) confirmInstall.classList.add('hidden');
-    if (confirmSurvey) confirmSurvey.classList.remove('hidden');
-  } else {
-    installBtn.classList.add('selected');
-    surveyBtn.classList.remove('selected');
+  // Reset all type buttons
+  [installBtn, surveyIntentBtn, surveyBtn].forEach(function(b) { if (b) b.classList.remove('selected'); });
+
+  if (type === 'install') {
+    if (installBtn) installBtn.classList.add('selected');
     installScript.classList.remove('hidden');
     surveyScript.classList.add('hidden');
     surveyDesc.classList.add('hidden');
     if (confirmInstall) confirmInstall.classList.remove('hidden');
     if (confirmSurvey) confirmSurvey.classList.add('hidden');
+    if (installSlots) installSlots.classList.remove('hidden');
+    if (surveyIntentSlots) surveyIntentSlots.classList.add('hidden');
+    if (surveySlots) surveySlots.classList.add('hidden');
+  } else if (type === 'survey_intent') {
+    if (surveyIntentBtn) surveyIntentBtn.classList.add('selected');
+    installScript.classList.add('hidden');
+    surveyScript.classList.remove('hidden');
+    surveyDesc.classList.remove('hidden');
+    if (confirmInstall) confirmInstall.classList.add('hidden');
+    if (confirmSurvey) confirmSurvey.classList.remove('hidden');
+    if (installSlots) installSlots.classList.add('hidden');
+    if (surveyIntentSlots) surveyIntentSlots.classList.remove('hidden');
+    if (surveySlots) surveySlots.classList.add('hidden');
+  } else {
+    // survey only
+    if (surveyBtn) surveyBtn.classList.add('selected');
+    installScript.classList.add('hidden');
+    surveyScript.classList.remove('hidden');
+    surveyDesc.classList.remove('hidden');
+    if (confirmInstall) confirmInstall.classList.add('hidden');
+    if (confirmSurvey) confirmSurvey.classList.remove('hidden');
+    if (installSlots) installSlots.classList.add('hidden');
+    if (surveyIntentSlots) surveyIntentSlots.classList.add('hidden');
+    if (surveySlots) surveySlots.classList.remove('hidden');
   }
+  // Clear selected time slot when type changes
+  state.install_time = '';
+  document.querySelectorAll('#install-slots .pill, #survey-intent-slots .pill, #survey-slots .pill').forEach(function(p) { p.classList.remove('selected'); });
   saveToLocalStorage();
 }
 
@@ -4741,9 +4864,10 @@ function setReferral(el, val) {
 }
 
 function setTimeSlot(el, slot) {
-  var slots = { '9-11am': '9:00 - 11:00 AM', '10-2pm': '10:00 - 2:00 PM', '1-4pm': '1:00 - 4:00 PM' };
-  state.install_time = slots[slot] || slot;
-  setActivePill(el);
+  state.install_time = slot;
+  // Deselect all time slot pills across all slot groups
+  document.querySelectorAll('#install-slots .pill, #survey-intent-slots .pill, #survey-slots .pill').forEach(function(p) { p.classList.remove('selected'); });
+  el.classList.add('selected');
   saveToLocalStorage();
   renderAll();
 }
@@ -5087,6 +5211,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 
 var devChangelog = [
   { ver:'v5.11.4', date:'2026-03-27', changes:['Feature: Opening outbound script — Yes/No confirmation pills after "right?" — Yes reveals call-recorded script, No shows Facebook/Instagram memory jog','Fix: Price Lock weave shortened to "One big difference with us: the price I give you today never goes up. Period."','Fix: Closing Techniques reordered — #1 Tentative Appointment, #2 Month-to-Month, #3 Site Survey moved to top (best for Still Hesitant leads); original #1-3 become #4-6','Fix: Still Hesitant coach note updated to reference new numbers (#1/#2/#3 instead of #4/#7/#5)','Fix: Anchor close script now uses subPhrases natural language instead of raw pain label (e.g. "not getting what you\'re paying for" instead of "not worth what I pay")'] },
+  { ver:'v5.11.8', date:'2026-03-27', changes:['Fix: Finalize & Submit button now always visible in live modes (was never showing)','Feature: 3-type schedule toggle (Installation / Survey+Install / Site Survey) with correct time slots per type','Feature: Today\'s Commitment block in wrap-up (free install, no contract, 1st month due at install, router included + plan summary)','Feature: Offer badge row in Setup Fee section','Feature: Adult 18+ present and existing fiber connection questions in housekeeping','Feature: New state fields: adult_present, has_existing_fiber, offer_* (in JSON payload)'] },
   { ver:'v5.11.7', date:'2026-03-27', changes:['Feature: Mock Inbound + Mock Outbound mode buttons in header toggle — disables Finalize & Submit in training mode','Remove: red Mock Call Complete button replaced by purple training notice'] },
   { ver:'v5.11.6', date:'2026-03-27', changes:['Fix: serviceability result parsing — handle top-level Qualified key (capital Q), show SERVICE AVAILABLE / NOT IN SERVICE AREA clearly'] },
   { ver:'v5.11.5', date:'2026-03-27', changes:['Update: serviceability webhook URL updated to new Make.com endpoint'] },
@@ -5490,6 +5615,16 @@ function setProperty(el, key, val) {
         if (lotNote) lotNote.classList.add('hidden');
       }
     }
+  }
+  // adult_present toggle
+  if (key === 'adult_present') {
+    var noNote = document.getElementById('adult-not-present-note');
+    if (noNote) noNote.classList.toggle('hidden', val !== 'no');
+  }
+  // existing fiber toggle
+  if (key === 'has_existing_fiber') {
+    var fiberNote = document.getElementById('existing-fiber-note');
+    if (fiberNote) fiberNote.classList.toggle('hidden', val !== 'yes');
   }
   saveToLocalStorage();
   if (state.home_type || state.roof_type) {
