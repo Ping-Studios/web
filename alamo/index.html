@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.10.1</title>
+<title>Alamo Broadband — Sales Intelligence v5.10.2</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -1049,7 +1049,6 @@ textarea:focus { border-color: var(--accent); }
 <div class="section" id="sec-pain" data-check="pain">
   <div class="section-label">Section 2</div>
   <div class="section-title">Pain Discovery</div>
-  <p style="font-size:13px;color:var(--text-secondary);margin-bottom:4px"><strong>Ask:</strong> "You know... what's keeping it from being a 10?"</p>
   <p style="font-size:11px;color:var(--text-muted);margin-bottom:8px">As they answer, click each pain below. You can select multiple. Steps 1&ndash;3 will guide you through what to say.</p>
 
   <!-- Usage context banner -->
@@ -1094,13 +1093,14 @@ textarea:focus { border-color: var(--accent); }
     <div id="pain-deepener-script"></div>
   </div>
 
-  <!-- WEAVE: Local San Antonio Support — drop after "nobody's been able to fix it" -->
+  <!-- WEAVE: Local San Antonio Support — HIDDEN per Evan annotation v5.10.2. Uncomment if relocating.
   <div class="standard-only" id="weave-local-support" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(74,158,255,0.08),rgba(74,158,255,0.02));border:1px solid rgba(74,158,255,0.25);border-radius:var(--radius)">
     <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);margin-bottom:4px">WEAVE: Local San Antonio Support</div>
     <div class="script-block" style="border-left-color:var(--accent);margin:0;font-size:12px">
       "Yeah, that's the thing &mdash; we're a local company right here in San Antonio. When you call us, a real person picks up. 4.6 stars on Google. If something goes wrong, we actually fix it. Sound good?"
     </div>
   </div>
+  -->
 
   <!-- Step 4: Trigger — moved from Section 3 -->
   <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
@@ -3251,27 +3251,54 @@ function renderScoreBranch() {
   }
 }
 
-// v4.9: Build Step 2 suggestion based on usage + pain
+// v5.10.2: Build Step 2 suggestion — usage-aware + pain-specific
 function buildStep2Suggestion() {
   var usage = state.usage_types || [];
   var pains = state.pain_types || [];
-  var suggestions = [];
+  if (!pains.length) return '';
 
-  if (pains.includes('too_expensive')) suggestions.push('Did the price jump after a promo? Hidden fees adding up? Paying too much for satellite?');
-  if (pains.includes('keeps_dropping')) suggestions.push('Drops daily? Slows in evenings? Random outages?');
-  if (pains.includes('too_slow')) suggestions.push('Not getting promised speeds? Slow with multiple devices?');
-  if (pains.includes('buffering')) suggestions.push('Shows buffering? Video quality dropping? Pages taking forever?');
-  if (pains.includes('bill_keeps_changing')) suggestions.push('Promo expired? Surprise fees? Rate keeps creeping up?');
-  if (pains.includes('storms')) suggestions.push('Goes out in rain? Takes hours to recover after storms?');
-  if (pains.includes('no_options')) suggestions.push('Only satellite available? No cable or fiber?');
-  if (pains.includes('data_caps')) suggestions.push('Getting throttled? Overage charges? Using hotspot?');
-  if (pains.includes('laggy')) suggestions.push('Gaming lag? Video calls freezing? Everything feels delayed?');
-  if (pains.includes('bad_service')) suggestions.push('Hours on hold? Never fix the issue? Overseas support?');
+  var usageLabels = { streaming:'stream', gaming:'game', wfh:'work from home', browsing:'browse', smart_home:'run smart home devices', school:'do schoolwork' };
+  var usageText = usage.map(function(u) { return usageLabels[u] || u; }).join(', ');
 
-  if (!suggestions.length) return '';
-  var unique = suggestions.filter(function(v, i) { return suggestions.indexOf(v) === i; });
-  var painLabel = state.pain_types.length === 1 ? painTree[state.pain_types[0]].label.toLowerCase() : 'that';
-  return '<strong>Ask:</strong> "When you say it\'s ' + painLabel + ', what do you mean by that? ' + unique.slice(0, 1).join(' ') + '"<br><span style="font-size:10px;color:var(--text-muted)">Click the options below that match what they say.</span>';
+  // Build pain-specific sub-question hints — tailored to usage when possible
+  var usageAwareHints = {
+    buffering: { streaming:'Shows keep buffering? Video quality dropping?', gaming:'Game lagging? Pages taking forever?', wfh:'Video calls freezing? Files slow to load?', _default:'Shows buffering? Video quality dropping? Pages taking forever?' },
+    too_slow: { streaming:'Slow when everyone streams?', gaming:'Lag when multiple people are on?', wfh:'Work calls freezing? Upload terrible?', _default:'Not getting promised speeds? Slow with multiple devices?' },
+    keeps_dropping: { streaming:'Shows freezing mid-episode?', gaming:'Getting kicked out of matches?', wfh:'Zoom calls disconnecting?', _default:'Slows in evenings? Random outages?' },
+    laggy: { gaming:'High ping? Getting killed before you see them?', wfh:'Video calls delayed? Talking over people?', _default:'Gaming lag? Video calls freezing? Everything feels delayed?' },
+    too_expensive: { _default:'Did the price jump after a promo? Hidden fees? Paying too much for satellite?' },
+    bill_keeps_changing: { _default:'Promo expired? Surprise fees? Rate keeps creeping up?' },
+    storms: { _default:'Goes out in rain? Takes hours to recover after storms?' },
+    no_options: { _default:'Only satellite available? No cable or fiber?' },
+    data_caps: { streaming:'Hitting the cap just from streaming?', _default:'Getting throttled? Overage charges? Using hotspot?' },
+    bad_service: { _default:'Hours on hold? Never fix the issue? Overseas support?' }
+  };
+
+  var hints = [];
+  pains.forEach(function(p) {
+    var map = usageAwareHints[p];
+    if (!map) return;
+    // Try to find a usage-specific hint first
+    var hint = null;
+    for (var i = 0; i < usage.length; i++) {
+      if (map[usage[i]]) { hint = map[usage[i]]; break; }
+    }
+    hints.push(hint || map._default);
+  });
+
+  var painLabel = pains.length === 1 ? painTree[pains[0]].label.toLowerCase() : pains.map(function(p) { return painTree[p] ? painTree[p].label.toLowerCase() : p; }).join(' + ');
+
+  var intro;
+  if (usage.length) {
+    intro = '<strong>Ask:</strong> "They said it\'s <em>' + painLabel + '</em> and they <em>' + usageText + '</em> — ';
+  } else {
+    intro = '<strong>Ask:</strong> "When you say it\'s ' + painLabel + ', what do you mean? ';
+  }
+
+  var body = hints.length ? hints.slice(0, 2).join(' ') : '';
+  var recNote = usage.length ? 'Highlighted options match their usage.' : 'Click the options below that match what they say.';
+
+  return intro + body + '"<br><span style="font-size:10px;color:var(--text-muted)">' + recNote + '</span>';
 }
 
 // v4.9: Get recommended sub-option IDs based on usage
@@ -3527,20 +3554,29 @@ function renderPainDeepener() {
     return t === 'too_expensive' || t === 'bill_keeps_changing';
   });
 
+  // v5.10.2: Household-aware deepener opening
+  var hhPrefix = '';
+  if (state.household_type === 'whole_household') hhPrefix = 'your whole household is dealing with ';
+  else if (state.household_type === 'partner') hhPrefix = 'that\'s hitting both of you — ';
+
   if (allIssues.length) {
+    var issueStr = allIssues.slice(0, 3).join(', and ');
     if (isPriceOnly) {
-      openingQ = '"So ' + allIssues.slice(0, 3).join(', and ') + ' — walk me through what\'s going on with the bill."';
+      openingQ = '"So ' + (hhPrefix || '') + issueStr + ' — walk me through what\'s going on with the bill."';
     } else {
-      openingQ = '"So ' + allIssues.slice(0, 3).join(', and ') + ' — what does that actually look like day to day?"';
+      openingQ = hhPrefix
+        ? '"So ' + hhPrefix + issueStr + ' — what does that actually look like day to day?"'
+        : '"So ' + issueStr + ' — what does that actually look like day to day?"';
     }
   } else if (painLabels.length === 1) {
     var tree = painTree[state.pain_types[0]];
     openingQ = tree && tree.deepener && tree.deepener[0] ? tree.deepener[0] : '';
   } else {
+    var painStr = painLabels.join(' and ');
     if (isPriceOnly) {
-      openingQ = '"So you\'re dealing with ' + painLabels.join(' and ') + ' — what\'s going on? Walk me through it."';
+      openingQ = '"So ' + (hhPrefix || 'you\'re dealing with ') + painStr + ' — what\'s going on? Walk me through it."';
     } else {
-      openingQ = '"So you\'re dealing with ' + painLabels.join(' and ') + ' — walk me through what that looks like on a typical day."';
+      openingQ = '"So ' + (hhPrefix || 'you\'re dealing with ') + painStr + ' — walk me through what that looks like on a typical day."';
     }
   }
 
@@ -3590,8 +3626,7 @@ function renderPainDeepener() {
 
   // Pain-triggered benefit weaves — show after Step 3 when dig deeper is completed
   var painBenefitWeaves = {
-    data_caps: { label: 'BENEFIT: Unlimited Data', script: '"And just so you know — with us, there are no data caps. It\'s unlimited. Stream, download, game, whatever you want. No throttling, no overage charges."' },
-    buffering: { label: 'BENEFIT: Free TV Service', script: '"We actually include a free TV service with every plan — over 100 channels through your browser or a Roku. So not only is your internet unlimited, you might be able to drop a streaming subscription or two."' }
+    data_caps: { label: 'BENEFIT: Unlimited Data', script: '"And just so you know — with us, there are no data caps. It\'s unlimited. Stream, download, game, whatever you want. No throttling, no overage charges."' }
   };
   var hasDeepenerAnswers = state.pain_frequency || state.pain_duration || state.provider_tried_fix;
   if (hasDeepenerAnswers) {
@@ -3608,11 +3643,7 @@ function renderPainDeepener() {
 
   script.innerHTML = html;
 
-  // v5.10: Hide local support weave for price-only pains (doesn't make sense)
-  var localWeave = document.getElementById('weave-local-support');
-  if (localWeave) {
-    localWeave.classList.toggle('hidden', isPriceOnly && state.pain_types.length > 0);
-  }
+  // v5.10.2: Local support weave removed per Evan annotation (HTML commented out)
 }
 
 function makeDeepenerRow(question, pillsHtml) {
@@ -3675,32 +3706,31 @@ function renderValueMatch() {
     if (FLIP_MAP[p]) flipParts.push(FLIP_MAP[p]);
   });
 
+  // v5.10.2: Split into reflect → confirmation pause → flip
   var html = '';
+  var reflectSentence, flipSentence;
 
   if (pains.length === 1) {
-    // Single pain — focused reflect + flip
-    var sentence = '"So ' + (name || 'right now') + ', you told me ' + reflectParts[0] + '. ';
-    sentence += 'With us, ' + flipParts[0] + '. Does that make sense?"';
-    html += '<div class="script-block" style="font-size:13px;line-height:1.7">' + sentence + '</div>';
+    reflectSentence = '"So ' + (name || 'right now') + ', you told me ' + reflectParts[0] + '. It sounds like ' + provider + ' isn\'t cutting it, <strong>right</strong>?"';
+    flipSentence = '"With us, ' + flipParts[0] + '. Does that make sense?"';
 
   } else if (pains.length === 2) {
-    // Two pains — weave both into one sentence
-    var sentence = '"So ' + (name ? name + ', between ' : 'between ');
-    sentence += reflectParts[0] + ' and ' + reflectParts[1];
-    sentence += ' — it sounds like ' + provider + ' isn\'t cutting it. ';
-    sentence += 'With us, ' + flipParts[0] + ', and ' + flipParts[1] + '. ';
-    sentence += 'Does that make sense?"';
-    html += '<div class="script-block" style="font-size:13px;line-height:1.7">' + sentence + '</div>';
+    reflectSentence = '"So ' + (name ? name + ', between ' : 'between ') + reflectParts[0] + ' and ' + reflectParts[1] + ' — it sounds like ' + provider + ' isn\'t cutting it, <strong>right</strong>?"';
+    flipSentence = '"With us, ' + flipParts[0] + ', and ' + flipParts[1] + '. Does that make sense?"';
 
   } else {
-    // 3+ pains — top 2 specific, blanket the rest
-    var sentence = '"So ' + (name ? name + ', ' : '');
-    sentence += reflectParts[0] + ', ' + reflectParts[1] + ', and on top of that ' + reflectParts.slice(2).join(' and ');
-    sentence += ' — you\'re dealing with a lot. ';
-    sentence += 'With us, ' + flipParts[0] + ', ' + flipParts[1] + ', and all of that other stuff? It goes away. ';
-    sentence += 'Does that make sense?"';
-    html += '<div class="script-block" style="font-size:13px;line-height:1.7">' + sentence + '</div>';
+    reflectSentence = '"So ' + (name ? name + ', ' : '') + reflectParts[0] + ', ' + reflectParts[1] + ', and on top of that ' + reflectParts.slice(2).join(' and ') + ' — you\'re dealing with a lot. It sounds like ' + provider + ' isn\'t cutting it, <strong>right</strong>?"';
+    flipSentence = '"With us, ' + flipParts[0] + ', ' + flipParts[1] + ', and all of that other stuff? It goes away. Does that make sense?"';
   }
+
+  // Part 1: Reflect
+  html += '<div class="script-block" style="font-size:13px;line-height:1.7">' + reflectSentence + '</div>';
+  // Coaching pause
+  html += '<div style="text-align:center;padding:8px 0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--warning)">';
+  html += '<span style="display:inline-block;padding:4px 16px;background:var(--warning-dim);border-radius:20px">&#9208; Wait for confirmation</span>';
+  html += '</div>';
+  // Part 2: Flip
+  html += '<div class="script-block" style="font-size:13px;line-height:1.7">' + flipSentence + '</div>';
 
   container.innerHTML = html;
   flashSection('sec-value');
@@ -4903,6 +4933,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.10.2', date:'2026-03-27', changes:['Remove: "Ask: what\'s keeping it from a 10?" static text (Evan annotation)','Update: Step 2 "Get Specific" now references usage context + pain combo','Update: Step 3 deepener opening personalized by household size','Remove: Free TV Service benefit weave from buffering pain','Remove: Local San Antonio Support weave (hidden pending redesign)','Update: Value Match bridge split into reflect → pause → flip format'] },
   { ver:'v5.10.1', date:'2026-03-26', changes:['Update: shorten recording disclosure script (Evan feedback)','Fix: pain tiles reordered by actual transcript frequency (45%→5%)','Update: too_expensive empathy shortened — removed "not getting money\'s worth"','Remove: all daily_drops references (deprecated sub-option)','Feature: Q2 grayed out when "Whole household" or "Partner" already selected in Opening','Feature: spouse objection auto-highlighted when DM=spouse and Objection clicked','Fix: RECOMMENDED badge syncs with auto-recommendation on plan select + init','Fix: ROI script uses "full household" / "you and your partner" instead of raw number'] },
   { ver:'v5.10.0g', date:'2026-03-25', changes:['Remove: "Drops daily" sub-option from keeps_dropping','Feature: household type auto-sets household size + DM trap in Qualifying','Fix: plan recommendation logic — just_me gets Essentials, partner respects usage','Feature: recommended plan auto-selected on first visit','Feature: "Sound good?" trial close added after ROI pitch script'] },
   { ver:'v5.10.0f', date:'2026-03-25', changes:['Fix: hesitant button auto-scrolls to Advanced Closes (Section 7)'] },
@@ -5154,7 +5185,7 @@ function exportAnnotations() {
   }
   var data = {
     tool: 'Alamo Broadband Sales Intelligence',
-    version: 'v5.10.1',
+    version: 'v5.10.2',
     exportDate: new Date().toISOString(),
     exportedBy: state.team_member || 'Unknown',
     totalAnnotations: devAnnotations.length,
@@ -6206,9 +6237,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.1') {
+  if (annotationVer !== 'v5.10.2') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.1');
+    localStorage.setItem('alamo_annotation_version', 'v5.10.2');
   }
 
   // v5.10: Restore dev mode if previously unlocked
