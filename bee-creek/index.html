@@ -1184,8 +1184,8 @@ function CongratsPage({ userData, currentZone, zones, plans, devMode, showAllPla
         ))}
       </div>
 
-      {/* View All Plans Table (non-dev) */}
-      {!showAllPlansToggle && (
+      {/* View All Plans Table (dev-only) */}
+      {devMode && !showAllPlansToggle && (
         <div style={{ textAlign: "center", padding: "4px 0 16px" }}>
           <button onClick={() => setShowAllTable(!showAllTable)} style={{
             background: "none", border: "1px solid var(--border)", borderRadius: "8px",
@@ -1197,7 +1197,7 @@ function CongratsPage({ userData, currentZone, zones, plans, devMode, showAllPla
         </div>
       )}
 
-      {showAllTable && !showAllPlansToggle && (
+      {showAllTable && devMode && !showAllPlansToggle && (
         <div style={{ maxWidth: 800, margin: "0 auto 20px", padding: "0 20px" }}>
           <div style={{ background: "var(--bg-card)", borderRadius: "12px", border: "1px solid var(--border)", overflow: "hidden" }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr auto", padding: "12px 20px", background: "var(--bg-secondary)", borderBottom: "1px solid var(--border)" }}>
