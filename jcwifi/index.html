@@ -5380,18 +5380,26 @@ function checkServiceability() {
   })
   .then(function(r) { return r.json(); })
   .then(function(payload) {
-    var qualified = payload && payload.data ? payload.data.qualified : null;
-    var zone = payload && payload.data ? payload.data.zone : null;
-    if (qualified) {
+    var qualified = payload && (payload.Qualified || payload.qualified || (payload.data && (payload.data.Qualified || payload.data.qualified))) || null;
+    var zone = payload && (payload.Zone || payload.zone || (payload.data && (payload.data.Zone || payload.data.zone))) || null;
+    var isYes = qualified && qualified.toString().toLowerCase() === 'true' || qualified === true;
+    var isNo = qualified && qualified.toString().toLowerCase() === 'false' || qualified === false;
+    if (isYes) {
       resultEl.style.background = 'var(--success-dim)';
       resultEl.style.color = 'var(--success)';
       resultEl.style.border = '1px solid var(--success)';
-    } else {
+      resultEl.innerHTML = '&#10003; <strong>SERVICE AVAILABLE</strong>' + (zone ? ' &nbsp;|&nbsp; Zone: <strong>' + zone + '</strong>' : '');
+    } else if (isNo) {
       resultEl.style.background = 'var(--danger-dim)';
       resultEl.style.color = 'var(--danger)';
       resultEl.style.border = '1px solid var(--danger)';
+      resultEl.innerHTML = '&#10007; <strong>NOT IN SERVICE AREA</strong>';
+    } else {
+      resultEl.style.background = 'var(--accent-dim)';
+      resultEl.style.color = 'var(--accent)';
+      resultEl.style.border = '1px solid var(--accent)';
+      resultEl.innerHTML = 'Qualified: <strong>' + (qualified !== null && qualified !== undefined ? qualified : 'N/A') + '</strong>' + (zone ? ' &nbsp;|&nbsp; Zone: <strong>' + zone + '</strong>' : '');
     }
-    resultEl.innerHTML = 'Qualified: <strong>' + (qualified || 'N/A') + '</strong>' + (zone ? ' &nbsp;|&nbsp; Zone: <strong>' + zone + '</strong>' : '');
   })
   .catch(function(err) {
     resultEl.style.background = 'var(--danger-dim)';
