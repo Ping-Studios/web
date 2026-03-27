@@ -703,12 +703,12 @@ textarea:focus { border-color: var(--accent); }
   <div style="display:flex;gap:8px;align-items:center;margin-left:auto">
     <select id="team-member-select" onchange="updateState('team_member',this.value);var f=document.getElementById('team-member-field');if(f)f.value=this.value" style="background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;font-size:12px;cursor:pointer">
       <option value="">Rep</option>
-      <option value="Paul Gonzales">Paul G.</option>
-      <option value="Mario Gan">Mario G.</option>
       <option value="Aaron Lim">Aaron L.</option>
-      <option value="Sam Rivera">Sam R.</option>
-      <option value="MJ Ramirez">MJ R.</option>
       <option value="AI Ashley">AI Ashley</option>
+      <option value="Mario Gan">Mario G.</option>
+      <option value="MJ Ramirez">MJ R.</option>
+      <option value="Paul Gonzales">Paul G.</option>
+      <option value="Sam Rivera">Sam R.</option>
     </select>
     <div style="display:flex;gap:2px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);padding:2px" id="mode-btns">
       <div class="mode-btn active" onclick="setModeBtn(this,'standard')">Standard</div>
@@ -851,12 +851,12 @@ textarea:focus { border-color: var(--accent); }
     <label style="font-weight:700;color:var(--danger)">Rep <span style="font-size:10px">*</span></label>
     <select id="team-member-field" onchange="updateState('team_member',this.value);var h=document.getElementById('team-member-select');if(h)h.value=this.value" style="flex:1;background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border);border-radius:var(--radius);padding:8px 14px;font-size:14px;cursor:pointer">
       <option value="">Select your name...</option>
-      <option value="Paul Gonzales">Paul Gonzales</option>
-      <option value="Mario Gan">Mario Gan</option>
       <option value="Aaron Lim">Aaron Lim</option>
-      <option value="Sam Rivera">Sam Rivera</option>
-      <option value="MJ Ramirez">MJ Ramirez</option>
       <option value="AI Ashley">AI Ashley</option>
+      <option value="Mario Gan">Mario Gan</option>
+      <option value="MJ Ramirez">MJ Ramirez</option>
+      <option value="Paul Gonzales">Paul Gonzales</option>
+      <option value="Sam Rivera">Sam Rivera</option>
     </select>
   </div>
 
@@ -961,7 +961,7 @@ textarea:focus { border-color: var(--accent); }
     <div class="script-block">
       "Hey <span class="var" data-var="lead_name">[Name]</span>, this is <span class="var" data-var="team_member">[Your Name]</span> with JC WiFi on a recorded line. I saw you filled out a form a while back looking for internet service. You may have already found something &mdash; that's totally fine. Just curious, on a scale of 1 to 10, how would you rate your current provider right now?"
     </div>
-    <div class="coach-note" style="margin-top:6px">If they don't remember the form: "No worries! You may have seen us on Facebook or Google. We're a local provider here in northwest Illinois. Just curious how your internet's been treating you."</div>
+    <div class="coach-note" style="margin-top:6px">If they don't remember the form: "No worries! You may have seen us on Facebook or Google. We're a local provider here in Freeport. Just curious how your internet's been treating you."</div>
 
     <!-- Mining Score Routing -->
     <div style="margin-top:12px">
@@ -990,7 +990,7 @@ textarea:focus { border-color: var(--accent); }
       </div>
       <div id="mining-score-high" class="hidden">
         <div class="script-block" style="border-left-color:var(--warning)">
-          "Oh nice, sounds like you're in a good spot! Well, if anything ever changes, we're a local company right here in northwest Illinois &mdash; no contracts and a 30-day money-back guarantee, no contracts, and a 30-day money-back guarantee. I'll let you go &mdash; keep our number handy: <strong style="color:var(--accent)">815-233-2138</strong>."
+          "Oh nice, sounds like you're in a good spot! Well, if anything ever changes, we're a local company right here in the Freeport area &mdash; great reviews on Google, no contracts, and a 30-day money-back guarantee. I'll let you go &mdash; keep our number handy: <strong style="color:var(--accent)">815-233-2138</strong>."
         </div>
         <div class="coach-note">Score 8-10 = gracefully exit. Don't push. Plant the seed and move on.</div>
         <button class="next-btn" onclick="scrollToSection('sec-disposition')" style="background:var(--text-muted)">Go to Disposition &darr;</button>
@@ -1103,7 +1103,7 @@ textarea:focus { border-color: var(--accent); }
   <div class="standard-only" id="weave-local-support" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(74,158,255,0.08),rgba(74,158,255,0.02));border:1px solid rgba(74,158,255,0.25);border-radius:var(--radius)">
     <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);margin-bottom:4px">WEAVE: Local Freeport Support</div>
     <div class="script-block" style="border-left-color:var(--accent);margin:0;font-size:12px">
-      "Yeah, that's the thing &mdash; we're a local company right here in northwest Illinois. When you call us, a real person picks up. no contracts and a 30-day money-back guarantee. If something goes wrong, we actually fix it. Sound good?"
+      "Yeah, that's the thing &mdash; we're a local company right here in the Freeport area. When you call us, a real person picks up. Great reviews on Google. If something goes wrong, we actually fix it. Sound good?"
     </div>
   </div>
   -->
@@ -1158,14 +1158,12 @@ textarea:focus { border-color: var(--accent); }
       <div class="pill" onclick="selectProvider(this,'Spectrum')">Spectrum</div>
       <div class="pill" onclick="selectProvider(this,'Xfinity')">Xfinity</div>
       <div class="pill" onclick="selectProvider(this,'Frontier')">Frontier</div>
-      <div class="pill" onclick="selectProvider(this,'Mediacom')">Mediacom</div>
       <div class="pill" onclick="selectProvider(this,'Starlink')">Starlink</div>
+      <div class="pill" onclick="selectProvider(this,'Mediacom')">Mediacom</div>
       <div class="pill" onclick="selectProvider(this,'T-Mobile')">T-Mobile</div>
       <div class="pill" onclick="selectProvider(this,'HughesNet')">HughesNet</div>
       <div class="pill" onclick="selectProvider(this,'Viasat')">Viasat</div>
       <div class="pill" onclick="selectProvider(this,'US Cellular')">US Cellular</div>
-      <div class="pill" onclick="selectProvider(this,'AT&amp;T')">AT&amp;T</div>
-      <div class="pill" onclick="selectProvider(this,'CenturyLink')">CenturyLink</div>
       <div class="pill" onclick="selectProvider(this,'None')">None / First Time</div>
       <div class="pill" onclick="selectProvider(this,'Other')">Other</div>
     </div>
@@ -1312,15 +1310,15 @@ textarea:focus { border-color: var(--accent); }
     </div>
     <div class="quick-pitch-item">
       <div class="quick-pitch-num">3</div>
-      <div><strong>Autopay discount</strong> &mdash; save $5/mo on any plan with autopay</div>
+      <div><strong>No data caps</strong> &mdash; truly unlimited, no throttling ever</div>
     </div>
     <div class="quick-pitch-item">
       <div class="quick-pitch-num">4</div>
-      <div><strong>Price lock forever</strong> &mdash; the price you get today never goes up</div>
+      <div><strong>Local support</strong> right here in the Freeport area &mdash; not a national call center</div>
     </div>
     <div class="quick-pitch-item">
       <div class="quick-pitch-num">5</div>
-      <div><strong>Local support</strong> &mdash; call 815-233-2138, real people answer</div>
+      <div><strong>Great reviews on Google</strong> with 99.99% uptime reliability</div>
     </div>
 
     <!-- Dynamic coach note based on provider type -->
@@ -1390,52 +1388,55 @@ textarea:focus { border-color: var(--accent); }
     <span style="font-size:12px;color:var(--accent);text-decoration:underline">Change Plan</span>
   </div>
   <div class="plan-grid" id="plan-grid">
-    <div class="plan-card" onclick="selectPlan('bronze')">
+    <div class="plan-card" onclick="selectPlan('unfiber50')">
       <div class="plan-name">Bronze</div>
       <div class="plan-tagline">Great Value</div>
       <div class="plan-price">$24<span>.95/mo</span></div>
-      <p style="font-size:11px;color:var(--success);margin-top:4px">Autopay: -$5/mo</p>
+      <p style="font-size:11px;color:var(--success);margin-top:4px;font-weight:700">Unlimited Data</p>
+      <p style="font-size:11px;color:var(--accent);margin-top:2px">Router Included</p>
       <p style="font-size:11px;color:var(--text-muted);margin-top:4px">1-2 people, browsing &amp; streaming</p>
     </div>
-    <div class="plan-card" onclick="selectPlan('silver')">
+    <div class="plan-card" onclick="selectPlan('unfiber100')">
       <div class="plan-name">Silver</div>
       <div class="plan-tagline">Most Popular</div>
       <div class="plan-price">$50<span>/mo</span></div>
-      <p style="font-size:11px;color:var(--success);margin-top:4px">Autopay: -$5/mo</p>
+      <p style="font-size:11px;color:var(--success);margin-top:4px;font-weight:700">Unlimited Data</p>
+      <p style="font-size:11px;color:var(--accent);margin-top:2px">Router Included</p>
       <p style="font-size:11px;color:var(--text-muted);margin-top:4px">3-5 people, WFH + streaming</p>
     </div>
-    <div class="plan-card" onclick="selectPlan('gold')">
+    <div class="plan-card" onclick="selectPlan('unfiber300')">
       <div class="plan-name">Gold</div>
       <div class="plan-tagline">Full Power</div>
       <div class="plan-price">$67<span>/mo</span></div>
-      <p style="font-size:11px;color:var(--success);margin-top:4px">Autopay: -$5/mo</p>
+      <p style="font-size:11px;color:var(--success);margin-top:4px;font-weight:700">Unlimited Data</p>
+      <p style="font-size:11px;color:var(--accent);margin-top:2px">Router Included</p>
       <p style="font-size:11px;color:var(--text-muted);margin-top:4px">5+ people, gaming + WFH + 4K</p>
     </div>
   </div>
-
-
-  <!-- Business Plans Toggle -->
-  <div style="text-align:center;margin:12px 0">
-    <button class="pill" onclick="toggleBusinessPlans()" id="business-plans-toggle" style="cursor:pointer">Show Business Plans</button>
+  <div style="text-align:center;margin-top:8px;font-size:12px;color:var(--success);font-weight:600">-$5/mo with autopay on all plans</div>
+  <div style="text-align:center;margin-top:8px">
+    <button onclick="toggleBusinessPlans()" id="biz-plans-toggle" style="background:var(--bg-input);color:var(--accent);border:1px solid var(--accent);border-radius:var(--radius);padding:6px 16px;font-size:12px;cursor:pointer;font-weight:600">Show Business Plans</button>
   </div>
-  <div id="business-plans" class="hidden">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0">
+  <div id="business-plans" class="hidden" style="margin-top:12px">
+    <div class="plan-grid">
       <div class="plan-card" style="border-color:var(--purple)">
         <div class="plan-name" style="color:var(--purple)">Dedicated Link</div>
         <div class="plan-tagline">Business</div>
-        <div class="plan-price" style="color:var(--purple)">$167<span>/mo</span></div>
-        <p style="font-size:11px;color:var(--text-muted);margin-top:6px">Dedicated business connection</p>
+        <div class="plan-price">$167<span>/mo</span></div>
+        <p style="font-size:11px;color:var(--success);margin-top:4px;font-weight:700">Unlimited Data</p>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:4px">Dedicated business connection</p>
       </div>
       <div class="plan-card" style="border-color:var(--purple)">
         <div class="plan-name" style="color:var(--purple)">Dedicated Link Pro</div>
-        <div class="plan-tagline">Enterprise</div>
-        <div class="plan-price" style="color:var(--purple)">$278<span>/mo</span></div>
-        <p style="font-size:11px;color:var(--text-muted);margin-top:6px">Premium dedicated business connection</p>
+        <div class="plan-tagline">Business+</div>
+        <div class="plan-price">$278<span>/mo</span></div>
+        <p style="font-size:11px;color:var(--success);margin-top:4px;font-weight:700">Unlimited Data</p>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:4px">Premium business connection</p>
       </div>
     </div>
   </div>
 
-    <!-- Don't Cancel — shown when a plan is selected -->
+  <!-- Don't Cancel — shown when a plan is selected -->
   <div id="dont-cancel-block" class="hidden" style="margin-top:12px">
     <div class="script-block" style="border-left-color:var(--warning)">
       <strong>"Don't Cancel":</strong><br>
@@ -1464,11 +1465,11 @@ textarea:focus { border-color: var(--accent); }
   <div class="section-label">Section 6</div>
   <div class="section-title">Setup Fee + Close</div>
   <div class="script-block">
-    "The standard setup fee is $99, but I can get you a discounted rate of <strong style="color:var(--success)">$59</strong> if we lock this in today. No contract, month-to-month, cancel anytime. And you get a 30-day money-back guarantee &mdash; don't love it, full refund."
+    "Now, installation is normally $99, but <strong style="color:var(--success)">I can do $59 if we get you set up today</strong>. No contract, month-to-month, cancel anytime. And you get a 30-day money-back guarantee &mdash; don't love it, full refund."
   </div>
-  <div class="coach-note" style="margin-top:6px">Standard install: $99. Discounted install: $59 (closer tool). We accept card, cash, and check &mdash; due at time of installation.
+  <div class="coach-note" style="margin-top:6px">Standard install: $99. Discounted to $59 for same-day signups. We accept card, cash, and check &mdash; due at time of installation.
     <span style="display:block;margin-top:4px;font-size:11px;color:var(--text-muted);cursor:pointer;text-decoration:underline" onclick="this.nextElementSibling.classList.toggle('hidden')">Pole fees?</span>
-    <div class="hidden" style="margin-top:4px;font-size:11px;color:var(--text-secondary)">Standard install: $99 | Discounted: $59</div>
+    <div class="hidden" style="margin-top:4px;font-size:11px;color:var(--text-secondary)">20ft pole: +$50 | 30ft pole: +$100 | Tripod: included</div>
   </div>
 
   <!-- Trial Close -->
@@ -1554,7 +1555,7 @@ textarea:focus { border-color: var(--accent); }
       <div style="margin-bottom:12px">
         <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:4px">2. MONTH-TO-MONTH COUNTER <span style="font-size:10px;font-weight:400;opacity:.7">— removes all commitment</span></div>
         <div class="script-block" style="border-left-color:var(--success)">
-          "I can offer month-to-month &mdash; $59 discounted install instead of $99, and you can cancel anytime. No commitment at all. That way you're testing it for literally the lowest possible cost. If you love it &mdash; and most people do &mdash; you just keep it going."
+          "I can offer month-to-month &mdash; $49 install instead of $99, and you can cancel anytime. No commitment at all. That way you're testing it for literally the lowest possible cost. If you love it &mdash; and most people do &mdash; you just keep it going."
         </div>
         <div class="coach-note" style="margin-top:4px">Best for: contract-averse leads. Removes all commitment barriers.</div>
       </div>
@@ -1572,7 +1573,7 @@ textarea:focus { border-color: var(--accent); }
       <div style="margin-bottom:12px">
         <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:4px">4. TRIAL CLOSE</div>
         <div class="script-block" style="border-left-color:var(--accent)">
-          "Based on what you've told me, the <span class="var" data-var="recommended_plan">[plan]</span> would be perfect for your household. You get unlimited data, no contracts, price locked, and local support. Plus the and 30-day money-back guarantee. Sound like what you're looking for?"
+          "Based on what you've told me, the <span class="var" data-var="recommended_plan">[plan]</span> would be perfect for your household. You get unlimited data, no contracts, price locked, and local support. Plus a 30-day money-back guarantee. Sound like what you're looking for?"
         </div>
         <div class="coach-note" style="margin-top:4px">Best for: leads who have expressed interest. Use after Value Match. Listen for verbal cues.</div>
       </div>
@@ -1580,7 +1581,7 @@ textarea:focus { border-color: var(--accent); }
       <div style="margin-bottom:12px">
         <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:4px">5. FIRST MONTH FREE</div>
         <div class="script-block" style="border-left-color:var(--success)">
-          "We can get you set up with a discounted install at $59 instead of $99. So all you'd need to take care of is the one-time installation fee on the day of the appointment. That way you can test everything out &mdash; streaming, gaming, working from home &mdash; and see the difference for yourself before you're paying a dime for monthly service."
+          "Your first month of service is completely free. So all you'd need to take care of is the one-time installation fee on the day of the appointment. That way you can test everything out &mdash; streaming, gaming, working from home &mdash; and see the difference for yourself before you're paying a dime for monthly service."
         </div>
         <div class="coach-note" style="margin-top:4px">Best for: price-conscious leads. Creates a "nothing to lose" frame.</div>
       </div>
@@ -1607,7 +1608,7 @@ textarea:focus { border-color: var(--accent); }
           "You're paying $<span class="var" data-var="current_price">[current]</span> now. Our plan is $<span class="var" data-var="plan_price">[plan]</span>. That's $<span id="close-savings-diff">__</span> savings per month, $<span id="close-savings-annual">__</span> per year. And the price never goes up. The math just works."
         </div>
         <div class="script-block hidden" id="close8-value-block" style="border-left-color:var(--warning)">
-          "Here's how I'd look at it &mdash; you're getting unlimited data, and a price that's locked forever. <span class="var" data-var="current_provider">[Provider]</span> WILL raise your rate &mdash; they always do. When that bill goes up in 6 or 12 months, you'll be glad you made the switch now."
+          "Here's how I'd look at it &mdash; you're getting unlimited data, a router included, and a price that's locked forever. <span class="var" data-var="current_provider">[Provider]</span> WILL raise your rate &mdash; they always do. When that bill goes up in 6 or 12 months, you'll be glad you made the switch now."
         </div>
         <div class="coach-note" style="margin-top:4px">Best for: price shoppers, analytical buyers. When plan costs more than current, pivot to value + rate-hike framing.</div>
       </div>
@@ -1629,9 +1630,9 @@ textarea:focus { border-color: var(--accent); }
       "I tell you what &mdash; let me schedule a complimentary site survey. Our technician will come out, test the signal strength at your location, show you exactly where the small antenna would go, and answer any questions. No charge, no commitment. If you like what you see, we can schedule the full install right then. How does that sound?"
     </div>
 
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--warning);margin-top:16px;margin-bottom:8px">Alternative &mdash; Free Install + No Commitment</div>
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--warning);margin-top:16px;margin-bottom:8px">Alternative &mdash; Discounted Install + No Commitment</div>
     <div class="script-block" style="border-left-color:var(--warning)">
-      "If you sign up on the call today, the installation is completely free and it's month-to-month &mdash; no commitment at all. That way you can test everything out &mdash; streaming, gaming, working from home &mdash; and see the difference for yourself. If you don't love it, you just cancel."
+      "If you sign up on the call today, I can get the installation down to just $59 instead of $99 &mdash; and it's month-to-month, no commitment at all. That way you can test everything out &mdash; streaming, gaming, working from home &mdash; and see the difference for yourself. If you don't love it, you just cancel."
     </div>
 
     <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--danger);margin-top:16px;margin-bottom:8px">Alternative &mdash; Lock In The Promo</div>
@@ -1691,7 +1692,7 @@ textarea:focus { border-color: var(--accent); }
       </div>
       <div class="cal-days" id="cal-days"></div>
       <div class="cal-info" id="cal-selected-info">Click a date to select</div>
-      <button class="next-btn" id="cal-fetch-btn" style="margin-top:8px" onclick="fetchCalendarEvents()">Fetch Available Slots</button>
+      <button class="next-btn" id="cal-fetch-btn" style="display:none;margin-top:8px" onclick="fetchCalendarEvents()">Fetch Available Slots</button>
       <div id="cal-events" class="hidden" style="margin-top:8px"></div>
     </div>
 
@@ -1754,7 +1755,7 @@ textarea:focus { border-color: var(--accent); }
       <label>Phone</label>
       <input type="tel" id="inp-referral-phone" placeholder="Their number" oninput="updateState('referral_phone',this.value)">
     </div>
-    <div class="script-block">"That's great &mdash; I'll make sure you both get the $25 credit once they sign up. What's the best number for them?"</div>
+    <div class="script-block">"That's great &mdash; I'll make sure you both get that $25 credit once they sign up. What's the best number for them?"</div>
   </div>
   <div id="referral-no-row" class="hidden" style="margin-top:10px">
     <div class="script-block">"No worries at all! If anyone comes to mind later, just have them mention your name when they call in."</div>
@@ -1892,7 +1893,7 @@ textarea:focus { border-color: var(--accent); }
       <li><span class="lbl">Guarantee</span> <span>30-day money-back guarantee</span></li>
       <li><span class="lbl">Install Date</span> <span id="sum-date">&mdash;</span></li>
       <li><span class="lbl">Time Window</span> <span id="sum-time">&mdash;</span></li>
-      <li><span class="lbl">Setup Fee</span> <span id="sum-fee">$99 standard / $59 discounted</span></li>
+      <li><span class="lbl">Setup Fee</span> <span id="sum-fee">FREE (same-day signup)</span></li>
     </ul>
   </details>
 
@@ -1905,7 +1906,7 @@ textarea:focus { border-color: var(--accent); }
   <div class="script-block" style="margin-top:8px">
     "We're all scheduled! You've got 30 days money-back if for any reason you're not happy, no contracts so you're never locked in."<br><br>
     "If you have any questions later, you're welcome to give us a call at <strong style="color:var(--accent)">815-233-2138</strong> &mdash; open <strong>8:30AM-10PM CST, Monday through Saturday</strong>. You can also visit us at <strong>jcwifi.com</strong>."<br><br>
-    "Welcome to JC WiFi, <span class="var" data-var="lead_name">[Name]</span>. I think you're going to notice a huge difference. Have a great <span id="sum-daypart">day</span>!"
+    "Welcome to JC WiFi, <span class="var" data-var="lead_name">[Name]</span>! I think you're going to notice a huge difference. Have a great <span id="sum-daypart">day</span>!"
   </div>
   <div class="coach-note">End the call on a high note. Don't ramble. Don't re-sell. They already said yes.</div>
 
@@ -2102,9 +2103,9 @@ textarea:focus { border-color: var(--accent); }
   </div>
   <div class="panel-body" style="flex:1;overflow-y:auto;padding:16px 20px">
     <div style="margin-bottom:16px">
-      <div class="section-label" style="color:var(--purple);margin-bottom:8px">30-Second Script: "What is Fixed Wireless?"</div>
+      <div class="section-label" style="color:var(--purple);margin-bottom:8px">30-Second Script: "What is UnFiber?"</div>
       <div class="script-block" style="border-left-color:var(--purple)">
-        "Great question! So we use something called fixed wireless &mdash; it's our fixed wireless technology. Basically, we put a small receiver on the outside of your house &mdash; it's about the size of a laptop &mdash; and it connects to one of our local towers nearby. We own our towers &mdash; we're not piggybacking off other providers. Think of it like getting cable internet, but instead of digging up your yard, we beam the signal directly to your house. It's a dedicated connection just for you. Professional install, takes about an hour, and you're up and running. Plus you get and a router included."
+        "Great question! So we use something called UnFiber &mdash; it's our fixed wireless technology. Basically, we put a small receiver on the outside of your house &mdash; it's about the size of a laptop &mdash; and it connects to one of our local towers nearby. We own our towers &mdash; we're not piggybacking off other providers. Think of it like getting cable internet, but instead of digging up your yard, we beam the signal directly to your house. It's a dedicated connection just for you. Professional install, takes about an hour, and you're up and running. Plus a router is included."
       </div>
     </div>
 
@@ -2126,13 +2127,13 @@ textarea:focus { border-color: var(--accent); }
     <div style="margin-bottom:16px">
       <div class="section-label" style="color:var(--success);margin-bottom:8px">How We Compare</div>
       <table class="comp-table">
-        <tr><th></th><th>fixed wireless</th><th>Satellite</th><th>Cable/Fiber</th><th>Cellular</th><th>Starlink</th></tr>
+        <tr><th></th><th>UnFiber</th><th>Satellite</th><th>Cable/Fiber</th><th>Cellular</th><th>Starlink</th></tr>
         <tr><td style="font-weight:600">Latency</td><td style="color:var(--success)">Low (~20ms)</td><td style="color:var(--danger)">Very High (600ms+)</td><td>Low-Medium</td><td>Variable</td><td>25-60ms</td></tr>
         <tr><td style="font-weight:600">Weather</td><td style="color:var(--success)">Minimal</td><td style="color:var(--danger)">Significant</td><td style="color:var(--success)">None</td><td>Some</td><td>Some</td></tr>
         <tr><td style="font-weight:600">Data Caps</td><td style="color:var(--success)">None</td><td style="color:var(--danger)">Yes</td><td>Varies</td><td>Deprioritized</td><td>Deprioritized</td></tr>
         <tr><td style="font-weight:600">Shared?</td><td style="color:var(--success)">Dedicated</td><td>Shared satellite</td><td style="color:var(--danger)">Shared node</td><td style="color:var(--danger)">Shared tower</td><td>Shared satellite</td></tr>
         <tr><td style="font-weight:600">Contract</td><td style="color:var(--success)">None</td><td>Often required</td><td>Often required</td><td style="color:var(--success)">None</td><td style="color:var(--success)">None</td></tr>
-        <tr><td style="font-weight:600">Monthly</td><td style="color:var(--success)">From $59.95</td><td>$64-170</td><td>Varies</td><td>$25-50</td><td>$120</td></tr>
+        <tr><td style="font-weight:600">Monthly</td><td style="color:var(--success)">From $24.95</td><td>$64-170</td><td>Varies</td><td>$25-50</td><td>$120</td></tr>
         <tr><td style="font-weight:600">Equipment</td><td style="color:var(--success)">$99 install</td><td>Free-$300</td><td>Free-$99</td><td>Free-$35</td><td style="color:var(--danger)">$599 purchase</td></tr>
         <tr><td style="font-weight:600">We Own Towers</td><td style="color:var(--success)">Yes</td><td>No</td><td>N/A</td><td>No</td><td>No</td></tr>
       </table>
@@ -2158,9 +2159,9 @@ textarea:focus { border-color: var(--accent); }
         &bull; For satellite customers: emphasize <strong>low latency</strong> (gaming, video calls work)<br>
         &bull; For cellular customers: emphasize <strong>dedicated connection</strong> (not deprioritized)<br>
         &bull; We own our towers &mdash; not piggybacking off other providers<br>
-        &bull; <strong>Trusted local provider</strong> &mdash; mention social proof<br>
+        &bull; <strong>Great reviews on Google</strong> &mdash; mention social proof<br>
         &bull; <strong>99.99% uptime</strong> &mdash; enterprise-grade reliability<br>
-        &bull; Always mention <strong> service</strong> included with all plans
+        &bull; Always mention <strong>unlimited data</strong> and <strong>price lock</strong>
       </div>
     </div>
   </div>
@@ -2176,7 +2177,7 @@ const state = {
   call_type: 'outbound',
   team_member: '',
   contact_id: '',
-  lead_name: '', lead_address: '', lead_phone: '', lead_email: '', lead_city: '', lead_state: 'TX', lead_zip: '',
+  lead_name: '', lead_address: '', lead_phone: '', lead_email: '', lead_city: '', lead_state: 'IL', lead_zip: '',
   satisfaction_score: 0,
   pain_types: [], // v4.0: multi-select pain
   pain_type: '', // primary pain (first selected)
@@ -2239,12 +2240,12 @@ checkItemsStandard.forEach(c => checkState[c.id] = 'pending');
 
 // ===== PLANS =====
 const plans = {
-  bronze: { name: 'Bronze', speed: '100 Mbps', upload: '25 Mbps', price: 24.95, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
-  silver: { name: 'Silver', speed: '250 Mbps', upload: '50 Mbps', price: 50,    tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
-  gold:   { name: 'Gold',   speed: '500 Mbps', upload: '100 Mbps', price: 67,   tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+  unfiber50:  { name: 'Bronze',  speed: '50 Mbps',  upload: '10 Mbps',  price: 24.95,  tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+  unfiber100: { name: 'Silver',  speed: '100 Mbps', upload: '20 Mbps',  price: 50,     tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+  unfiber300: { name: 'Gold',    speed: '300 Mbps', upload: '50 Mbps',  price: 67,     tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
 };
 
-// ===== PAIN TREE (11 JC WiFi pain tiles based on transcript analysis) =====
+// ===== PAIN TREE (11 pain tiles based on transcript analysis) =====
 const painTree = {
   too_expensive: {
     label: 'Too expensive',
@@ -2389,15 +2390,15 @@ const painTree = {
   }
 };
 
-// ===== VALUE MATCH MAPPING (JC WiFi pain tile IDs) =====
+// ===== VALUE MATCH MAPPING (pain tile IDs) =====
 const valueMatch = {
   too_expensive: {
     b1: { title:'Price Lock — Rate Never Increases', script:'"So one of the biggest differences with JC WiFi is that the price I quote you today is the price you keep. It\'s locked in — no surprise increases after 12 months, no promo rates that expire. What you see on day one is what you see every month after that. That\'s pretty different from what you\'re dealing with now, right?"' },
     b2: { title:'No Contract — Cancel Anytime', script:'"And we don\'t do contracts. It\'s month-to-month, and if you ever want to cancel, there\'s no termination fee. You stay because you want to, not because some contract says you have to. Sound good?"' }
   },
   keeps_dropping: {
-    b1: { title:'Reliable Uptime — Dedicated Connection', script:'"So our network is built for reliability — 99.99% uptime. You get a dedicated connection with enterprise-grade equipment. We own our towers right here in northwest Illinois. When it rains, when it\'s peak hours, when everyone\'s streaming — your connection stays solid. That\'s really what you need, right?"' },
-    b2: { title:'Local Freeport Support', script:'"And if something ever does go wrong, we\'re a local company right here in northwest Illinois. A real person picks up — no contracts and a 30-day money-back guarantee. Gets it handled. No overseas call center, no sitting on hold."' }
+    b1: { title:'Reliable Uptime — Dedicated Connection', script:'"So our network is built for reliability — 99.99% uptime. You get a dedicated connection with enterprise-grade equipment. We own our towers right here in the Freeport area. When it rains, when it\'s peak hours, when everyone\'s streaming — your connection stays solid. That\'s really what you need, right?"' },
+    b2: { title:'Local Freeport Support', script:'"And if something ever does go wrong, we\'re a local company right here in the Freeport area. A real person picks up — great reviews on Google. Gets it handled. No overseas call center, no sitting on hold."' }
   },
   too_slow: {
     b1: { title:'Consistent Speeds — No Throttling', script:'"Our plan comes with unlimited data and we never throttle your speeds. Pages load instantly, downloads fly, and your speed at 8 PM is the same as noon. How does that sound?"' },
@@ -2405,7 +2406,7 @@ const valueMatch = {
   },
   buffering: {
     b1: { title:'Consistent Speeds — No More Buffering', script:'"With our dedicated connection, your speeds stay consistent whether it\'s noon or 8 PM. No more buffering, no more waiting for things to load."' },
-    b2: { title:' Included', script:'"And we include with every plan — over 100 channels. So you might be able to drop a streaming subscription or two."' }
+    b2: { title:'Autopay Discount Available', script:'"And with autopay, you save an extra $5 a month. So your price is already low, and it gets even lower when you set it and forget it."' }
   },
   bill_keeps_changing: {
     b1: { title:'Price Lock — Your Rate Never Changes', script:'"The price I quote you today is the price you keep. It\'s locked in. No promo rates, no surprise increases, no fine print. What you see on day one is what you see every month."' },
@@ -2413,10 +2414,10 @@ const valueMatch = {
   },
   storms: {
     b1: { title:'Local Towers — Not Satellite', script:'"Our signal only travels a few miles from a local tower — not 22,000 miles to space like satellite. Light to moderate rain doesn\'t affect us at all. Even in severe storms, any interruption is brief and recovers quickly."' },
-    b2: { title:'99.99% Uptime Reliability', script:'"We have 99.99% uptime. Our equipment is designed for Texas weather. You\'ll notice a massive difference compared to satellite."' }
+    b2: { title:'99.99% Uptime Reliability', script:'"We have 99.99% uptime. Our equipment is designed for Midwest weather. You\'ll notice a massive difference compared to satellite."' }
   },
   no_options: {
-    b1: { title:'We Can Reach Your Address', script:'"Great news — we can serve your area. Our towers are right here in the northwest Illinois and surrounding counties. You don\'t have to settle for satellite anymore."' },
+    b1: { title:'We Can Reach Your Address', script:'"Great news — we can serve your area. Our towers are right here in the Freeport metro and surrounding counties. You don\'t have to settle for satellite anymore."' },
     b2: { title:'Real Internet — Not Satellite', script:'"You\'re getting real internet — unlimited data, low latency, consistent speeds. No more rationing data or losing signal in storms. Price locked, no contract."' }
   },
   data_caps: {
@@ -2428,11 +2429,11 @@ const valueMatch = {
     b2: { title:'Dedicated Connection', script:'"You get a dedicated connection — not shared with your whole neighborhood. When everyone else\'s internet slows down at 7 PM, yours stays fast."' }
   },
   bad_service: {
-    b1: { title:'Local Freeport Support — Real People', script:'"So we\'re actually a local company right here in northwest Illinois — no contracts and a 30-day money-back guarantee. When you call us, you\'re going to get a real person who knows your area and knows your account. No overseas call centers, no sitting on hold for 45 minutes."' },
-    b2: { title:'Responsive — No Phone Tree', script:'"When you have a problem, it gets fixed. First call. Not four visits and a ticket that sits for 10 days. That\'s what local support looks like. Plus you get included with every plan."' }
+    b1: { title:'Local Freeport Support — Real People', script:'"So we\'re actually a local company right here in the Freeport area — great reviews on Google. When you call us, you\'re going to get a real person who knows your area and knows your account. No overseas call centers, no sitting on hold for 45 minutes."' },
+    b2: { title:'Responsive — No Phone Tree', script:'"When you have a problem, it gets fixed. First call. Not four visits and a ticket that sits for 10 days. That\'s what local support looks like."' }
   },
   provider_shutting_down: {
-    b1: { title:'We Can Serve Your Address Today', script:'"Good news — we can get you set up before your current provider shuts down. We\'re local, right here in northwest Illinois, and we can usually get you installed within a few days."' },
+    b1: { title:'We Can Serve Your Address Today', script:'"Good news — we can get you set up before your current provider shuts down. We\'re local, right here in the Freeport area, and we can usually get you installed within a few days."' },
     b2: { title:'No Contract — Month to Month', script:'"And there\'s no contract. Month-to-month, cancel anytime. Price locked in — it never goes up. So you\'re not jumping from one bad situation into another."' }
   }
 };
@@ -2778,7 +2779,7 @@ function setWorstUsage(el, val) {
   saveToLocalStorage();
 }
 
-// ===== FUTURE STATE MAPPING (JC WiFi pain sub-option IDs) =====
+// ===== FUTURE STATE MAPPING (pain sub-option IDs) =====
 const futureStates = {
   // too_expensive
   promo_expired: '"You open your bill next month, same price. You open it a year from now, same price. No more promo games."',
@@ -2815,7 +2816,7 @@ const futureStates = {
   rain_outages: '"It rains, it storms — your internet doesn\'t care. It just stays on."',
   light_rain: '"Light rain, heavy rain — doesn\'t matter. Our towers are local, not in space."',
   storm_hours_down: '"After the storm passes, your internet is already working. No waiting hours for it to come back."',
-  wind_outages: '"Wind, rain — your connection stays solid. Our equipment is built for Texas weather."',
+  wind_outages: '"Wind, rain — your connection stays solid. Our equipment is built for Midwest weather."',
   seasonal_issues: '"Spring storms, fall weather — doesn\'t matter. Your connection stays solid through all of it."',
   // no_options
   only_satellite: '"Real home internet — not satellite. Unlimited data, low latency, and it works in the rain."',
@@ -2834,10 +2835,10 @@ const futureStates = {
   smart_home_delay: '"Your smart devices respond instantly. Lights, locks, cameras — no more waiting for them to catch up."',
   general_latency: '"Everything feels instant. Click, load, done. No more half-second delays on every single thing."',
   // bad_service
-  long_hold_times: '"No more two-hour hold times. You call, someone answers. Local team, right here in northwest Illinois."',
+  long_hold_times: '"No more two-hour hold times. You call, someone answers. Local team, right here in the Freeport area."',
   no_resolution: '"What if the first time you called about a problem, someone actually fixed it?"',
-  overseas_support: '"When you call, you get a real person right here in northwest Illinois who speaks your language and knows your area."',
-  broken_promises: '"When we say a tech is coming, they show up. no contracts and a 30-day money-back guarantee — we back up what we promise."'
+  overseas_support: '"When you call, you get a real person right here in the Freeport area who speaks your language and knows your area."',
+  broken_promises: '"When we say a tech is coming, they show up. Great reviews on Google — we back up what we promise."'
 };
 
 // ===== REFLECT & FLIP MAPS (used by renderValueMatch) =====
@@ -2940,10 +2941,10 @@ const FLIP_MAP = {
   no_options: 'you finally have real internet — unlimited data, low latency, and it works',
   data_caps: 'there\'s no cap — use as much as you want, it never slows down on you',
   laggy: 'the lag disappears — low latency local network, everything responds instantly',
-  bad_service: 'when you call us, a real person picks up — local team right here in northwest Illinois'
+  bad_service: 'when you call us, a real person picks up — local team right here in the Freeport area'
 };
 
-// ===== OBJECTION DATA (16 JC WiFi-specific handlers — V/I/R/RC framework) =====
+// ===== OBJECTION DATA (16 handlers — V/I/R/RC framework) =====
 const objections = [
   {
     id:'need_to_think', label:'"I need to think about it / shop around"',
@@ -2958,11 +2959,11 @@ const objections = [
     isolate:'"Help me understand — is it the monthly cost or the installation fee that\'s the concern?"',
     reframe: function(){
       if (state.current_price && state.plan_price) {
-        return '"You\'re paying $'+(state.current_price||'__')+' now for '+(state.current_provider||'your current provider')+'. Our plan is $'+(state.plan_price||'__')+' with unlimited data, and a router included. The unlimited data alone saves you from overage charges."';
+        return '"You\'re paying $'+(state.current_price||'__')+' now for '+(state.current_provider||'your current provider')+'. Our plan is $'+(state.plan_price||'__')+' with unlimited data and a router included. Plus with autopay you save another $5/month."';
       }
       return '"When you factor in what\'s included — unlimited data, router, and local support — the value is actually very competitive."';
     },
-    reclose:'"And remember, the 30-day money-back guarantee means zero risk, so you get to test everything out before you\'re paying a dime for service. Can I go ahead and get you set up?"'
+    reclose:'"And remember, your first month is free, so you get to test everything out before you\'re paying a dime for service. Can I go ahead and get you set up?"'
   },
   {
     id:'two_year_commitment', label:'"I don\'t want a 2-year contract"',
@@ -2981,7 +2982,7 @@ const objections = [
         return '"You know, you mentioned earlier that '+(state.spouse_name||'your spouse')+' is frustrated with the internet too. So really, you\'d both be getting what you want. And with the 30-day money-back guarantee, you\'re not committing to anything — you\'re just testing it. If either of you doesn\'t love it, we come get the equipment and refund every penny."';
       }
       if (feeling === 'skeptical') {
-        return '"That\'s completely fair — and honestly, that\'s the right attitude. Here\'s what I\'d tell '+(state.spouse_name||'them')+': we have no contracts and a 30-day money-back guarantee, we\'re a local company, and there\'s a 30-day money-back guarantee. We\'re not asking for trust on faith — we\'re asking for a 30-day test. Full refund if it doesn\'t deliver. And you don\'t even cancel '+(state.current_provider||'your current provider')+' first — run both side by side."';
+        return '"That\'s completely fair — and honestly, that\'s the right attitude. Here\'s what I\'d tell '+(state.spouse_name||'them')+': we have great reviews on Google, we\'re a local Freeport company, and there\'s a 30-day money-back guarantee. We\'re not asking for trust on faith — we\'re asking for a 30-day test. Full refund if it doesn\'t deliver. And you don\'t even cancel '+(state.current_provider||'your current provider')+' first — run both side by side."';
       }
       if (feeling === 'doesnt_care' || feeling === 'happy' || feeling === 'unaware') {
         return '"What if we get you set up and you both get to test it for 30 days? That way you\'re not asking for permission — you\'re bringing them a solution to try. If either of you doesn\'t love it, full refund."';
@@ -2998,9 +2999,9 @@ const objections = [
       if (state.current_price && state.plan_price) {
         var diff = state.current_price - state.plan_price;
         var annual = Math.abs(diff * 12);
-        return '"Here\'s the math: if you\'re paying $'+(state.current_price||'__')+' now and our plan is $'+(state.plan_price||'__')+', that\'s $'+Math.abs(diff).toFixed(0)+' savings per month. Your first month is free, and with the 30-day guarantee, that\'s another $'+(state.plan_price||'__')+' saved. Over 12 months, you\'d save $'+annual.toFixed(0)+' even after the termination fee."';
+        return '"Here\'s the math: if you\'re paying $'+(state.current_price||'__')+' now and our plan is $'+(state.plan_price||'__')+', that\'s $'+Math.abs(diff).toFixed(0)+' savings per month. Your first month is free, so that\'s another $'+(state.plan_price||'__')+' saved. Over 12 months, you\'d save $'+annual.toFixed(0)+' even after the termination fee."';
       }
-      return '"Here\'s the thing — when you calculate the monthly savings plus the 30-day money-back guarantee, most customers break even on the termination fee within the first 3-4 months."';
+      return '"Here\'s the thing — when you calculate the monthly savings plus the free first month, most customers break even on the termination fee within the first 3-4 months."';
     },
     reclose:'"Most of our customers find they break even within the first 3-4 months. Want me to run the exact numbers for you?"'
   },
@@ -3041,17 +3042,17 @@ const objections = [
   },
   {
     id:'weather_concerns', label:'"Does weather affect it?"',
-    validate:'"Great question — especially with Texas weather, that\'s important to know."',
+    validate:'"Great question — especially with Midwest weather, that\'s important to know."',
     isolate:'"Have you had weather issues with a previous provider? Satellite can be really bad in storms."',
     reframe:'"Light to moderate rain does not affect our service at all. In severe weather — like a major thunderstorm — there can be a brief interruption, but it\'s nothing like satellite. Our antenna is much smaller and more resilient than a satellite dish, and our tower is only a few miles away, not 22,000 miles in space."',
-    reclose:'"We have 99.99% uptime reliability. You can try it through a few Texas storms with our 30-day guarantee and see for yourself."'
+    reclose:'"We have 99.99% uptime reliability. You can try it through a few Midwest storms with our 30-day guarantee and see for yourself."'
   },
   {
     id:'dont_need_much', label:'"I barely use the internet"',
     validate:'"If you\'re not a heavy user, that makes our basic plan a great fit."',
     isolate:'"What do you mainly use it for — checking email, light browsing, maybe some streaming?"',
-    reframe:'"Our Essentials plan at $59.95 is perfect for light use. Unlimited data, so no overage fees even if you use more than expected. Plus included."',
-    reclose:'"At $59.95 with unlimited data and  included, it\'s hard to beat. Want me to get you set up?"'
+    reframe:'"Our Bronze plan at $24.95 is perfect for light use. Unlimited data, so no overage fees even if you use more than expected. And with autopay, that\'s just $19.95."',
+    reclose:'"At $24.95 with unlimited data, it\'s hard to beat. Want me to get you set up?"'
   },
   {
     id:'just_moved', label:'"I just moved / not settled yet"',
@@ -3068,9 +3069,9 @@ const objections = [
     reclose:'"You get fiber-like performance without digging up your yard. Would you like to try it with our 30-day guarantee?"'
   },
   {
-    id:'bad_experience_before', label:'"I had Ping/JC WiFi before and it was bad"',
-    validate:'"I appreciate you telling me that — and I\'m sorry you had a bad experience. That\'s not what we want for any customer."',
-    isolate:'"Can you tell me what happened? Was it the speed, the reliability, the install, or something else?"',
+    id:'bad_experience_before', label:'"I tried wireless internet and it was terrible"',
+    validate:'"I hear that a lot, and honestly, older wireless technology was pretty rough."',
+    isolate:'"Do you remember who the provider was? Was it satellite-based or a local wireless company?"',
     reframe:'"If it was satellite — HughesNet, Viasat — that\'s a completely different technology. Satellite has to bounce a signal 22,000 miles to space. Our signal only travels a few miles from a local tower. If it was an older fixed wireless company, our equipment is next-generation — we\'ve invested in newer technology that can handle rain, trees, and multiple devices much better."',
     reclose:'"That\'s exactly why we offer the 30-day guarantee — you can see the difference yourself. If it reminds you of your old experience, we take it back, no questions asked."'
   },
@@ -3078,7 +3079,7 @@ const objections = [
     id:'is_this_legit', label:'"Is this a real company? / Is this a scam?"',
     validate:'"I\'m glad you asked — you should always verify who you\'re talking to."',
     isolate:'"Have you been getting a lot of solicitation calls? I understand the skepticism."',
-    reframe:'"JC WiFi is a local company right here in the Freeport area. You can look us up — jcwifi.com, or check our Google reviews where we have a trusted local presence. We own our own towers, we have local technicians, and our office is right in the community. You can also call us directly at 815-233-2138."',
+    reframe:'"JC WiFi is a local company right here in the Freeport area. You can look us up — jcwifi.com, or check our Google reviews. We own our own towers, we have local technicians, and our office is right in the community. You can also call us directly at 815-233-2138."',
     reclose:'"Check us out online — I\'ll wait. Once you\'re comfortable, I\'d love to tell you about what we offer."'
   }
 ];
@@ -3914,7 +3915,7 @@ function renderROI() {
   if (dontCancel) dontCancel.classList.remove('hidden');
 
   if (diff > 0) {
-    // Ping is cheaper
+    // JC WiFi is cheaper
     roiMonthly.textContent = '$' + diff.toFixed(0);
     roiMonthlyLabel.textContent = 'saved per month';
     roiAnnual.textContent = '$' + annual.toFixed(0);
@@ -3933,10 +3934,10 @@ function renderROI() {
     [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--accent-dim)'; b.style.borderColor='var(--accent)'; });
     roiMonthly.style.color = 'var(--accent)';
     roiAnnual.style.color = 'var(--accent)';
-    roiScript.innerHTML = personalCallback + 'Same price as what you\'re paying now, but you\'re getting unlimited data, and a 30-day money-back guarantee. And our price is locked, so while ' + providerName + ' keeps raising theirs, yours stays the same. Sound good?"';
+    roiScript.innerHTML = personalCallback + 'Same price as what you\'re paying now, but you\'re getting unlimited data, a router included, and a 30-day money-back guarantee. And our price is locked, so while ' + providerName + ' keeps raising theirs, yours stays the same. Sound good?"';
 
   } else {
-    // Ping is more expensive
+    // JC WiFi is more expensive
     roiMonthly.textContent = '+$' + monthlyAbs.toFixed(0);
     roiMonthlyLabel.textContent = 'more per month';
     roiAnnual.textContent = '+$' + annual.toFixed(0);
@@ -3946,13 +3947,13 @@ function renderROI() {
       [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--accent-dim)'; b.style.borderColor='var(--accent)'; });
       roiMonthly.style.color = 'var(--accent)';
       roiAnnual.style.color = 'var(--accent)';
-      roiScript.innerHTML = personalCallback + 'For just $' + monthlyAbs.toFixed(0) + ' more a month, you get unlimited data, and local support. And when ' + providerName + ' raises your rate \u2014 and they will \u2014 you\'ll be glad you locked this in. Sound good?"';
+      roiScript.innerHTML = personalCallback + 'For just $' + monthlyAbs.toFixed(0) + ' more a month, you get unlimited data, a router included, and local support. And when ' + providerName + ' raises your rate \u2014 and they will \u2014 you\'ll be glad you locked this in. Sound good?"';
 
     } else if (monthlyAbs <= 30) {
       [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--warning-dim)'; b.style.borderColor='var(--warning)'; });
       roiMonthly.style.color = 'var(--warning)';
       roiAnnual.style.color = 'var(--warning)';
-      roiScript.innerHTML = personalCallback + 'The value difference is the \u2014 that\'s a huge value compared to metered plans \u2014 plus unlimited data, reliable connection, and price lock. And when ' + providerName + ' raises your rate, you\'ll still be paying the same. Sound good?"';
+      roiScript.innerHTML = personalCallback + 'The value difference is unlimited data, reliable connection, and price lock. And when ' + providerName + ' raises your rate, you\'ll still be paying the same. Sound good?"';
 
     } else {
       [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--warning-dim)'; b.style.borderColor='var(--warning)'; });
@@ -3962,7 +3963,7 @@ function renderROI() {
       valuePlayBox.classList.remove('hidden');
       valuePlayBox.innerHTML = '<div style="padding:14px;background:var(--warning-dim);border:2px solid var(--warning);border-radius:var(--radius-lg)">' +
         '<div style="font-size:13px;font-weight:700;color:var(--warning);margin-bottom:6px">VALUE PLAY</div>' +
-        '<div style="font-size:12px;color:var(--text-secondary);line-height:1.6">This may be a tough sell on price alone. Lead with <strong>reliability</strong>, <strong>unlimited data</strong>, <strong> service</strong> ($30-50 value), and the <strong>30-day guarantee</strong>. Their price WILL go up \u2014 ours is locked forever.</div>' +
+        '<div style="font-size:12px;color:var(--text-secondary);line-height:1.6">This may be a tough sell on price alone. Lead with <strong>reliability</strong>, <strong>unlimited data</strong>, <strong>local support</strong>, and the <strong>30-day guarantee</strong>. Their price WILL go up \u2014 ours is locked forever.</div>' +
         '<div class="script-block" style="border-left-color:var(--warning);margin:8px 0 0 0">"When ' + (state.current_provider || 'they') + ' raises your rate \u2014 and they will \u2014 give us a call. We\'ll be here at the same price."</div>' +
         '</div>';
     }
@@ -4252,6 +4253,7 @@ function setCallType(type) {
 function setOpeningConfirm(yes) {
   var jogEl = document.getElementById('opening-no-jog');
   var contEl = document.getElementById('opening-yes-continue');
+  // Highlight the clicked pill
   var pills = document.querySelectorAll('#opening-confirm-pills .pill');
   pills.forEach(function(p) { p.classList.remove('selected'); p.style.background = ''; p.style.color = ''; p.style.borderColor = ''; });
   var clicked = yes ? pills[0] : pills[1];
@@ -4578,12 +4580,24 @@ function setSpouseFeeling(el, val) {
   saveToLocalStorage();
 }
 
+function toggleBusinessPlans() {
+  var el = document.getElementById('business-plans');
+  var btn = document.getElementById('biz-plans-toggle');
+  if (el.classList.contains('hidden')) {
+    el.classList.remove('hidden');
+    btn.textContent = 'Hide Business Plans';
+  } else {
+    el.classList.add('hidden');
+    btn.textContent = 'Show Business Plans';
+  }
+}
+
 function selectPlan(planId) {
   state.recommended_plan = planId;
   var plan = plans[planId];
   state.plan_price = plan.price;
   document.querySelectorAll('.plan-card').forEach(function(c) { c.classList.remove('selected'); });
-  var ids = ['bronze','silver','gold'];
+  var ids = ['unfiber50','unfiber100','unfiber300'];
   document.querySelectorAll('#plan-grid .plan-card').forEach(function(c, i) {
     if (ids[i] === planId) c.classList.add('selected');
   });
@@ -4608,34 +4622,34 @@ function expandPlanCards() {
 }
 
 function autoRecommendPlan() {
-  var rec = 'silver'; // default
+  var rec = 'unfiber100'; // default
   var size = state.household_size || 0;
   var usages = state.usage_types || [];
   var type = state.household_type || '';
 
   // Just me with no heavy usage → Essentials
   if (type === 'just_me' || (size <= 1 && !usages.includes('gaming') && !usages.includes('wfh'))) {
-    rec = 'bronze';
+    rec = 'unfiber50';
   }
   // Partner with no heavy usage → Essentials or Plus
   else if (type === 'partner' || size === 2) {
-    rec = (usages.includes('gaming') || usages.includes('wfh')) ? 'silver' : 'bronze';
+    rec = (usages.includes('gaming') || usages.includes('wfh')) ? 'unfiber100' : 'unfiber50';
   }
   // Whole household or 3+ → Plus
   else if (size >= 3 && size < 5) {
-    rec = 'silver';
+    rec = 'unfiber100';
   }
   // 5+ or gaming + WFH → Pro
   if (size >= 5 || (usages.includes('gaming') && usages.includes('wfh'))) {
-    rec = 'gold';
+    rec = 'unfiber300';
   }
   // Price priority override → downgrade one tier
   if (state.priority_preference === 'price') {
-    if (rec === 'gold') rec = 'silver';
-    else if (rec === 'silver') rec = 'bronze';
+    if (rec === 'unfiber300') rec = 'unfiber100';
+    else if (rec === 'unfiber100') rec = 'unfiber50';
   }
 
-  var ids = ['bronze','silver','gold'];
+  var ids = ['unfiber50','unfiber100','unfiber300'];
   document.querySelectorAll('#plan-grid .plan-card').forEach(function(c, i) {
     c.classList.toggle('recommended', ids[i] === rec);
   });
@@ -4680,7 +4694,7 @@ const PROVIDER_COACH_CONFIG = {
   satellite: { bg:'var(--success-dim)', border:'var(--success)', color:'var(--success)', badge:'HIGH PRIORITY LEAD', note:'Easy win. Lead with speed difference. Their signal: 22,000 miles. Ours: a few miles.', html:'<strong>HIGH PRIORITY:</strong> Easy win. Their signal travels 22,000 miles, ours: a few miles. No weather issues, no data caps, low latency for video calls and gaming.' },
   cellular: { bg:'rgba(74,158,255,0.12)', border:'var(--accent)', color:'var(--accent)', badge:'CELLULAR LEAD', note:'Lead with RELIABILITY and fixed IP. They likely have streaming location issues and drops.', html:'<strong>LEAD WITH RELIABILITY:</strong> Fixed IP &mdash; they likely have streaming location issues. Dedicated connection, not deprioritized. Consistent speeds all day.' },
   cable: { bg:'var(--warning-dim)', border:'var(--warning)', color:'var(--warning)', badge:'CABLE LEAD', note:'Lead with PRICE LOCK. Their promo rate will expire. Emphasize no surprises.', html:'<strong>LEAD WITH PRICE LOCK:</strong> Their promo rate will expire. Our price is locked from day one &mdash; no surprise increases. Plus unlimited data and no contract.' },
-  fiber: { bg:'var(--danger-dim)', border:'var(--danger)', color:'var(--danger)', badge:'HARD SELL', note:'If they have fiber and it works well, be honest. Lead with  + local support.', html:'<strong>HARD SELL:</strong> If they have fiber and it works well, be honest. Lead with ($30-50 value) + local support. If score is 8+, plant the seed.' },
+  fiber: { bg:'var(--danger-dim)', border:'var(--danger)', color:'var(--danger)', badge:'HARD SELL', note:'If they have fiber and it works well, be honest. Lead with price lock + local support.', html:'<strong>HARD SELL:</strong> If they have fiber and it works well, be honest. Lead with price lock + local support. If score is 8+, plant the seed.' },
   fwa: { bg:'rgba(167,139,250,0.12)', border:'var(--purple)', color:'var(--purple)', badge:'DIRECT COMPETITOR', note:'Direct competitor. Lead with equipment quality, tower ownership, and local support.', html:'<strong>DIRECT COMPETITOR:</strong> Lead with equipment quality, tower ownership, and local support. We own our towers.' },
   none: { bg:'var(--success-dim)', border:'var(--success)', color:'var(--success)', badge:'NO CURRENT PROVIDER', note:'They just need internet. Easy conversation.', html:'<strong>NO CURRENT PROVIDER:</strong> They just need internet. Easy conversation. Focus on value and getting them set up.' }
 };
@@ -4688,10 +4702,10 @@ const PROVIDER_COACH_CONFIG = {
 // v5.3: Provider type classification
 var providerTypes = {
   satellite: ['hughesnet','viasat','starlink','exede','wildblue'],
-  fiber: ['at&t fiber','att fiber','frontier fios','frontier fiber','centurylink fiber','brightspeed','frontier','fios','google fiber'],
-  cellular: ['t-mobile','tmobile','tmo','metro','metronet','at&t air','att air','verizon home','verizon 5g','at&t','att','verizon','verizon wireless'],
-  cable: ['spectrum','xfinity','comcast','cox','charter','centurylink'],
-  fwa: ['rise broadband','rise','gvec','guadalupe valley'],
+  fiber: ['frontier fios','frontier fiber','centurylink fiber','brightspeed','fios','google fiber'],
+  cellular: ['t-mobile','tmobile','tmo','metro','us cellular','uscellular','u.s. cellular','verizon home','verizon 5g','verizon','verizon wireless'],
+  cable: ['spectrum','xfinity','comcast','mediacom','charter','centurylink','frontier'],
+  fwa: [],
   none: ['none','first time','no provider','nothing']
 };
 
@@ -5014,6 +5028,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 
 var devChangelog = [
   { ver:'v5.11.4', date:'2026-03-27', changes:['Feature: Opening outbound script — Yes/No confirmation pills after "right?" — Yes reveals call-recorded script, No shows Facebook/Instagram memory jog','Fix: Price Lock weave shortened to "One big difference with us: the price I give you today never goes up. Period."','Fix: Closing Techniques reordered — #1 Tentative Appointment, #2 Month-to-Month, #3 Site Survey moved to top (best for Still Hesitant leads); original #1-3 become #4-6','Fix: Still Hesitant coach note updated to reference new numbers (#1/#2/#3 instead of #4/#7/#5)','Fix: Anchor close script now uses subPhrases natural language instead of raw pain label (e.g. "not getting what you\'re paying for" instead of "not worth what I pay")'] },
+  { ver:'v5.11.5', date:'2026-03-27', changes:['Update: serviceability webhook URL updated to new Make.com endpoint'] },
   { ver:'v5.11.4', date:'2026-03-27', changes:['Fix: anchor close script — removed awkward painPhrase insertion, now just uses score + provider'] },
   { ver:'v5.11.3', date:'2026-03-27', changes:['Fix: removed "Overpaying for satellite?" from Step 2 hint text (both single + multi maps)'] },
   { ver:'v5.11.2', date:'2026-03-27', changes:['Fix: removed ALL 6 remaining "walk me through" instances across all deepener paths','Fix: referral "Not Right Now" now scrolls to "No worries" response instead of skipping past it'] },
@@ -5023,10 +5038,10 @@ var devChangelog = [
   { ver:'v5.10.8', date:'2026-03-27', changes:['Fix: FLIP_MAP too_slow removes "whole family" — now household-neutral','Fix: ROI savings script removes hardcoded provider price comparison','Fix: Don\'t Cancel "run us both" instead of "run them both"','Update: trial close "Not bad, right?" replaces "Does that sound like what you\'re looking for?"','Update: schedule script tightened','Update: confirm install tightened','Update: referral ask tightened'] },
   { ver:'v5.10.7', date:'2026-03-27', changes:['Fix: Step 3 deepener now updates when Step 2 sub-options are clicked','Priority: sub-option-specific questions take precedence over generic scenario when subs are selected'] },
   { ver:'v5.10.6', date:'2026-03-27', changes:['Fix: Partner scenario says "you guys are streaming" instead of "the family\'s streaming"','Feature: new usageActivityPartner map for 2-person household phrasing','Fix: buildScenarioQuestion picks activity map based on household_type (partner vs whole_household vs single)'] },
-  { ver:'v5.10.5', date:'2026-03-27', changes:['Remove: "fixed wireless" from plan names — now Essentials/Plus/Pro','Fix: "1 people in the house" → "just you" for single-person household','Update: Value Match flip "Does that make sense?" → "How does that sound?"','Update: ROI script tightened','Update: Don\'t Cancel script tightened','Update: Setup Fee script tightened','Remove: fixed wireless from objection handler scripts'] },
+  { ver:'v5.10.5', date:'2026-03-27', changes:['Remove: "UnFiber" from plan names — now Essentials/Plus/Pro','Fix: "1 people in the house" → "just you" for single-person household','Update: Value Match flip "Does that make sense?" → "How does that sound?"','Update: ROI script tightened','Update: Don\'t Cancel script tightened','Update: Setup Fee script tightened','Remove: UnFiber from objection handler scripts'] },
   { ver:'v5.10.4', date:'2026-03-27', changes:['Update: keeps_dropping 3→7 subs (streaming/gaming/wfh/multi-device)','Update: storms 3→5 subs (light rain, wind)','Update: buffering 4→6 subs (gaming stutter, video call freeze)','Update: too_slow 4→6 subs (can\'t stream HD, slow downloads)','Update: no_options 3→5 subs (phone hotspot, old DSL)','Update: all new subs wired into subPhrases, futureStates, REFLECT_MAP, getRecommendedSubs'] },
   { ver:'v5.10.3', date:'2026-03-27', changes:['Fix: trigger responses key mismatch — all 9 pills now show responses','Fix: Step 2 hints now household-aware (single vs multi-user)','Fix: Step 1 probe text uses household context (you/you two/you guys)','Fix: recommended subs highlight multi-device options for multi-user households','Update: Steps 1-3 notes shortened — less coach-speak, more concise'] },
-  { ver:'v5.10.2', date:'2026-03-27', changes:['Remove: "Ask: what\'s keeping it from a 10?" static text (Evan annotation)','Update: Step 2 "Get Specific" now references usage context + pain combo','Update: Step 3 deepener opening personalized by household size','Remove:  benefit weave from buffering pain','Remove: Local Freeport Support weave (hidden pending redesign)','Update: Value Match bridge split into reflect → pause → flip format'] },
+  { ver:'v5.10.2', date:'2026-03-27', changes:['Remove: "Ask: what\'s keeping it from a 10?" static text (Evan annotation)','Update: Step 2 "Get Specific" now references usage context + pain combo','Update: Step 3 deepener opening personalized by household size','Remove: Free TV Service benefit weave from buffering pain','Remove: Local Freeport Support weave (hidden pending redesign)','Update: Value Match bridge split into reflect → pause → flip format'] },
   { ver:'v5.10.1', date:'2026-03-26', changes:['Update: shorten recording disclosure script (Evan feedback)','Fix: pain tiles reordered by actual transcript frequency (45%→5%)','Update: too_expensive empathy shortened — removed "not getting money\'s worth"','Remove: all daily_drops references (deprecated sub-option)','Feature: Q2 grayed out when "Whole household" or "Partner" already selected in Opening','Feature: spouse objection auto-highlighted when DM=spouse and Objection clicked','Fix: RECOMMENDED badge syncs with auto-recommendation on plan select + init','Fix: ROI script uses "full household" / "you and your partner" instead of raw number'] },
   { ver:'v5.10.0g', date:'2026-03-25', changes:['Remove: "Drops daily" sub-option from keeps_dropping','Feature: household type auto-sets household size + DM trap in Qualifying','Fix: plan recommendation logic — just_me gets Essentials, partner respects usage','Feature: recommended plan auto-selected on first visit','Feature: "Sound good?" trial close added after ROI pitch script'] },
   { ver:'v5.10.0f', date:'2026-03-25', changes:['Fix: hesitant button auto-scrolls to Advanced Closes (Section 7)'] },
@@ -5039,7 +5054,7 @@ var devChangelog = [
   { ver:'v5.9.1', date:'2026-03-24', changes:['Fix: scroll-to-change on number inputs (rep quoted $94 vs $100)','Fix: ROI hierarchy — value script above savings numbers','Fix: wrap-up line items collapsible behind Review Details','Fix: plan cards stay visible after selection','Fix: outbound intro now says company name + recorded line','Fix: ROI safety net — force recalc after plan change'] },
   { ver:'v5.9.0', date:'2026-03-24', changes:['Feature: dynamic scenario builder for pain deepeners','Feature: household pills (just me / whole household)','Feature: provider shutting down pain type','Update: pain frequency badges from 2,527 real transcripts','Update: localStorage version check to clear stale state'] },
   { ver:'v5.8.6', date:'2026-03-23', changes:['Fix: switch to plain fetch with CORS for webhook delivery'] },
-  { ver:'v5.8.5', date:'2026-03-23', changes:['Fix: webhook URL was using Mojo URL instead of JC WiFi'] },
+  { ver:'v5.8.5', date:'2026-03-23', changes:['Fix: webhook URL was using Mojo URL instead of Alamo'] },
   { ver:'v5.8.4', date:'2026-03-23', changes:['Feature: use sendBeacon for webhook delivery'] },
   { ver:'v5.8.3', date:'2026-03-23', changes:['Fix: webhook CORS issue'] },
   { ver:'v5.7.0', date:'2026-03-22', changes:['Feature: webhook submission, URL pre-fill, Contact ID, rep required'] }
@@ -5340,7 +5355,7 @@ function renderDevChangelog() {
 function checkServiceability() {
   var address = state.lead_address;
   var city = state.lead_city;
-  var st = state.lead_state || 'TX';
+  var st = state.lead_state || 'IL';
   var zip = state.lead_zip;
   var resultEl = document.getElementById('serviceability-result');
 
@@ -5358,7 +5373,7 @@ function checkServiceability() {
   resultEl.style.border = '1px solid var(--accent)';
   resultEl.textContent = 'Checking availability...';
 
-  fetch('https://hook.us1.make.com/pv6il7m6t9pcrelbkoyvdi8g1331xjf9', {
+  fetch('https://hook.us1.make.com/8a59h2a4kkwbp3tfdzirhj3ws7rh9mqb', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ address: address, city: city, state: st, zip: zip })
@@ -5847,7 +5862,7 @@ function resetForm() {
   state.lead_name = keepName;
   state.lead_address = keepAddress;
   state.lead_city = keepCity;
-  state.lead_state = keepState || 'TX';
+  state.lead_state = keepState || 'IL';
   state.lead_zip = keepZip;
   state.lead_phone = keepPhone;
   state.lead_email = keepEmail;
@@ -6058,18 +6073,6 @@ function openTechExplainer() {
 }
 
 // ===== ADVANCED CLOSES TOGGLE =====
-function toggleBusinessPlans() {
-  var el = document.getElementById('business-plans');
-  var btn = document.getElementById('business-plans-toggle');
-  if (el.classList.contains('hidden')) {
-    el.classList.remove('hidden');
-    if (btn) btn.textContent = 'Hide Business Plans';
-  } else {
-    el.classList.add('hidden');
-    if (btn) btn.textContent = 'Show Business Plans';
-  }
-}
-
 function toggleAdvancedCloses() {
   var el = document.getElementById('advanced-closes');
   var icon = document.getElementById('advanced-closes-icon');
@@ -6107,7 +6110,7 @@ function renderSpouseAmmo() {
     lines.push('"So let\'s get you on the calendar &mdash; what works better, mornings or afternoons?"');
   } else if (feeling === 'skeptical') {
     // v5.11.0: Skeptical spouse needs social proof, not the 30-day pitch
-    lines.push('"Here\'s what I\'d say to ' + spouseName + ': We have no contracts and a 30-day money-back guarantee from real Freeport customers. We\'ve been serving this area for years. We\'re not a random company &mdash; we\'re local."');
+    lines.push('"Here\'s what I\'d say to ' + spouseName + ': We have great reviews on Google from real customers in the Freeport area. We\'ve been serving this area for years. We\'re not a random company &mdash; we\'re local."');
     lines.push('"And the 30-day money-back guarantee means they\'re not trusting us on faith &mdash; they\'re running a test. Full refund if it doesn\'t deliver. You don\'t even cancel ' + (state.current_provider || 'your current provider') + ' first &mdash; run both side by side for 30 days."');
     lines.push('"What I\'d suggest: schedule a site survey so ' + spouseName + ' can meet the tech in person. That face-to-face builds more trust than anything I can say on the phone."');
   } else if (feeling === 'happy' || feeling === 'doesnt_care' || feeling === 'unaware') {
@@ -6187,9 +6190,9 @@ function init() {
 
   // v5.1: Clear stale state from older versions
   var stateVersion = localStorage.getItem('jcwifi_state_version');
-  if (stateVersion !== 'v5.11.4') {
+  if (stateVersion !== 'v5.10') {
     localStorage.removeItem('jcwifi_sales_state');
-    localStorage.setItem('jcwifi_state_version', 'v5.11.4');
+    localStorage.setItem('jcwifi_state_version', 'v5.10');
   }
 
   // Load saved state if exists
@@ -6339,7 +6342,7 @@ function init() {
   }
   // Plan card selection (v5.9.1: keep cards visible, just highlight selected)
   if (state.recommended_plan) {
-    var ids = ['bronze','silver','gold'];
+    var ids = ['unfiber50','unfiber100','unfiber300'];
     document.querySelectorAll('#plan-grid .plan-card').forEach(function(c, i) {
       if (ids[i] === state.recommended_plan) c.classList.add('selected');
     });
