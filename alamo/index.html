@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.10.6</title>
+<title>Alamo Broadband — Sales Intelligence v5.10.7</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -3643,12 +3643,17 @@ function renderPainDeepener() {
   }
 
   var html = '';
-  // Try usage-specific scenario question first, fall back to generic
-  var scenarioHTML = buildScenarioHTML();
-  if (scenarioHTML) {
-    html += scenarioHTML;
-  } else if (openingQ) {
+  // v5.10.7: Sub-option-specific opening takes priority when subs are selected
+  // If no subs clicked yet, use scenario question; once they click subs in Step 2, update to match
+  if (allIssues.length && openingQ) {
     html += makeDeepenerRow(openingQ, '');
+  } else {
+    var scenarioHTML = buildScenarioHTML();
+    if (scenarioHTML) {
+      html += scenarioHTML;
+    } else if (openingQ) {
+      html += makeDeepenerRow(openingQ, '');
+    }
   }
 
   // "How often?" with inline answers
@@ -4995,6 +5000,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.10.7', date:'2026-03-27', changes:['Fix: Step 3 deepener now updates when Step 2 sub-options are clicked','Priority: sub-option-specific questions take precedence over generic scenario when subs are selected'] },
   { ver:'v5.10.6', date:'2026-03-27', changes:['Fix: Partner scenario says "you guys are streaming" instead of "the family\'s streaming"','Feature: new usageActivityPartner map for 2-person household phrasing','Fix: buildScenarioQuestion picks activity map based on household_type (partner vs whole_household vs single)'] },
   { ver:'v5.10.5', date:'2026-03-27', changes:['Remove: "UnFiber" from plan names — now Essentials/Plus/Pro','Fix: "1 people in the house" → "just you" for single-person household','Update: Value Match flip "Does that make sense?" → "How does that sound?"','Update: ROI script tightened','Update: Don\'t Cancel script tightened','Update: Setup Fee script tightened','Remove: UnFiber from objection handler scripts'] },
   { ver:'v5.10.4', date:'2026-03-27', changes:['Update: keeps_dropping 3→7 subs (streaming/gaming/wfh/multi-device)','Update: storms 3→5 subs (light rain, wind)','Update: buffering 4→6 subs (gaming stutter, video call freeze)','Update: too_slow 4→6 subs (can\'t stream HD, slow downloads)','Update: no_options 3→5 subs (phone hotspot, old DSL)','Update: all new subs wired into subPhrases, futureStates, REFLECT_MAP, getRecommendedSubs'] },
@@ -5251,7 +5257,7 @@ function exportAnnotations() {
   }
   var data = {
     tool: 'Alamo Broadband Sales Intelligence',
-    version: 'v5.10.6',
+    version: 'v5.10.7',
     exportDate: new Date().toISOString(),
     exportedBy: state.team_member || 'Unknown',
     totalAnnotations: devAnnotations.length,
@@ -6303,9 +6309,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.6') {
+  if (annotationVer !== 'v5.10.7') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.6');
+    localStorage.setItem('alamo_annotation_version', 'v5.10.7');
   }
 
   // v5.10: Restore dev mode if previously unlocked
