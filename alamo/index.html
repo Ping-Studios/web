@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.10.4</title>
+<title>Alamo Broadband — Sales Intelligence v5.10.5</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -1182,7 +1182,7 @@ textarea:focus { border-color: var(--accent); }
   <div class="standard-only" id="weave-price-lock" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(76,175,80,0.08),rgba(76,175,80,0.02));border:1px solid rgba(76,175,80,0.25);border-radius:var(--radius)">
     <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--success);margin-bottom:4px">WEAVE: Price Lock</div>
     <div class="script-block" style="border-left-color:var(--success);margin:0;font-size:12px">
-      "Yeah, so one thing that's different with us &mdash; the price I quote you today is the price you keep. It's locked in. It never goes up. Does that make sense?"
+      "Yeah, so one thing that's different with us &mdash; the price I quote you today is the price you keep. It's locked in. It never goes up. How does that sound?"
     </div>
   </div>
 
@@ -1389,7 +1389,7 @@ textarea:focus { border-color: var(--accent); }
   </div>
   <div class="plan-grid" id="plan-grid">
     <div class="plan-card" onclick="selectPlan('unfiber50')">
-      <div class="plan-name">UnFiber Essentials</div>
+      <div class="plan-name">Essentials</div>
       <div class="plan-tagline">Great Value</div>
       <div class="plan-price">$59<span>.95/mo</span></div>
       <p style="font-size:11px;color:var(--success);margin-top:4px;font-weight:700">Unlimited Data</p>
@@ -1397,7 +1397,7 @@ textarea:focus { border-color: var(--accent); }
       <p style="font-size:11px;color:var(--text-muted);margin-top:4px">1-2 people, browsing &amp; streaming</p>
     </div>
     <div class="plan-card" onclick="selectPlan('unfiber100')">
-      <div class="plan-name">UnFiber Plus</div>
+      <div class="plan-name">Plus</div>
       <div class="plan-tagline">Most Popular</div>
       <div class="plan-price">$99<span>.95/mo</span></div>
       <p style="font-size:11px;color:var(--success);margin-top:4px;font-weight:700">Unlimited Data</p>
@@ -1405,7 +1405,7 @@ textarea:focus { border-color: var(--accent); }
       <p style="font-size:11px;color:var(--text-muted);margin-top:4px">3-5 people, WFH + streaming</p>
     </div>
     <div class="plan-card" onclick="selectPlan('unfiber300')">
-      <div class="plan-name">UnFiber Pro</div>
+      <div class="plan-name">Pro</div>
       <div class="plan-tagline">Full Power</div>
       <div class="plan-price">$159<span>.95/mo</span></div>
       <p style="font-size:11px;color:var(--success);margin-top:4px;font-weight:700">Unlimited Data</p>
@@ -1417,8 +1417,8 @@ textarea:focus { border-color: var(--accent); }
   <!-- Don't Cancel — shown when a plan is selected -->
   <div id="dont-cancel-block" class="hidden" style="margin-top:12px">
     <div class="script-block" style="border-left-color:var(--warning)">
-      <strong>"Don't Cancel" Positioning:</strong><br>
-      "And by the way &mdash; don't cancel <span class="var" data-var="current_provider">[Provider]</span> yet. Keep them running. Let us get you set up, try them both side by side for 30 days, and see which one you like better. You've got 30 days &mdash; if we don't blow them away, you get every penny back and nothing changes for you."
+      <strong>"Don't Cancel":</strong><br>
+      "Don't cancel <span class="var" data-var="current_provider">[Provider]</span> yet. Run them both side by side for 30 days. If we don't blow them away, full refund &mdash; nothing changes for you."
     </div>
   </div>
 
@@ -1443,7 +1443,7 @@ textarea:focus { border-color: var(--accent); }
   <div class="section-label">Section 6</div>
   <div class="section-title">Setup Fee + Close</div>
   <div class="script-block">
-    "So normally there's a $99 setup fee with a 2-year agreement, but for anyone signing up on the call today, the <strong style="color:var(--success)">installation is free</strong>, and there's no 2-year agreement either. It's month-to-month, cancel anytime. And you've got a full 30-day money-back guarantee &mdash; if you don't love it, we come get the equipment and refund every penny."
+    "Normally there's a $99 setup fee, but signing up today &mdash; <strong style="color:var(--success)">installation is free</strong>. No contract, month-to-month, cancel anytime. And you get a 30-day money-back guarantee &mdash; don't love it, full refund."
   </div>
   <div class="coach-note" style="margin-top:6px">Installation is free for same-day signups. We accept card, cash, and check &mdash; due at time of installation.
     <span style="display:block;margin-top:4px;font-size:11px;color:var(--text-muted);cursor:pointer;text-decoration:underline" onclick="this.nextElementSibling.classList.toggle('hidden')">Pole fees?</span>
@@ -2187,9 +2187,9 @@ checkItemsStandard.forEach(c => checkState[c.id] = 'pending');
 
 // ===== PLANS =====
 const plans = {
-  unfiber50:  { name: 'UnFiber Essentials', speed: '50 Mbps',  upload: '10 Mbps',  price: 59.95,  tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
-  unfiber100: { name: 'UnFiber Plus',       speed: '100 Mbps', upload: '20 Mbps',  price: 99.95,  tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
-  unfiber300: { name: 'UnFiber Pro',        speed: '300 Mbps', upload: '50 Mbps',  price: 159.95, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+  unfiber50:  { name: 'Essentials', speed: '50 Mbps',  upload: '10 Mbps',  price: 59.95,  tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+  unfiber100: { name: 'Plus',       speed: '100 Mbps', upload: '20 Mbps',  price: 99.95,  tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+  unfiber300: { name: 'Pro',        speed: '300 Mbps', upload: '50 Mbps',  price: 159.95, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
 };
 
 // ===== PAIN TREE (11 Alamo-specific pain tiles based on transcript analysis) =====
@@ -2350,7 +2350,7 @@ const valueMatch = {
     b2: { title:'Local San Antonio Support', script:'"And if something ever does go wrong, we\'re a local company right here in San Antonio. A real person picks up — 4.6 stars on Google. Gets it handled. No overseas call center, no sitting on hold."' }
   },
   too_slow: {
-    b1: { title:'Consistent Speeds — No Throttling', script:'"Our UnFiber plan comes with unlimited data and we never throttle your speeds. Pages load instantly, downloads fly, and your speed at 8 PM is the same as noon. No more waiting around. Does that make sense?"' },
+    b1: { title:'Consistent Speeds — No Throttling', script:'"Our plan comes with unlimited data and we never throttle your speeds. Pages load instantly, downloads fly, and your speed at 8 PM is the same as noon. How does that sound?"' },
     b2: { title:'Dedicated Connection', script:'"You\'re on a dedicated connection — not shared cable where everyone in the neighborhood drags you down at peak hours. Your speed stays consistent no matter how many people are online."' }
   },
   buffering: {
@@ -2898,7 +2898,7 @@ const objections = [
     isolate:'"Help me understand — is it the monthly cost or the installation fee that\'s the concern?"',
     reframe: function(){
       if (state.current_price && state.plan_price) {
-        return '"You\'re paying $'+(state.current_price||'__')+' now for '+(state.current_provider||'your current provider')+'. Our UnFiber plan is $'+(state.plan_price||'__')+' and you\'re getting unlimited data, free TV service, and a router included. When you factor in the TV service alone — that\'s worth $30-50 a month with other providers."';
+        return '"You\'re paying $'+(state.current_price||'__')+' now for '+(state.current_provider||'your current provider')+'. Our plan is $'+(state.plan_price||'__')+' with unlimited data, free TV, and a router included. The TV service alone is worth $30-50/month elsewhere."';
       }
       return '"When you factor in what\'s included — unlimited data, free TV service, router, and local support — the value is actually very competitive."';
     },
@@ -2966,7 +2966,7 @@ const objections = [
     id:'need_more_speed', label:'"I need faster than what you offer"',
     validate:'"Speed is definitely important, especially for your needs."',
     isolate:'"What speeds are you looking for? And what are you using that requires that?"',
-    reframe:'"Our UnFiber 300 plan offers 300 Mbps download, which handles 4K streaming on multiple devices, gaming, video calls, and working from home simultaneously. Most households don\'t actually use more than 100 Mbps at any given time, even with multiple devices."',
+    reframe:'"Our Pro plan handles 4K streaming on multiple devices, gaming, video calls, and working from home all at once. Most households don\'t actually use more than 100 Mbps at any given time, even with a full house."',
     reclose:'"Tell you what — with our 30-day guarantee, you can test the speeds yourself. If they don\'t meet your needs, we\'ll refund everything. Fair enough?"'
   },
   {
@@ -2987,7 +2987,7 @@ const objections = [
     id:'dont_need_much', label:'"I barely use the internet"',
     validate:'"If you\'re not a heavy user, that makes our basic plan a great fit."',
     isolate:'"What do you mainly use it for — checking email, light browsing, maybe some streaming?"',
-    reframe:'"Our UnFiber 50 plan at $59.95 is perfect for light use. And here\'s the thing — you get unlimited data, so even if you end up using more than you thought, there are no overage fees. Plus the free TV service is a nice bonus for when you want to watch something."',
+    reframe:'"Our Essentials plan at $59.95 is perfect for light use. Unlimited data, so no overage fees even if you use more than expected. Plus free TV service included."',
     reclose:'"At $59.95 with unlimited data and free TV included, it\'s hard to beat. Want me to get you set up?"'
   },
   {
@@ -3002,7 +3002,7 @@ const objections = [
     validate:'"Great question — it\'s actually pretty straightforward."',
     isolate:'"Have you heard of fixed wireless before, or is this the first time?"',
     reframe:'"We use local towers — right here in the San Antonio area — to send a signal directly to a small antenna at your home. Think of it like having a cell tower pointed directly at your house, but dedicated just for your internet. It\'s NOT satellite — no 22,000-mile signal delay. It\'s NOT cellular — it\'s a fixed, focused connection. The antenna is about the size of a piece of paper, and we run a cable inside to your router."',
-    reclose:'"We call it UnFiber because you get fiber-like performance without digging up your yard. Would you like to try it with our 30-day guarantee?"'
+    reclose:'"You get fiber-like performance without digging up your yard. Would you like to try it with our 30-day guarantee?"'
   },
   {
     id:'bad_experience_before', label:'"I tried wireless internet and it was terrible"',
@@ -3761,15 +3761,15 @@ function renderValueMatch() {
 
   if (pains.length === 1) {
     reflectSentence = '"So ' + (name || 'right now') + ', you told me ' + reflectParts[0] + '. It sounds like ' + provider + ' isn\'t cutting it, <strong>right</strong>?"';
-    flipSentence = '"With us, ' + flipParts[0] + '. Does that make sense?"';
+    flipSentence = '"With us, ' + flipParts[0] + '. How does that sound?"';
 
   } else if (pains.length === 2) {
     reflectSentence = '"So ' + (name ? name + ', between ' : 'between ') + reflectParts[0] + ' and ' + reflectParts[1] + ' — it sounds like ' + provider + ' isn\'t cutting it, <strong>right</strong>?"';
-    flipSentence = '"With us, ' + flipParts[0] + ', and ' + flipParts[1] + '. Does that make sense?"';
+    flipSentence = '"With us, ' + flipParts[0] + ', and ' + flipParts[1] + '. How does that sound?"';
 
   } else {
     reflectSentence = '"So ' + (name ? name + ', ' : '') + reflectParts[0] + ', ' + reflectParts[1] + ', and on top of that ' + reflectParts.slice(2).join(' and ') + ' — you\'re dealing with a lot. It sounds like ' + provider + ' isn\'t cutting it, <strong>right</strong>?"';
-    flipSentence = '"With us, ' + flipParts[0] + ', ' + flipParts[1] + ', and all of that other stuff? It goes away. Does that make sense?"';
+    flipSentence = '"With us, ' + flipParts[0] + ', ' + flipParts[1] + ', and all of that other stuff? It goes away. How does that sound?"';
   }
 
   // Part 1: Reflect
@@ -3891,7 +3891,7 @@ function renderROI() {
   // Build personal callback for combined script
   var usageLabelsMap = { streaming: 'streaming', gaming: 'gaming', wfh: 'working from home', browsing: 'browsing', smart_home: 'smart home devices', school: 'school' };
   var usageText = state.usage_types.length ? state.usage_types.map(function(u) { return usageLabelsMap[u] || u; }).join(', ') : 'your usage';
-  var householdText = state.household_type === 'whole_household' ? 'the full household' : state.household_type === 'partner' ? 'you and your partner' : state.household_size ? state.household_size + ' people in the house' : 'your household';
+  var householdText = state.household_type === 'whole_household' ? 'the full household' : state.household_type === 'partner' ? 'you and your partner' : (state.household_size === 1 || state.household_type === 'just_me') ? 'just you' : state.household_size ? state.household_size + ' people' : 'your household';
 
   // Use subPhrases for natural pain language instead of getPainLabel() tile labels
   var painText = '';
@@ -3908,7 +3908,7 @@ function renderROI() {
   if (!painText) painText = 'the issues you\'ve been having';
 
   var providerName = state.current_provider || 'your current provider';
-  var personalCallback = '"So based on everything you told me \u2014 the ' + usageText + ', ' + householdText + ', and ' + painText + ' \u2014 I\'d put you on our <strong>' + plan.name + '</strong> at <strong>$' + displayPrice + '/month</strong>. ';
+  var personalCallback = '"Based on what you told me \u2014 ' + usageText + ', ' + householdText + ', and ' + painText + ' \u2014 I\'d put you on our <strong>' + plan.name + '</strong> plan at <strong>$' + displayPrice + '/month</strong>. ';
 
   // Show dont-cancel block
   var dontCancel = document.getElementById('dont-cancel-block');
@@ -4982,6 +4982,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.10.5', date:'2026-03-27', changes:['Remove: "UnFiber" from plan names — now Essentials/Plus/Pro','Fix: "1 people in the house" → "just you" for single-person household','Update: Value Match flip "Does that make sense?" → "How does that sound?"','Update: ROI script tightened','Update: Don\'t Cancel script tightened','Update: Setup Fee script tightened','Remove: UnFiber from objection handler scripts'] },
   { ver:'v5.10.4', date:'2026-03-27', changes:['Update: keeps_dropping 3→7 subs (streaming/gaming/wfh/multi-device)','Update: storms 3→5 subs (light rain, wind)','Update: buffering 4→6 subs (gaming stutter, video call freeze)','Update: too_slow 4→6 subs (can\'t stream HD, slow downloads)','Update: no_options 3→5 subs (phone hotspot, old DSL)','Update: all new subs wired into subPhrases, futureStates, REFLECT_MAP, getRecommendedSubs'] },
   { ver:'v5.10.3', date:'2026-03-27', changes:['Fix: trigger responses key mismatch — all 9 pills now show responses','Fix: Step 2 hints now household-aware (single vs multi-user)','Fix: Step 1 probe text uses household context (you/you two/you guys)','Fix: recommended subs highlight multi-device options for multi-user households','Update: Steps 1-3 notes shortened — less coach-speak, more concise'] },
   { ver:'v5.10.2', date:'2026-03-27', changes:['Remove: "Ask: what\'s keeping it from a 10?" static text (Evan annotation)','Update: Step 2 "Get Specific" now references usage context + pain combo','Update: Step 3 deepener opening personalized by household size','Remove: Free TV Service benefit weave from buffering pain','Remove: Local San Antonio Support weave (hidden pending redesign)','Update: Value Match bridge split into reflect → pause → flip format'] },
@@ -5236,7 +5237,7 @@ function exportAnnotations() {
   }
   var data = {
     tool: 'Alamo Broadband Sales Intelligence',
-    version: 'v5.10.4',
+    version: 'v5.10.5',
     exportDate: new Date().toISOString(),
     exportedBy: state.team_member || 'Unknown',
     totalAnnotations: devAnnotations.length,
@@ -6288,9 +6289,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.4') {
+  if (annotationVer !== 'v5.10.5') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.4');
+    localStorage.setItem('alamo_annotation_version', 'v5.10.5');
   }
 
   // v5.10: Restore dev mode if previously unlocked
