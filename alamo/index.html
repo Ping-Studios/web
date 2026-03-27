@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.11.3</title>
+<title>Alamo Broadband — Sales Intelligence v5.11.4</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -926,11 +926,24 @@ textarea:focus { border-color: var(--accent); }
       "Hey, is this <span class="var" data-var="lead_name">[Name]</span>?" <span class="coaching">Wait for confirmation.</span>
     </div>
     <div class="script-block">
-      "Hey <span class="var" data-var="lead_name">[Name]</span>, it's <span class="var" data-var="team_member">[Your Name]</span> at Alamo Broadband. You were looking for better internet at <span class="var" data-var="lead_address">[Address]</span>, right?" <span class="coaching">Wait for confirmation.</span>
+      "Hey <span class="var" data-var="lead_name">[Name]</span>, it's <span class="var" data-var="team_member">[Your Name]</span> at Alamo Broadband. You were looking for better internet at <span class="var" data-var="lead_address">[Address]</span>, right?"
     </div>
-    <div class="script-block">
-      "Awesome. Call is recorded &mdash; just a few quick questions so I can match you with the right plan. Sound good?<br><br>
-      So what do you use the internet for most? Streaming, gaming, working from home?"
+    <!-- Yes / No confirmation pills (v5.11.2) -->
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <div class="pill" style="background:var(--success);color:#fff;border-color:var(--success)" onclick="setOpeningConfirm(true)">Yes ✓</div>
+      <div class="pill" style="background:var(--bg-input);color:var(--text-secondary)" onclick="setOpeningConfirm(false)">No / Don't Remember</div>
+    </div>
+    <!-- NO path: memory jog (hidden until No clicked) -->
+    <div id="opening-no-jog" class="hidden" style="margin-top:8px;padding:10px 12px;background:var(--warning-dim);border:1px solid var(--warning);border-radius:var(--radius)">
+      <div style="font-size:11px;font-weight:700;color:var(--warning);margin-bottom:4px">MEMORY JOG</div>
+      <div class="script-block" style="margin:0;border-left-color:var(--warning)">"No worries! You were probably on Facebook or Instagram, saw an ad for better internet, and clicked on it. Might have been a few days ago &mdash; does that ring a bell?"</div>
+    </div>
+    <!-- YES path: continue script (hidden until Yes clicked) -->
+    <div id="opening-yes-continue" class="hidden" style="margin-top:4px">
+      <div class="script-block">
+        "Awesome. Call is recorded &mdash; just a few quick questions so I can match you with the right plan. Sound good?<br><br>
+        So what do you use the internet for most? Streaming, gaming, working from home?"
+      </div>
     </div>
   </div>
 
@@ -1183,7 +1196,7 @@ textarea:focus { border-color: var(--accent); }
   <div class="standard-only" id="weave-price-lock" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(76,175,80,0.08),rgba(76,175,80,0.02));border:1px solid rgba(76,175,80,0.25);border-radius:var(--radius)">
     <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--success);margin-bottom:4px">WEAVE: Price Lock</div>
     <div class="script-block" style="border-left-color:var(--success);margin:0;font-size:12px">
-      "Yeah, so one thing that's different with us &mdash; the price I quote you today is the price you keep. It's locked in. It never goes up. How does that sound?"
+      "One big difference with us: the price I give you today never goes up. Period."
     </div>
   </div>
 
@@ -1501,7 +1514,7 @@ textarea:focus { border-color: var(--accent); }
     </div>
     <div id="still-hesitant-coach" class="hidden" style="margin-top:10px;padding:10px 12px;background:var(--warning-dim);border:1px solid var(--warning);border-radius:var(--radius)">
       <div style="font-size:11px;font-weight:700;color:var(--warning);margin-bottom:4px">ANCHOR DIDN'T CLOSE &mdash; PIVOT</div>
-      <div style="font-size:12px;color:var(--text-secondary);line-height:1.5">Don't redeploy the 30-day guarantee &mdash; they've heard it. Try a different angle below: <strong>#4 Tentative Appointment</strong> (most common win), <strong>#7 Month-to-Month</strong> (removes all commitment), <strong>#5 Site Survey</strong> (equipment doubters).</div>
+      <div style="font-size:12px;color:var(--text-secondary);line-height:1.5">Don't redeploy the 30-day guarantee &mdash; they've heard it. Try a different angle below: <strong>#1 Tentative Appointment</strong> (most common win), <strong>#2 Month-to-Month</strong> (removes all commitment), <strong>#3 Site Survey</strong> (equipment doubters).</div>
     </div>
   </div>
 
@@ -1520,32 +1533,9 @@ textarea:focus { border-color: var(--accent); }
     </div>
     <div id="advanced-closes" class="hidden" style="margin-top:12px">
 
+      <!-- #1-3 are the top picks for Still Hesitant leads (v5.11.2 reorder) -->
       <div style="margin-bottom:12px">
-        <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:4px">1. TRIAL CLOSE</div>
-        <div class="script-block" style="border-left-color:var(--accent)">
-          "Based on what you've told me, the <span class="var" data-var="recommended_plan">[plan]</span> would be perfect for your household. You get unlimited data, no contracts, price locked, and local support. Plus the free TV service and 30-day money-back guarantee. Sound like what you're looking for?"
-        </div>
-        <div class="coach-note" style="margin-top:4px">Best for: leads who have expressed interest. Use after Value Match. Listen for verbal cues.</div>
-      </div>
-
-      <div style="margin-bottom:12px">
-        <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:4px">2. FIRST MONTH FREE</div>
-        <div class="script-block" style="border-left-color:var(--success)">
-          "Your first month of service is completely free. So all you'd need to take care of is the one-time installation fee on the day of the appointment. That way you can test everything out &mdash; streaming, gaming, working from home &mdash; and see the difference for yourself before you're paying a dime for monthly service."
-        </div>
-        <div class="coach-note" style="margin-top:4px">Best for: price-conscious leads. Creates a "nothing to lose" frame.</div>
-      </div>
-
-      <div style="margin-bottom:12px">
-        <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:4px">3. 30-DAY GUARANTEE</div>
-        <div class="script-block" style="border-left-color:var(--purple)">
-          "You have 30 days to test everything out. Run both side by side and YOU decide which one you want to keep. If we don't blow them away, we come get the equipment and refund every penny. You literally can't lose."
-        </div>
-        <div class="coach-note" style="margin-top:4px">Best for: hesitant leads, risk-averse buyers. Reframes install as TEST not SWITCH.</div>
-      </div>
-
-      <div style="margin-bottom:12px">
-        <div style="font-size:12px;font-weight:700;color:var(--warning);margin-bottom:4px">4. TENTATIVE APPOINTMENT</div>
+        <div style="font-size:12px;font-weight:700;color:var(--warning);margin-bottom:4px">1. TENTATIVE APPOINTMENT <span style="font-size:10px;font-weight:400;opacity:.7">— most common win</span></div>
         <div class="script-block" style="border-left-color:var(--warning)">
           "I can put you on our calendar tentatively &mdash; no payment today, no commitment. You think it over, talk to your spouse, do your research. If anything changes, just give us a call 24 hours before and we'll remove you from the schedule. Does that sound fair?"
         </div>
@@ -1553,27 +1543,53 @@ textarea:focus { border-color: var(--accent); }
       </div>
 
       <div style="margin-bottom:12px">
-        <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:4px">5. COMPLIMENTARY SITE SURVEY</div>
+        <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:4px">2. MONTH-TO-MONTH COUNTER <span style="font-size:10px;font-weight:400;opacity:.7">— removes all commitment</span></div>
+        <div class="script-block" style="border-left-color:var(--success)">
+          "I can offer month-to-month &mdash; $49 install instead of $99, and you can cancel anytime. No commitment at all. That way you're testing it for literally the lowest possible cost. If you love it &mdash; and most people do &mdash; you just keep it going."
+        </div>
+        <div class="coach-note" style="margin-top:4px">Best for: contract-averse leads. Removes all commitment barriers.</div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:4px">3. COMPLIMENTARY SITE SURVEY <span style="font-size:10px;font-weight:400;opacity:.7">— for equipment doubters</span></div>
         <div class="script-block" style="border-left-color:var(--accent)">
           "Let me schedule a free site survey. Our technician will come out, test the signal strength at your location, show you exactly where the small receiver would go, and answer any questions. No charge, no commitment. If you like what you see, we can install same-day. How does that sound?"
         </div>
         <div class="coach-note" style="margin-top:4px">Best for: equipment concerns, spouse-dependent, technical buyers. Gets a tech on-site.</div>
       </div>
 
+      <div style="border-top:1px solid var(--border);margin:4px 0 12px;opacity:.4"></div>
+
       <div style="margin-bottom:12px">
-        <div style="font-size:12px;font-weight:700;color:var(--danger);margin-bottom:4px">6. DISCOUNT CLOSE</div>
+        <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:4px">4. TRIAL CLOSE</div>
+        <div class="script-block" style="border-left-color:var(--accent)">
+          "Based on what you've told me, the <span class="var" data-var="recommended_plan">[plan]</span> would be perfect for your household. You get unlimited data, no contracts, price locked, and local support. Plus the free TV service and 30-day money-back guarantee. Sound like what you're looking for?"
+        </div>
+        <div class="coach-note" style="margin-top:4px">Best for: leads who have expressed interest. Use after Value Match. Listen for verbal cues.</div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:4px">5. FIRST MONTH FREE</div>
+        <div class="script-block" style="border-left-color:var(--success)">
+          "Your first month of service is completely free. So all you'd need to take care of is the one-time installation fee on the day of the appointment. That way you can test everything out &mdash; streaming, gaming, working from home &mdash; and see the difference for yourself before you're paying a dime for monthly service."
+        </div>
+        <div class="coach-note" style="margin-top:4px">Best for: price-conscious leads. Creates a "nothing to lose" frame.</div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:4px">6. 30-DAY GUARANTEE</div>
+        <div class="script-block" style="border-left-color:var(--purple)">
+          "You have 30 days to test everything out. Run both side by side and YOU decide which one you want to keep. If we don't blow them away, we come get the equipment and refund every penny. You literally can't lose."
+        </div>
+        <div class="coach-note" style="margin-top:4px">Best for: hesitant leads, risk-averse buyers. Reframes install as TEST not SWITCH.</div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--danger);margin-bottom:4px">7. DISCOUNT CLOSE</div>
         <div class="script-block" style="border-left-color:var(--danger)">
           "Let me check with our billing team... I can get you a <strong>$10/month discount</strong> if we lock this in today. That brings your monthly down even further. And remember, the price is locked &mdash; it never goes up."
         </div>
         <div class="coach-note" style="margin-top:4px">Best for: leads sold on service but stalling on price. Use as LAST resort &mdash; don't lead with it.</div>
-      </div>
-
-      <div style="margin-bottom:12px">
-        <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:4px">7. MONTH-TO-MONTH COUNTER</div>
-        <div class="script-block" style="border-left-color:var(--success)">
-          "I can offer month-to-month &mdash; $49 install instead of $99, and you can cancel anytime. No commitment at all. That way you're testing it for literally the lowest possible cost. If you love it &mdash; and most people do &mdash; you just keep it going."
-        </div>
-        <div class="coach-note" style="margin-top:4px">Best for: contract-averse leads. Removes all commitment barriers.</div>
       </div>
 
       <div style="margin-bottom:12px">
@@ -4033,8 +4049,13 @@ function renderAnchorClose() {
   var el = document.getElementById('anchor-close-script');
   var score = state.satisfaction_score || '__';
   var provider = state.current_provider || '[Provider]';
-  var pain = getPainLabel();
-  el.innerHTML = '"You\'re at a <strong style="color:var(--danger)">' + score + '</strong> with <strong style="color:var(--accent)">' + provider + '</strong> because of ' + pain + '. Test us 30 days side by side \u2014 don\'t cancel them yet. If we don\'t deliver, every penny back. Zero risk."';
+  // Use subPhrases for natural sentence-ready language; fall back to getPainLabel
+  var painPhrase = getPainLabel();
+  if (state.pain_impacts && state.pain_impacts.length > 0) {
+    var sp = subPhrases[state.pain_impacts[0]];
+    if (sp && sp.issue) painPhrase = sp.issue;
+  }
+  el.innerHTML = '"You told me you\'re at a <strong style="color:var(--danger)">' + score + '</strong> with <strong style="color:var(--accent)">' + provider + '</strong>. Test us for 30 days side by side &mdash; don\'t cancel them yet. If we don\'t deliver, every penny back. Zero risk."';
 }
 
 function renderSpouseCallback() {
@@ -4288,6 +4309,14 @@ function setCallType(type) {
   document.getElementById('script-opening-outbound').classList.toggle('hidden', type !== 'outbound');
   document.getElementById('script-opening-inbound').classList.toggle('hidden', type !== 'inbound');
   saveToLocalStorage();
+}
+
+// v5.11.2: Opening confirmation Yes/No pills
+function setOpeningConfirm(yes) {
+  var jogEl = document.getElementById('opening-no-jog');
+  var contEl = document.getElementById('opening-yes-continue');
+  if (jogEl) jogEl.classList.toggle('hidden', yes);
+  if (contEl) contEl.classList.toggle('hidden', !yes);
 }
 
 function setScore(n) {
@@ -5043,6 +5072,8 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.11.4', date:'2026-03-27', changes:['Feature: Opening outbound script — Yes/No confirmation pills after "right?" — Yes reveals call-recorded script, No shows Facebook/Instagram memory jog','Fix: Price Lock weave shortened to "One big difference with us: the price I give you today never goes up. Period."','Fix: Closing Techniques reordered — #1 Tentative Appointment, #2 Month-to-Month, #3 Site Survey moved to top (best for Still Hesitant leads); original #1-3 become #4-6','Fix: Still Hesitant coach note updated to reference new numbers (#1/#2/#3 instead of #4/#7/#5)','Fix: Anchor close script now uses subPhrases natural language instead of raw pain label (e.g. "not getting what you\'re paying for" instead of "not worth what I pay")'] },
+  { ver:'v5.11.4', date:'2026-03-27', changes:['Fix: anchor close script — removed awkward painPhrase insertion, now just uses score + provider'] },
   { ver:'v5.11.3', date:'2026-03-27', changes:['Fix: removed "Overpaying for satellite?" from Step 2 hint text (both single + multi maps)'] },
   { ver:'v5.11.2', date:'2026-03-27', changes:['Fix: removed ALL 6 remaining "walk me through" instances across all deepener paths','Fix: referral "Not Right Now" now scrolls to "No worries" response instead of skipping past it'] },
   { ver:'v5.11.1', date:'2026-03-27', changes:['Update: outbound opener — "at Alamo Broadband" + "looking for better internet"','Update: inbound script — natural flow: greeting → get name/address → "call is recorded" after Sound good','Remove: satellite subs from too_expensive (locked_in_satellite removed, satellite_not_worth → not_worth_it)','Update: price-only deepener "walk me through what\'s going on with the bill" → "that\'s no fun"'] },
@@ -5306,7 +5337,7 @@ function exportAnnotations() {
   }
   var data = {
     tool: 'Alamo Broadband Sales Intelligence',
-    version: 'v5.11.3',
+    version: 'v5.11.4',
     exportDate: new Date().toISOString(),
     exportedBy: state.team_member || 'Unknown',
     totalAnnotations: devAnnotations.length,
@@ -6391,9 +6422,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.11.3') {
+  if (annotationVer !== 'v5.11.4') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.11.3');
+    localStorage.setItem('alamo_annotation_version', 'v5.11.4');
   }
 
   // v5.10: Restore dev mode if previously unlocked
