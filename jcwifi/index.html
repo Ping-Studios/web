@@ -922,9 +922,9 @@ textarea:focus { border-color: var(--accent); }
       "Hey <span class="var" data-var="lead_name">[Name]</span>, it's <span class="var" data-var="team_member">[Your Name]</span> at JC WiFi. You were looking for better internet at <span class="var" data-var="lead_address">[Address]</span>, right?"
     </div>
     <!-- Yes / No confirmation pills (v5.11.2) -->
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <div class="pill" style="background:var(--success);color:#fff;border-color:var(--success)" onclick="setOpeningConfirm(true)">Yes ✓</div>
-      <div class="pill" style="background:var(--bg-input);color:var(--text-secondary)" onclick="setOpeningConfirm(false)">No / Don't Remember</div>
+    <div id="opening-confirm-pills" style="display:flex;gap:8px;margin-top:8px">
+      <div class="pill" onclick="setOpeningConfirm(true)">Yes</div>
+      <div class="pill" onclick="setOpeningConfirm(false)">No / Don't Remember</div>
     </div>
     <!-- NO path: memory jog (hidden until No clicked) -->
     <div id="opening-no-jog" class="hidden" style="margin-top:8px;padding:10px 12px;background:var(--warning-dim);border:1px solid var(--warning);border-radius:var(--radius)">
@@ -4251,6 +4251,10 @@ function setCallType(type) {
 function setOpeningConfirm(yes) {
   var jogEl = document.getElementById('opening-no-jog');
   var contEl = document.getElementById('opening-yes-continue');
+  var pills = document.querySelectorAll('#opening-confirm-pills .pill');
+  pills.forEach(function(p) { p.classList.remove('selected'); p.style.background = ''; p.style.color = ''; p.style.borderColor = ''; });
+  var clicked = yes ? pills[0] : pills[1];
+  if (clicked) { clicked.classList.add('selected'); clicked.style.background = 'var(--success)'; clicked.style.color = '#fff'; clicked.style.borderColor = 'var(--success)'; }
   if (jogEl) jogEl.classList.toggle('hidden', yes);
   if (contEl) contEl.classList.remove('hidden');
 }
