@@ -588,6 +588,11 @@ textarea:focus { border-color: var(--accent); }
   letter-spacing: 1px; text-transform: uppercase; margin-left: 6px; white-space: nowrap;
 }
 .mode-mining .mode-badge { display: inline-block; background: var(--warning-dim); color: var(--warning); border: 1px solid var(--warning); }
+.mode-mock .mode-badge { display: inline-block; background: rgba(168,85,247,0.15); color: #a855f7; border: 1px solid #a855f7; }
+/* Mock mode — training only, submission disabled */
+.mode-mock #finalize-btn { display: none !important; }
+#mock-training-notice { display: none; }
+.mode-mock #mock-training-notice { display: block !important; }
 /* Mining interest gauge */
 .interest-pill {
   padding: 10px 20px; border-radius: var(--radius); cursor: pointer; font-size: 13px;
@@ -713,6 +718,8 @@ textarea:focus { border-color: var(--accent); }
     <div style="display:flex;gap:2px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);padding:2px" id="mode-btns">
       <div class="mode-btn active" onclick="setModeBtn(this,'standard')">Standard</div>
       <div class="mode-btn" onclick="setModeBtn(this,'mining')">Mining</div>
+      <div class="mode-btn" onclick="setModeBtn(this,'mock-in')" style="color:#a855f7">Mock In</div>
+      <div class="mode-btn" onclick="setModeBtn(this,'mock-out')" style="color:#a855f7">Mock Out</div>
     </div>
   </div>
   <button id="objection-btn" onclick="openObjectionPanel()">Handle Objection</button>
@@ -1681,19 +1688,28 @@ textarea:focus { border-color: var(--accent); }
       "Let me schedule a free site survey. Our technician will come out, test the signal strength at your location, show you exactly where the small receiver would go, and answer any questions. No charge, no commitment. What day works best?"
     </div>
 
-    <div class="cal-wrapper">
-      <div class="cal-header">
-        <button class="cal-nav" onclick="calNav(-1)">&lsaquo;</button>
-        <span class="cal-month-label" id="cal-month-label">March 2026</span>
-        <button class="cal-nav" onclick="calNav(1)">&rsaquo;</button>
+    <div class="visp-cal-wrapper">
+      <div class="cal-card" style="max-width:100%;box-shadow:none;border:1px solid var(--border);border-radius:var(--radius-lg)">
+        <div class="cal-header" style="background:linear-gradient(135deg,#0f2557,#1d4ed8);padding:10px 14px;display:flex;align-items:center;gap:6px">
+          <button class="cal-nav-btn" onclick="calNav(-1)" style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px">&#8249;</button>
+          <div style="display:flex;gap:6px;margin-left:4px">
+            <select class="cal-sel" id="calSelMonth" onchange="calFromSelects()" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:0 8px;font-size:13px;font-weight:600;height:32px">
+              <option value="0">Jan</option><option value="1">Feb</option><option value="2">Mar</option><option value="3">Apr</option><option value="4">May</option><option value="5">Jun</option><option value="6">Jul</option><option value="7">Aug</option><option value="8">Sep</option><option value="9">Oct</option><option value="10">Nov</option><option value="11">Dec</option>
+            </select>
+            <select class="cal-sel" id="calSelYear" onchange="calFromSelects()" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:0 8px;font-size:13px;font-weight:600;height:32px"></select>
+          </div>
+          <div style="flex:1"></div>
+          <button id="cal-fetch-btn" onclick="fetchCalendarEvents()" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8);border:none;color:#fff;border-radius:50px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 10px rgba(14,165,233,.5);height:32px;white-space:nowrap">&#9889; Fetch Events</button>
+          <button class="cal-nav-btn" onclick="calNav(1)" style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px">&#8250;</button>
+        </div>
+        <div style="padding:10px 14px 12px">
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center;margin-bottom:5px">
+            <span style="font-size:10.5px;font-weight:700;color:var(--text-muted);padding:5px 0">SUN</span><span style="font-size:10.5px;font-weight:700;color:var(--text-muted);padding:5px 0">MON</span><span style="font-size:10.5px;font-weight:700;color:var(--text-muted);padding:5px 0">TUE</span><span style="font-size:10.5px;font-weight:700;color:var(--text-muted);padding:5px 0">WED</span><span style="font-size:10.5px;font-weight:700;color:var(--text-muted);padding:5px 0">THU</span><span style="font-size:10.5px;font-weight:700;color:var(--text-muted);padding:5px 0">FRI</span><span style="font-size:10.5px;font-weight:700;color:var(--text-muted);padding:5px 0">SAT</span>
+          </div>
+          <div class="cal-days" id="calDays" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px"></div>
+        </div>
+        <div id="calSelectedDate" style="padding:8px 12px 10px;background:var(--bg-input);border-top:1px solid var(--border);font-size:12px;color:var(--text-secondary);min-height:36px">No date selected</div>
       </div>
-      <div class="cal-dow">
-        <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
-      </div>
-      <div class="cal-days" id="cal-days"></div>
-      <div class="cal-info" id="cal-selected-info">Click a date to select</div>
-      <button class="next-btn" id="cal-fetch-btn" style="display:none;margin-top:8px" onclick="fetchCalendarEvents()">Fetch Available Slots</button>
-      <div id="cal-events" class="hidden" style="margin-top:8px"></div>
     </div>
 
     <div style="margin-top:12px">
@@ -2051,7 +2067,7 @@ textarea:focus { border-color: var(--accent); }
   <div style="margin-top:16px">
     <button class="complete-btn" id="finalize-btn" onclick="finalizeAndSubmit()" style="display:none">Finalize &amp; Submit &#10148;</button>
     <div id="webhook-status" style="font-size:12px;margin-top:6px;display:none;padding:8px 12px;border-radius:var(--radius);font-weight:600"></div>
-    <button style="width:100%;padding:16px 24px;font-size:16px;font-weight:800;background:#e53e3e;color:#fff;border:none;border-radius:var(--radius-lg);cursor:pointer;text-transform:uppercase;letter-spacing:1px" onclick="this.textContent='Mock Call Complete!';this.style.background='#888';this.style.cursor='default'">Mock Call Complete</button>
+    <div id="mock-training-notice" style="width:100%;padding:16px 24px;background:rgba(168,85,247,0.12);border:2px solid #a855f7;border-radius:var(--radius-lg);color:#a855f7;font-size:13px;font-weight:800;text-align:center;text-transform:uppercase;letter-spacing:1px">⚠ Training Mode — Submission Disabled</div>
     <button class="next-btn" style="width:100%;margin-top:12px;background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border)" onclick="newCall()">Start New Call</button>
   </div>
 </div>
@@ -5932,107 +5948,142 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'o' && e.ctrlKey) { e.preventDefault(); openObjectionPanel(); }
 });
 
-// ===== CALENDAR =====
-var calYear, calMonth, calSelectedDate = null, calEvents = {};
-var CAL_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+// ===== CALENDAR (JC WiFi — modern calendar with color-coded events) =====
+var MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var N8N_WEBHOOK = 'https://pinggravity.app.n8n.cloud/webhook/google-calendar-events-fetch';
+var DOT_COLORS = { blue:'#3b82f6', green:'#22c55e', orange:'#f59e0b', red:'#ef4444', purple:'#a855f7', teal:'#14b8a6', pink:'#ec4899', default:'#94a3b8' };
+var calDate = new Date();
+var calSelected = null;
+var calEvents = [];
 
-function initCalendar() {
-  var now = new Date();
-  calYear = now.getFullYear();
-  calMonth = now.getMonth();
-  renderCalendar();
+function buildYearSelect() {
+  var sel = document.getElementById('calSelYear');
+  if (!sel) return;
+  var now = new Date().getFullYear();
+  for (var y = now - 1; y <= now + 3; y++) {
+    var o = document.createElement('option');
+    o.value = y; o.textContent = y;
+    if (y === now) o.selected = true;
+    sel.appendChild(o);
+  }
+}
+
+function syncSelects() {
+  var ms = document.getElementById('calSelMonth');
+  var ys = document.getElementById('calSelYear');
+  if (ms) ms.value = calDate.getMonth();
+  if (ys) ys.value = calDate.getFullYear();
+}
+
+function calFromSelects() {
+  calDate = new Date(document.getElementById('calSelYear').value, document.getElementById('calSelMonth').value, 1);
+  renderCal();
 }
 
 function calNav(dir) {
-  calMonth += dir;
-  if (calMonth > 11) { calMonth = 0; calYear++; }
-  if (calMonth < 0) { calMonth = 11; calYear--; }
-  renderCalendar();
+  calDate = new Date(calDate.getFullYear(), calDate.getMonth() + dir, 1);
+  syncSelects();
+  renderCal();
 }
 
-function renderCalendar() {
-  document.getElementById('cal-month-label').textContent = CAL_MONTHS[calMonth] + ' ' + calYear;
-  var firstDay = new Date(calYear, calMonth, 1).getDay();
-  var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-  var today = new Date();
-  var todayStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+function getEventsForDate(year, month, d) {
+  var key = year + '-' + String(month + 1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+  return calEvents.filter(function(e) { return e.date && e.date.slice(0,10) === key; });
+}
+
+function buildDots(events) {
+  if (!events.length) return '';
+  var dots = events.slice(0, 3).map(function(e) {
+    var bg = DOT_COLORS[e.color] || DOT_COLORS.default;
+    return '<span style="width:5px;height:5px;border-radius:50%;background:' + bg + ';display:inline-block"></span>';
+  }).join('');
+  var more = events.length > 3 ? '<span style="font-size:8px;color:var(--text-muted);margin-left:1px">+' + (events.length - 3) + '</span>' : '';
+  return '<div style="display:flex;gap:3px;margin-top:3px;align-items:center">' + dots + more + '</div>';
+}
+
+function renderCal() {
+  syncSelects();
+  var year = calDate.getFullYear(), month = calDate.getMonth();
+  var firstDay = new Date(year, month, 1).getDay();
+  var daysInMonth = new Date(year, month + 1, 0).getDate();
   var html = '';
-  for (var i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
+  for (var i = 0; i < firstDay; i++) html += '<div style="min-height:42px"></div>';
   for (var d = 1; d <= daysInMonth; d++) {
-    var dateStr = calYear + '-' + String(calMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
-    var isToday = dateStr === todayStr;
-    var isSelected = calSelectedDate === dateStr;
-    var isPast = new Date(calYear, calMonth, d) < new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    var hasEvents = calEvents[dateStr] && calEvents[dateStr].length > 0;
-    var cls = 'cal-day';
-    if (isPast) cls += ' past';
-    if (isToday) cls += ' today';
-    if (isSelected) cls += ' selected';
-    if (hasEvents) cls += ' has-events';
-    if (isPast) html += '<div class="' + cls + '">' + d + '</div>';
-    else html += '<div class="' + cls + '" onclick="selectCalDay(\'' + dateStr + '\')">' + d + '</div>';
+    var isSel = calSelected && calSelected.y === year && calSelected.m === month && calSelected.d === d;
+    var evs = getEventsForDate(year, month, d);
+    var numStyle = isSel ? 'background:var(--accent);color:#fff;font-weight:700' : '';
+    html += '<div style="display:flex;flex-direction:column;align-items:center;padding:5px 2px;min-height:42px;border-radius:6px;cursor:pointer" onclick="selectCalDay(' + year + ',' + month + ',' + d + ')">';
+    html += '<span style="width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:500;' + numStyle + '">' + d + '</span>';
+    html += buildDots(evs);
+    html += '</div>';
   }
-  document.getElementById('cal-days').innerHTML = html;
+  document.getElementById('calDays').innerHTML = html;
 }
 
-function selectCalDay(dateStr) {
-  calSelectedDate = dateStr;
+function selectCalDay(y, m, d) {
+  calSelected = { y: y, m: m, d: d };
+  var dateStr = y + '-' + String(m + 1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
   state.install_date = dateStr;
-  var parts = dateStr.split('-');
-  document.getElementById('cal-selected-info').innerHTML = 'Selected: <strong>' + CAL_MONTHS[parseInt(parts[1])-1] + ' ' + parseInt(parts[2]) + ', ' + parts[0] + '</strong>';
-  document.getElementById('cal-fetch-btn').style.display = '';
-  renderCalendar();
   saveToLocalStorage();
   renderAll();
+  renderCal();
+  var el = document.getElementById('calSelectedDate');
+  var evs = getEventsForDate(y, m, d);
+  if (evs.length) {
+    var rows = evs.map(function(e) {
+      var bg = DOT_COLORS[e.color] || DOT_COLORS.default;
+      return '<div style="display:flex;align-items:center;gap:6px;margin-top:5px"><span style="width:8px;height:8px;border-radius:50%;background:' + bg + '"></span><span style="font-size:11.5px;color:var(--text-primary)">' + (e.title || e.summary || 'Busy') + '</span></div>';
+    }).join('');
+    el.innerHTML = '<strong>' + MONTH_NAMES[m] + ' ' + d + ', ' + y + '</strong>' + rows;
+  } else {
+    el.innerHTML = 'Selected: <strong>' + MONTH_NAMES[m] + ' ' + d + ', ' + y + '</strong> (No slots)';
+  }
 }
 
 function fetchCalendarEvents() {
   var btn = document.getElementById('cal-fetch-btn');
-  btn.textContent = 'Fetching...';
-  btn.disabled = true;
-  fetch('https://pinggravity.app.n8n.cloud/webhook/google-calendar-events-fetch', {
+  var origHTML = btn.innerHTML;
+  btn.innerHTML = '&#9203; Fetching...'; btn.disabled = true;
+  var el = document.getElementById('calSelectedDate');
+  if (el) el.innerHTML = '<em>Fetching Open Time Slots...</em>';
+  var month = calDate.getMonth() + 1, year = calDate.getFullYear();
+  var currentUrl = window.location.href;
+  try { if (window.top !== window.self) currentUrl = document.referrer || window.location.href; } catch(e) { currentUrl = document.referrer || window.location.href; }
+  fetch(N8N_WEBHOOK, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ month: calMonth + 1, year: calYear, sourceUrl: window.location.href })
+    body: JSON.stringify({ month: month, year: year, sourceUrl: currentUrl })
   })
-  .then(function(r) { return r.json(); })
+  .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
   .then(function(data) {
-    calEvents = {};
-    if (Array.isArray(data)) {
-      data.forEach(function(evt) {
-        var date = (evt.start || evt.date || '').substring(0, 10);
-        if (!calEvents[date]) calEvents[date] = [];
-        calEvents[date].push(evt);
-      });
-    }
-    renderCalendar();
-    var evtEl = document.getElementById('cal-events');
-    if (calSelectedDate && calEvents[calSelectedDate] && calEvents[calSelectedDate].length) {
-      evtEl.classList.remove('hidden');
-      evtEl.innerHTML = '<p style="font-size:12px;color:var(--text-muted);margin-bottom:6px">Booked on this date:</p>' +
-        calEvents[calSelectedDate].map(function(e) {
-          return '<div class="cal-event-item">' + (e.summary || e.title || 'Busy') + (e.time ? ' \u2014 ' + e.time : '') + '</div>';
-        }).join('');
-    } else if (calSelectedDate) {
-      evtEl.classList.remove('hidden');
-      evtEl.innerHTML = '<p style="font-size:12px;color:var(--success)">No existing bookings on this date \u2014 open for scheduling!</p>';
-    }
-    btn.textContent = 'Refresh Availability';
-    btn.disabled = false;
+    var newEvents = Array.isArray(data) ? data : (data.events || []);
+    var prefix = year + '-' + String(month).padStart(2,'0');
+    calEvents = calEvents.filter(function(e) { return !e.date || !e.date.startsWith(prefix); });
+    calEvents = calEvents.concat(newEvents);
+    renderCal();
+    if (el) el.innerHTML = '<span style="color:var(--success)">&#10003; Loaded ' + newEvents.length + ' slots</span>';
   })
   .catch(function(err) {
-    btn.textContent = 'Fetch Failed \u2014 Retry';
-    btn.disabled = false;
+    if (el) el.innerHTML = '<span style="color:var(--danger)">&#10007; Error: ' + err.message + '</span>';
+  })
+  .finally(function() {
+    btn.innerHTML = origHTML; btn.disabled = false;
   });
 }
 
+// Alias for backward compat with init()
+function initCalendar() { buildYearSelect(); renderCal(); }
+
 function setMode(mode) {
   state.mode = mode;
-  document.body.classList.remove('mode-standard', 'mode-mining');
-  document.body.classList.add('mode-' + mode);
+  var isMock = mode === 'mock-in' || mode === 'mock-out';
+  var baseMode = isMock ? (mode === 'mock-in' ? 'standard' : 'mining') : mode;
+  document.body.classList.remove('mode-standard', 'mode-mining', 'mode-mock');
+  document.body.classList.add('mode-' + baseMode);
+  if (isMock) document.body.classList.add('mode-mock');
   // Update mode badge
   var badge = document.getElementById('mode-badge');
-  if (badge) badge.textContent = mode === 'mining' ? 'MINING' : '';
+  if (badge) badge.textContent = isMock ? 'MOCK' : (mode === 'mining' ? 'MINING' : '');
   // Update sidebar checklist for the mode
   updateChecklist();
   try { localStorage.setItem('jcwifi_mode', mode); } catch(e) {}
