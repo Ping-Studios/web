@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.10.2</title>
+<title>Alamo Broadband — Sales Intelligence v5.10.3</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -1066,10 +1066,9 @@ textarea:focus { border-color: var(--accent); }
       <div class="pain-step-num">1</div>
       <div class="pain-step-title">Empathize &mdash; Read This to the Customer</div>
     </div>
-    <div class="pain-step-note">After they tell you a pain, read the empathy line below. Then ask if there's more. Keep clicking pains above until they say "that's it."</div>
+    <div class="pain-step-note">Read the empathy line, then ask if there's more. Keep clicking pains above until they're done.</div>
     <div id="pain-empathy-stack"></div>
     <div class="pain-probe-more" id="pain-probe-text"></div>
-    <div style="font-size:11px;color:var(--text-muted);margin-top:4px;margin-left:10px">&uarr; Keep asking until they say "no, that's it" &mdash; then move to Step 2 below.</div>
   </div>
 
   <!-- STEP 2: Get specifics for each pain -->
@@ -1078,7 +1077,7 @@ textarea:focus { border-color: var(--accent); }
       <div class="pain-step-num">2</div>
       <div class="pain-step-title">Get Specific &mdash; Click All That Apply</div>
     </div>
-    <div class="pain-step-note">Click the specific issues they mentioned below. You can select multiple within each pain.</div>
+    <div class="pain-step-note">Click what matches what they said. You can pick multiple.</div>
     <div id="step2-suggestion" style="display:none;margin-bottom:8px;padding:8px 12px;background:var(--purple);background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(167,139,250,0.05));border-left:3px solid var(--purple);border-radius:0 var(--radius) var(--radius) 0;font-size:12px;color:var(--text-primary)"></div>
     <div id="pain-sub-container"></div>
   </div>
@@ -1089,7 +1088,7 @@ textarea:focus { border-color: var(--accent); }
       <div class="pain-step-num">3</div>
       <div class="pain-step-title">Dig Deeper &mdash; Ask These Questions</div>
     </div>
-    <div class="pain-step-note">Read the questions below. <strong>Pause after each one</strong> and let the customer talk. Click the answer options to the right to log their response.</div>
+    <div class="pain-step-note">Ask these and let them talk. Click answers on the right to log.</div>
     <div id="pain-deepener-script"></div>
   </div>
 
@@ -3124,14 +3123,17 @@ const competitors = {
 };
 
 // ===== TRIGGER RESPONSES =====
+// v5.10.3: Keys aligned to pill onclick values
 const triggerResponses = {
-  price_hike: '"Yeah, that\'s how they get you. The rate goes up and they just hope you won\'t notice. With us, the price is locked — it never goes up."',
-  outage: '"That\'s the kind of thing that makes you realize it\'s not going to get better on its own, right?"',
-  fed_up_slow: '"Yeah, I hear that a lot. At some point you just hit a wall and say enough is enough, right?"',
-  saw_ad: '"Oh nice — yeah we\'ve been getting the word out. A lot of people don\'t realize there\'s a local option out here."',
-  referral: '"That\'s actually how a lot of our customers find us — word of mouth. Once people switch, they tell their neighbors."',
-  moving: '"Perfect timing — let\'s get you set up right from the start so you\'re not stuck signing a contract with someone else."',
-  contract_ending: '"Smart — that\'s the perfect time to look around and see what else is out there before you get locked in again."'
+  fed_up: '"Yeah, at some point you just hit a wall and say enough is enough, right?"',
+  bill_went_up: '"That\'s how they get you. Rate goes up and they hope you won\'t notice. With us, the price is locked."',
+  wfh: '"Working from home changes everything — you need internet that actually works all day, not just sometimes."',
+  just_moved: '"Perfect timing — let\'s get you set up right so you\'re not stuck signing a contract with someone else."',
+  family_complaining: '"When the whole family\'s frustrated, that\'s when you know it\'s time, right?"',
+  saw_ad: '"Nice — yeah, a lot of people don\'t realize there\'s a local option out here."',
+  referral: '"That\'s how most of our customers find us — word of mouth. Once people switch, they tell their neighbors."',
+  saw_truck: '"Yeah, we\'re out in your area all the time. Glad you noticed us!"',
+  contract_ending: '"Smart — perfect time to see what else is out there before you get locked in again."'
 };
 
 // ===== UTILITIES =====
@@ -3251,34 +3253,45 @@ function renderScoreBranch() {
   }
 }
 
-// v5.10.2: Build Step 2 suggestion — usage-aware + pain-specific
+// v5.10.3: Build Step 2 suggestion — usage + pain + household aware
 function buildStep2Suggestion() {
   var usage = state.usage_types || [];
   var pains = state.pain_types || [];
   if (!pains.length) return '';
 
-  var usageLabels = { streaming:'stream', gaming:'game', wfh:'work from home', browsing:'browse', smart_home:'run smart home devices', school:'do schoolwork' };
-  var usageText = usage.map(function(u) { return usageLabels[u] || u; }).join(', ');
+  var multi = state.household_multi;
 
-  // Build pain-specific sub-question hints — tailored to usage when possible
-  var usageAwareHints = {
-    buffering: { streaming:'Shows keep buffering? Video quality dropping?', gaming:'Game lagging? Pages taking forever?', wfh:'Video calls freezing? Files slow to load?', _default:'Shows buffering? Video quality dropping? Pages taking forever?' },
-    too_slow: { streaming:'Slow when everyone streams?', gaming:'Lag when multiple people are on?', wfh:'Work calls freezing? Upload terrible?', _default:'Not getting promised speeds? Slow with multiple devices?' },
-    keeps_dropping: { streaming:'Shows freezing mid-episode?', gaming:'Getting kicked out of matches?', wfh:'Zoom calls disconnecting?', _default:'Slows in evenings? Random outages?' },
-    laggy: { gaming:'High ping? Getting killed before you see them?', wfh:'Video calls delayed? Talking over people?', _default:'Gaming lag? Video calls freezing? Everything feels delayed?' },
-    too_expensive: { _default:'Did the price jump after a promo? Hidden fees? Paying too much for satellite?' },
-    bill_keeps_changing: { _default:'Promo expired? Surprise fees? Rate keeps creeping up?' },
-    storms: { _default:'Goes out in rain? Takes hours to recover after storms?' },
-    no_options: { _default:'Only satellite available? No cable or fiber?' },
-    data_caps: { streaming:'Hitting the cap just from streaming?', _default:'Getting throttled? Overage charges? Using hotspot?' },
-    bad_service: { _default:'Hours on hold? Never fix the issue? Overseas support?' }
+  // Hints adapt to household: single vs multi-user
+  var hintsSingle = {
+    buffering: { streaming:'Shows buffering? Quality dropping?', gaming:'Game lagging? Pages slow?', wfh:'Calls freezing? Files slow?', _default:'Shows buffering? Pages slow?' },
+    too_slow: { streaming:'Slow when you stream?', gaming:'Lag when you play?', wfh:'Calls freezing? Upload bad?', _default:'Not getting promised speeds?' },
+    keeps_dropping: { streaming:'Cuts out mid-show?', gaming:'Kicked out of matches?', wfh:'Zoom disconnecting?', _default:'Slows in evenings? Random outages?' },
+    laggy: { gaming:'High ping? Delayed?', wfh:'Calls delayed? Talking over people?', _default:'Everything feels delayed?' },
+    too_expensive: { _default:'Price jump after promo? Hidden fees? Overpaying for satellite?' },
+    bill_keeps_changing: { _default:'Promo expired? Surprise fees? Rate creeping up?' },
+    storms: { _default:'Out in rain? Hours to recover?' },
+    no_options: { _default:'Only satellite? No cable/fiber?' },
+    data_caps: { streaming:'Hitting the cap from streaming?', _default:'Throttled? Overage charges? Using hotspot?' },
+    bad_service: { _default:'Hours on hold? Never fix it? Overseas support?' }
+  };
+  var hintsMulti = {
+    buffering: { streaming:'Everyone\'s shows buffering?', gaming:'Lag when the house is on?', wfh:'Calls freeze when family\'s streaming?', _default:'Buffering when multiple people are on?' },
+    too_slow: { streaming:'Slow when everyone streams?', gaming:'Lag when the whole house is on?', wfh:'Work calls die when kids get on?', _default:'Dies when multiple people connect?' },
+    keeps_dropping: { streaming:'Cuts out on the whole house?', gaming:'Everyone loses connection?', wfh:'Drops during work calls?', _default:'Drops for everyone or just one person?' },
+    laggy: { gaming:'Lag when the family\'s online?', wfh:'Delayed when everyone\'s connected?', _default:'Whole house feels the lag?' },
+    too_expensive: { _default:'Price jump after promo? Hidden fees? Overpaying for satellite?' },
+    bill_keeps_changing: { _default:'Promo expired? Surprise fees? Rate creeping up?' },
+    storms: { _default:'Out in rain? Hours to recover?' },
+    no_options: { _default:'Only satellite? No cable/fiber?' },
+    data_caps: { streaming:'Family hits the cap just from streaming?', _default:'Throttled? Overage charges? Using hotspot?' },
+    bad_service: { _default:'Hours on hold? Never fix it? Overseas support?' }
   };
 
+  var hintMap = multi ? hintsMulti : hintsSingle;
   var hints = [];
   pains.forEach(function(p) {
-    var map = usageAwareHints[p];
+    var map = hintMap[p];
     if (!map) return;
-    // Try to find a usage-specific hint first
     var hint = null;
     for (var i = 0; i < usage.length; i++) {
       if (map[usage[i]]) { hint = map[usage[i]]; break; }
@@ -3288,29 +3301,24 @@ function buildStep2Suggestion() {
 
   var painLabel = pains.length === 1 ? painTree[pains[0]].label.toLowerCase() : pains.map(function(p) { return painTree[p] ? painTree[p].label.toLowerCase() : p; }).join(' + ');
 
-  var intro;
-  if (usage.length) {
-    intro = '<strong>Ask:</strong> "They said it\'s <em>' + painLabel + '</em> and they <em>' + usageText + '</em> — ';
-  } else {
-    intro = '<strong>Ask:</strong> "When you say it\'s ' + painLabel + ', what do you mean? ';
-  }
-
   var body = hints.length ? hints.slice(0, 2).join(' ') : '';
-  var recNote = usage.length ? 'Highlighted options match their usage.' : 'Click the options below that match what they say.';
-
-  return intro + body + '"<br><span style="font-size:10px;color:var(--text-muted)">' + recNote + '</span>';
+  return '<strong>Ask:</strong> "What do you mean by ' + painLabel + '? ' + body + '"<br><span style="font-size:10px;color:var(--text-muted)">' + (usage.length ? 'Highlighted options match their usage.' : 'Click what matches.') + '</span>';
 }
 
-// v4.9: Get recommended sub-option IDs based on usage
+// v5.10.3: Recommended sub-options based on usage + pain + household
 function getRecommendedSubs() {
   var usage = state.usage_types || [];
   var pains = state.pain_types || [];
+  var multi = state.household_multi;
   var rec = [];
 
   if (usage.includes('streaming')) rec.push('evening_slowdown', 'cant_stream', 'streaming_buffer');
   if (usage.includes('gaming')) rec.push('evening_slowdown', 'gaming_lag');
   if (usage.includes('wfh')) rec.push('wfh_struggles', 'upload_terrible', 'video_call_freeze');
   if (usage.includes('browsing')) rec.push('speed_fraction', 'multiple_devices_slow', 'loading_forever');
+
+  // Multi-user household → prioritize multi-device sub-options
+  if (multi) rec.push('multiple_devices_slow', 'evening_slowdown');
 
   if (pains.includes('too_expensive')) rec.push('promo_expired', 'hidden_fees', 'hundred_plus');
   if (pains.includes('keeps_dropping')) rec.push('random_outages');
@@ -3376,15 +3384,16 @@ function renderSinglePainProbe() {
   stackEl.innerHTML = html;
   step1.classList.add('visible');
 
-  // Dynamic probe text based on how many pains selected
+  // Dynamic probe text based on how many pains selected + household context
   var probeEl = document.getElementById('pain-probe-text');
   var count = state.pain_types.length;
+  var hhWord = state.household_type === 'whole_household' ? 'you guys' : state.household_type === 'partner' ? 'you two' : 'you';
   if (count === 1) {
-    probeEl.innerHTML = '<strong>Then ask:</strong> "Is that the main thing, or is there anything else going on with your internet?"';
+    probeEl.innerHTML = '<strong>Then ask:</strong> "Is that the main thing, or is there anything else going on?"';
   } else if (count === 2) {
-    probeEl.innerHTML = '<strong>Then ask:</strong> "Okay so we\'ve got ' + painTree[state.pain_types[0]].label.toLowerCase() + ' and ' + painTree[state.pain_types[1]].label.toLowerCase() + '. Anything else, or is that everything?"';
+    probeEl.innerHTML = '<strong>Then ask:</strong> "Okay so ' + hhWord + '\'ve got ' + painTree[state.pain_types[0]].label.toLowerCase() + ' and ' + painTree[state.pain_types[1]].label.toLowerCase() + '. Anything else?"';
   } else {
-    probeEl.innerHTML = '<strong>Then ask:</strong> "Got it \u2014 that\'s ' + count + ' things. Is there anything else, or should we dig into these?"';
+    probeEl.innerHTML = '<strong>Then ask:</strong> "Got it \u2014 that\'s ' + count + ' things. Should we dig into these?"';
   }
 
   // Step 2: Show sub-option pills (always visible once pains selected)
@@ -4933,6 +4942,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.10.3', date:'2026-03-27', changes:['Fix: trigger responses key mismatch — all 9 pills now show responses','Fix: Step 2 hints now household-aware (single vs multi-user)','Fix: Step 1 probe text uses household context (you/you two/you guys)','Fix: recommended subs highlight multi-device options for multi-user households','Update: Steps 1-3 notes shortened — less coach-speak, more concise'] },
   { ver:'v5.10.2', date:'2026-03-27', changes:['Remove: "Ask: what\'s keeping it from a 10?" static text (Evan annotation)','Update: Step 2 "Get Specific" now references usage context + pain combo','Update: Step 3 deepener opening personalized by household size','Remove: Free TV Service benefit weave from buffering pain','Remove: Local San Antonio Support weave (hidden pending redesign)','Update: Value Match bridge split into reflect → pause → flip format'] },
   { ver:'v5.10.1', date:'2026-03-26', changes:['Update: shorten recording disclosure script (Evan feedback)','Fix: pain tiles reordered by actual transcript frequency (45%→5%)','Update: too_expensive empathy shortened — removed "not getting money\'s worth"','Remove: all daily_drops references (deprecated sub-option)','Feature: Q2 grayed out when "Whole household" or "Partner" already selected in Opening','Feature: spouse objection auto-highlighted when DM=spouse and Objection clicked','Fix: RECOMMENDED badge syncs with auto-recommendation on plan select + init','Fix: ROI script uses "full household" / "you and your partner" instead of raw number'] },
   { ver:'v5.10.0g', date:'2026-03-25', changes:['Remove: "Drops daily" sub-option from keeps_dropping','Feature: household type auto-sets household size + DM trap in Qualifying','Fix: plan recommendation logic — just_me gets Essentials, partner respects usage','Feature: recommended plan auto-selected on first visit','Feature: "Sound good?" trial close added after ROI pitch script'] },
@@ -5185,7 +5195,7 @@ function exportAnnotations() {
   }
   var data = {
     tool: 'Alamo Broadband Sales Intelligence',
-    version: 'v5.10.2',
+    version: 'v5.10.3',
     exportDate: new Date().toISOString(),
     exportedBy: state.team_member || 'Unknown',
     totalAnnotations: devAnnotations.length,
@@ -6237,9 +6247,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.2') {
+  if (annotationVer !== 'v5.10.3') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.2');
+    localStorage.setItem('alamo_annotation_version', 'v5.10.3');
   }
 
   // v5.10: Restore dev mode if previously unlocked
