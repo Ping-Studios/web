@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.10.8</title>
+<title>Alamo Broadband — Sales Intelligence v5.10.9</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -1369,12 +1369,6 @@ textarea:focus { border-color: var(--accent); }
       </div>
       <div id="roi-first-month-box" class="hidden" style="padding:10px 14px;background:var(--success-dim);border:1px solid var(--success);border-radius:var(--radius);text-align:center;margin-bottom:12px;font-size:13px;color:var(--success);font-weight:600"></div>
       <div id="roi-value-play-box" class="hidden" style="margin-bottom:12px"></div>
-      <!-- Trial close inline after ROI script -->
-      <div style="margin-top:8px;padding:10px 14px;background:var(--accent-dim);border:1px solid var(--accent);border-radius:var(--radius)">
-        <div class="script-block" style="border-left-color:var(--accent);margin:0;font-size:13px;font-weight:600">
-          "Sound good?"
-        </div>
-      </div>
     </div>
   </div>
 
@@ -1642,7 +1636,7 @@ textarea:focus { border-color: var(--accent); }
   <div id="schedule-area">
     <!-- Install script (default) -->
     <div id="sched-install-script" class="script-block">
-      "Let's get you on the calendar. Mornings or afternoons &mdash; which works better?"
+      "Alright, let's get you on the calendar. Mornings or afternoons &mdash; which works better?"
     </div>
     <!-- Site survey script (hidden by default) -->
     <div id="sched-survey-script" class="hidden script-block" style="border-left-color:var(--purple)">
@@ -1736,7 +1730,7 @@ textarea:focus { border-color: var(--accent); }
   <div class="section-label">Section 10</div>
   <div class="section-title">Post-Close Details</div>
   <div class="script-block">
-    "Great, just a few quick things so the install team knows what to expect. Do you own or rent your place?"
+    "Great, just a few quick things so the tech knows what to expect. Do you own or rent your place?"
   </div>
   <div class="pill-group" style="margin-top:8px">
     <div class="pill" onclick="setOwnership(this,'own')">Own</div>
@@ -1780,16 +1774,16 @@ textarea:focus { border-color: var(--accent); }
   <!-- Property details — conversational flow -->
   <div style="margin-top:16px">
     <div class="script-block" style="font-size:13px">
-      "Is that a house, mobile home, or apartment?"
+      "Is that a house or something else?"
     </div>
     <div class="pill-group" style="margin-top:6px">
       <div class="pill" onclick="setProperty(this,'home_type','single')">House</div>
-      <div class="pill" onclick="setProperty(this,'home_type','mobile')">Mobile Home</div>
+      <div class="pill" onclick="setProperty(this,'home_type','manufactured')">Manufactured Home</div>
       <div class="pill" onclick="setProperty(this,'home_type','apartment')">Apartment</div>
       <div class="pill" onclick="setProperty(this,'home_type','townhouse')">Townhouse</div>
     </div>
 
-    <div style="margin-top:12px">
+    <div id="story-question" style="margin-top:12px">
       <div class="script-block" style="font-size:13px">
         "One story or two?"
       </div>
@@ -2202,7 +2196,6 @@ const painTree = {
       { id:'hidden_fees', label:'Hidden fees & surcharges', quote:'"My bill has all these charges I never agreed to"' },
       { id:'bundle_confusion', label:'Bundle pricing confusion', quote:'"I can\'t tell what I\'m paying for internet vs. TV"' },
       { id:'loyal_customer_penalty', label:'Loyal customer paying more', quote:'"New customers get a better deal than me"' },
-      { id:'hundred_plus', label:'$100+ monthly for satellite', quote:'"I\'m paying $117 for HughesNet"' },
       { id:'locked_in_satellite', label:'Locked in satellite contract', quote:'"I\'m stuck in a 2-year contract with Viasat"' },
       { id:'satellite_not_worth', label:'Not worth what I pay', quote:'"For what I\'m paying I should have way better speeds"' }
     ],
@@ -2734,7 +2727,6 @@ const futureStates = {
   hidden_fees: '"One price. No equipment rental, no broadcast fee, no hidden taxes that double your bill. What I quote you is what you pay."',
   bundle_confusion: '"One simple bill. Internet. That\'s it. No bundle confusion, no hidden fees, no mystery charges."',
   loyal_customer_penalty: '"With us, there are no tiers. The price you get on day one is the same price every customer pays. No loyalty penalty."',
-  hundred_plus: '"You\'re paying half what you were, and the internet actually works. Better service, lower bill."',
   locked_in_satellite: '"No more being trapped. Month-to-month, cancel anytime. You stay because you want to."',
   satellite_not_worth: '"You\'re finally getting what you\'re paying for. Real speeds, unlimited data, and it works in the rain."',
   // keeps_dropping
@@ -2801,7 +2793,6 @@ const REFLECT_MAP = {
     if (impacts.includes('promo_expired')) r = 'your promo expired and now you\'re paying way more than you signed up for';
     else if (impacts.includes('hidden_fees')) r = 'hidden fees keep adding up on your bill';
     else if (impacts.includes('loyal_customer_penalty')) r = 'new customers get better deals while you\'re paying full price';
-    else if (impacts.includes('hundred_plus')) r = 'you\'re paying over $100 a month for slow satellite';
     else if (impacts.includes('locked_in_satellite')) r = 'you\'re stuck in a satellite contract';
     return r;
   },
@@ -3269,11 +3260,16 @@ function renderBreadcrumbs() {
 }
 
 function renderVarSpans() {
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   document.querySelectorAll('.var[data-var]').forEach(function(el) {
     var key = el.dataset.var;
     if (key === 'pain_label') el.textContent = getPainLabel();
     else if (key === 'satisfaction_score' && state.satisfaction_score) el.textContent = state.satisfaction_score;
     else if (key === 'lead_name' && state.lead_name) el.textContent = state.lead_name.split(' ')[0];
+    else if (key === 'install_date' && state.install_date) {
+      var p = state.install_date.split('-');
+      el.textContent = months[parseInt(p[1])-1] + ' ' + parseInt(p[2]);
+    }
     else if (state[key] !== undefined && state[key] !== '' && state[key] !== 0) el.textContent = state[key];
   });
 }
@@ -3360,7 +3356,7 @@ function getRecommendedSubs() {
   // Multi-user household → prioritize multi-device sub-options
   if (multi) rec.push('multiple_devices_slow', 'evening_slowdown');
 
-  if (pains.includes('too_expensive')) rec.push('promo_expired', 'hidden_fees', 'hundred_plus');
+  if (pains.includes('too_expensive')) rec.push('promo_expired', 'hidden_fees');
   if (pains.includes('keeps_dropping')) rec.push('random_outages', 'drops_streaming', 'drops_gaming', 'drops_wfh', 'drops_multiple');
   if (pains.includes('too_slow')) rec.push('speed_fraction', 'multiple_devices_slow', 'slow_streaming', 'slow_downloads');
   if (pains.includes('buffering')) rec.push('streaming_buffer', 'quality_drops', 'gaming_stutter', 'video_call_buffer');
@@ -3474,7 +3470,6 @@ var subPhrases = {
   hidden_fees: { issue:'hidden fees keep adding up on your bill' },
   bundle_confusion: { issue:'the bundle pricing is confusing and you don\'t know what you\'re paying' },
   loyal_customer_penalty: { issue:'new customers get better deals while you\'re paying full price' },
-  hundred_plus: { issue:'paying over $100 a month and it doesn\'t even work right' },
   locked_in_satellite: { issue:'locked into a contract you can\'t get out of' },
   satellite_not_worth: { issue:'not getting what you\'re paying for' },
   // keeps_dropping
@@ -3940,7 +3935,7 @@ function renderROI() {
     [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--success-dim)'; b.style.borderColor='var(--success)'; });
     roiMonthly.style.color = 'var(--success)';
     roiAnnual.style.color = 'var(--success)';
-    roiScript.innerHTML = personalCallback + 'Right now you\'re paying $' + cp.toFixed(0) + '/month, so that\'s <strong>$' + diff.toFixed(0) + ' back in your pocket every month, $' + annual.toFixed(0) + '/year</strong>. Unlimited data, no throttling, and that price is locked \u2014 it never goes up."';
+    roiScript.innerHTML = personalCallback + 'Right now you\'re paying $' + cp.toFixed(0) + '/month, so that\'s <strong>$' + diff.toFixed(0) + ' back in your pocket every month, $' + annual.toFixed(0) + '/year</strong>. Unlimited data, no throttling, and that price is locked \u2014 it never goes up. Sound good?"';
 
   } else if (diff === 0) {
     // Same price
@@ -3951,7 +3946,7 @@ function renderROI() {
     [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--accent-dim)'; b.style.borderColor='var(--accent)'; });
     roiMonthly.style.color = 'var(--accent)';
     roiAnnual.style.color = 'var(--accent)';
-    roiScript.innerHTML = personalCallback + 'Same price as what you\'re paying now, but you\'re getting unlimited data, free TV service, and a 30-day money-back guarantee. And our price is locked, so while ' + providerName + ' keeps raising theirs, yours stays the same."';
+    roiScript.innerHTML = personalCallback + 'Same price as what you\'re paying now, but you\'re getting unlimited data, free TV service, and a 30-day money-back guarantee. And our price is locked, so while ' + providerName + ' keeps raising theirs, yours stays the same. Sound good?"';
 
   } else {
     // Alamo is more expensive
@@ -3964,13 +3959,13 @@ function renderROI() {
       [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--accent-dim)'; b.style.borderColor='var(--accent)'; });
       roiMonthly.style.color = 'var(--accent)';
       roiAnnual.style.color = 'var(--accent)';
-      roiScript.innerHTML = personalCallback + 'For just $' + monthlyAbs.toFixed(0) + ' more a month, you get unlimited data, free TV service, and local support. And when ' + providerName + ' raises your rate \u2014 and they will \u2014 you\'ll be glad you locked this in."';
+      roiScript.innerHTML = personalCallback + 'For just $' + monthlyAbs.toFixed(0) + ' more a month, you get unlimited data, free TV service, and local support. And when ' + providerName + ' raises your rate \u2014 and they will \u2014 you\'ll be glad you locked this in. Sound good?"';
 
     } else if (monthlyAbs <= 30) {
       [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--warning-dim)'; b.style.borderColor='var(--warning)'; });
       roiMonthly.style.color = 'var(--warning)';
       roiAnnual.style.color = 'var(--warning)';
-      roiScript.innerHTML = personalCallback + 'The value difference is the free TV service \u2014 that\'s a $30-50 value on its own \u2014 plus unlimited data, reliable connection, and price lock. And when ' + providerName + ' raises your rate, you\'ll still be paying the same."';
+      roiScript.innerHTML = personalCallback + 'The value difference is the free TV service \u2014 that\'s a $30-50 value on its own \u2014 plus unlimited data, reliable connection, and price lock. And when ' + providerName + ' raises your rate, you\'ll still be paying the same. Sound good?"';
 
     } else {
       [monthlyBox, annualBox].forEach(function(b) { b.style.background='var(--warning-dim)'; b.style.borderColor='var(--warning)'; });
@@ -4999,6 +4994,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.10.9', date:'2026-03-27', changes:['Remove: "$100+ monthly for satellite" sub-option + all references','Fix: "install team" → "tech" in Post-Close (missed 2x)','Fix: "Sound good?" moved into ROI pitch quote (not separate block)','Fix: "Alright, let\'s get you on the calendar" (missed 2x)','Fix: install_date renders as "March 26" not "2026-03-26"','Update: "Is that a house or something else?" replaces listing types','Update: "Mobile Home" pill → "Manufactured Home"','Feature: story question grayed out when Manufactured Home selected'] },
   { ver:'v5.10.8', date:'2026-03-27', changes:['Fix: FLIP_MAP too_slow removes "whole family" — now household-neutral','Fix: ROI savings script removes hardcoded provider price comparison','Fix: Don\'t Cancel "run us both" instead of "run them both"','Update: trial close "Not bad, right?" replaces "Does that sound like what you\'re looking for?"','Update: schedule script tightened','Update: confirm install tightened','Update: referral ask tightened'] },
   { ver:'v5.10.7', date:'2026-03-27', changes:['Fix: Step 3 deepener now updates when Step 2 sub-options are clicked','Priority: sub-option-specific questions take precedence over generic scenario when subs are selected'] },
   { ver:'v5.10.6', date:'2026-03-27', changes:['Fix: Partner scenario says "you guys are streaming" instead of "the family\'s streaming"','Feature: new usageActivityPartner map for 2-person household phrasing','Fix: buildScenarioQuestion picks activity map based on household_type (partner vs whole_household vs single)'] },
@@ -5257,7 +5253,7 @@ function exportAnnotations() {
   }
   var data = {
     tool: 'Alamo Broadband Sales Intelligence',
-    version: 'v5.10.8',
+    version: 'v5.10.9',
     exportDate: new Date().toISOString(),
     exportedBy: state.team_member || 'Unknown',
     totalAnnotations: devAnnotations.length,
@@ -5368,6 +5364,20 @@ function checkServiceability() {
 function setProperty(el, key, val) {
   state[key] = val;
   setActivePill(el);
+  // Gray out story question for manufactured homes (single story assumed)
+  if (key === 'home_type') {
+    var storyQ = document.getElementById('story-question');
+    if (storyQ) {
+      if (val === 'manufactured') {
+        storyQ.style.opacity = '0.4';
+        storyQ.style.pointerEvents = 'none';
+        state.stories = '1';
+      } else {
+        storyQ.style.opacity = '1';
+        storyQ.style.pointerEvents = 'auto';
+      }
+    }
+  }
   saveToLocalStorage();
   if (state.home_type || state.roof_type) {
     checkState.house = 'completed';
@@ -6309,9 +6319,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.8') {
+  if (annotationVer !== 'v5.10.9') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.8');
+    localStorage.setItem('alamo_annotation_version', 'v5.10.9');
   }
 
   // v5.10: Restore dev mode if previously unlocked
