@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.10.0</title>
+<title>Alamo Broadband — Sales Intelligence v5.10.1</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -929,7 +929,7 @@ textarea:focus { border-color: var(--accent); }
       "Hey <span class="var" data-var="lead_name">[Name]</span>, it's <span class="var" data-var="team_member">[Your Name]</span> from Alamo Broadband. You were looking into internet options at <span class="var" data-var="lead_address">[Address]</span> recently, right?" <span class="coaching">Wait for confirmation.</span>
     </div>
     <div class="script-block">
-      "Awesome. Call is recorded &mdash; I'm just going to ask you a few quick questions to make sure the plan we recommend isn't too much or too little for what you need. Sound good?<br><br>
+      "Awesome. Call is recorded &mdash; just a few quick questions so I can match you with the right plan. Sound good?<br><br>
       So what do you use the internet for most? Streaming, gaming, working from home?"
     </div>
   </div>
@@ -1195,8 +1195,9 @@ textarea:focus { border-color: var(--accent); }
 
   <div class="q-card standard-only" id="q2-card">
     <div class="q-num">Q2 &mdash; HOUSEHOLD / DM TRAP</div>
-    <div class="q-script">"And... how many people are using the internet at the same time?"</div>
-    <div class="pill-group">
+    <div class="q-script" id="q2-script">"And... how many people are using the internet at the same time?"</div>
+    <div id="q2-already-answered" class="hidden" style="margin-bottom:8px;padding:6px 12px;background:var(--accent-dim);border:1px solid var(--accent);border-radius:var(--radius);font-size:11px;color:var(--accent);font-weight:600">Already answered above &mdash; "Whole household" selected. Skip to DM trap below.</div>
+    <div class="pill-group" id="q2-pills">
       <div class="pill" onclick="setHousehold(this,1)">1</div>
       <div class="pill" onclick="setHousehold(this,2)">2</div>
       <div class="pill" onclick="setHousehold(this,3)">3</div>
@@ -2197,7 +2198,7 @@ const painTree = {
   too_expensive: {
     label: 'Too expensive',
     freq: '45%',
-    empathy: '"You\'re paying too much. That\'s frustrating — especially when you feel like you\'re not getting your money\'s worth."',
+    empathy: '"You\'re paying too much. That\'s frustrating."',
     subs: [
       { id:'promo_expired', label:'Promo rate expired', quote:'"They advertised $30, I\'m paying $75 now"' },
       { id:'hidden_fees', label:'Hidden fees & surcharges', quote:'"My bill has all these charges I never agreed to"' },
@@ -2209,16 +2210,28 @@ const painTree = {
     ],
     deepener: ['"So what\'s going on with the bill? Walk me through it."', '"Have you called them about it?"', '"What are you paying now vs. what you signed up for?"']
   },
-  keeps_dropping: {
-    label: 'Keeps dropping',
-    freq: '22%',
-    empathy: '"Nothing worse than your internet just cutting out on you in the middle of something."',
+  bill_keeps_changing: {
+    label: 'Bill keeps changing',
+    freq: '35%',
+    empathy: '"You signed up for one price and now it\'s something different every month. That\'s not fair."',
     subs: [
-      { id:'evening_slowdown', label:'Slows down in evenings', quote:'"It\'s fine during the day but terrible at night"' },
-      { id:'random_outages', label:'Random multi-hour outages', quote:'"Sometimes it\'s out for hours"' },
-      { id:'att_air_drops', label:'AT&T Air / 5G drops', quote:'"The AT&T box just stops working"' }
+      { id:'promo_expired', label:'Promo price expired' },
+      { id:'surprise_fees', label:'Surprise fees on bill' },
+      { id:'rate_creep', label:'Rate goes up every year' },
+      { id:'bundle_confusion', label:'Bundled pricing is confusing' }
     ],
-    deepener: ['"How often does it drop?"', '"What time of day is worst?"', '"Has your provider tried to fix it?"']
+    deepener: ['"How many times has the price changed?"', '"Do you even know what you\'re paying for at this point?"']
+  },
+  storms: {
+    label: 'Goes out in storms',
+    freq: '35%',
+    empathy: '"Losing internet every time it rains isn\'t acceptable. You need something reliable."',
+    subs: [
+      { id:'rain_outages', label:'Goes out in any rain', quote:'"Every time it rains, internet dies"' },
+      { id:'storm_hours_down', label:'Hours down after storms', quote:'"After a storm it takes hours to come back"' },
+      { id:'seasonal_issues', label:'Worse in certain seasons', quote:'"Spring and fall are terrible"' }
+    ],
+    deepener: ['"How long does it typically take to come back?"', '"Is this with satellite service?"', '"Does it happen with light rain too?"']
   },
   too_slow: {
     label: 'Too slow',
@@ -2244,29 +2257,6 @@ const painTree = {
     ],
     deepener: ['"How often does the buffering happen?"', '"Is it worse at certain times?"']
   },
-  bill_keeps_changing: {
-    label: 'Bill keeps changing',
-    freq: '35%',
-    empathy: '"You signed up for one price and now it\'s something different every month. That\'s not fair."',
-    subs: [
-      { id:'promo_expired', label:'Promo price expired' },
-      { id:'surprise_fees', label:'Surprise fees on bill' },
-      { id:'rate_creep', label:'Rate goes up every year' },
-      { id:'bundle_confusion', label:'Bundled pricing is confusing' }
-    ],
-    deepener: ['"How many times has the price changed?"', '"Do you even know what you\'re paying for at this point?"']
-  },
-  storms: {
-    label: 'Goes out in storms',
-    freq: '35%',
-    empathy: '"Losing internet every time it rains isn\'t acceptable. You need something reliable."',
-    subs: [
-      { id:'rain_outages', label:'Goes out in any rain', quote:'"Every time it rains, internet dies"' },
-      { id:'storm_hours_down', label:'Hours down after storms', quote:'"After a storm it takes hours to come back"' },
-      { id:'seasonal_issues', label:'Worse in certain seasons', quote:'"Spring and fall are terrible"' }
-    ],
-    deepener: ['"How long does it typically take to come back?"', '"Is this with satellite service?"', '"Does it happen with light rain too?"']
-  },
   no_options: {
     label: 'No options out here',
     freq: '25%',
@@ -2278,17 +2268,16 @@ const painTree = {
     ],
     deepener: ['"What have you tried?"', '"How long have you been looking?"', '"Is satellite your only current option?"']
   },
-  data_caps: {
-    label: 'Data caps',
-    freq: '9%',
-    empathy: '"Unlimited should mean unlimited. You shouldn\'t have to watch your usage like a meter."',
+  keeps_dropping: {
+    label: 'Keeps dropping',
+    freq: '22%',
+    empathy: '"Nothing worse than your internet just cutting out on you in the middle of something."',
     subs: [
-      { id:'throttled_after_limit', label:'Throttled after limit', quote:'"After 20 GB it slows to a crawl"' },
-      { id:'overage_charges', label:'Overage charges', quote:'"I got charged $50 extra for going over"' },
-      { id:'hotspot_as_primary', label:'Using hotspot as main internet', quote:'"I\'m just using my phone\'s hotspot"' },
-      { id:'cant_stream', label:'Can\'t stream without hitting cap', quote:'"I can\'t even watch Netflix without hitting my limit"' }
+      { id:'evening_slowdown', label:'Slows down in evenings', quote:'"It\'s fine during the day but terrible at night"' },
+      { id:'random_outages', label:'Random multi-hour outages', quote:'"Sometimes it\'s out for hours"' },
+      { id:'att_air_drops', label:'AT&T Air / 5G drops', quote:'"The AT&T box just stops working"' }
     ],
-    deepener: ['"What\'s your data cap?"', '"How quickly do you hit it?"', '"How much are overage fees?"']
+    deepener: ['"How often does it drop?"', '"What time of day is worst?"', '"Has your provider tried to fix it?"']
   },
   laggy: {
     label: 'Laggy',
@@ -2313,6 +2302,18 @@ const painTree = {
       { id:'broken_promises', label:'Broken promises', quote:'"They said a tech would come and never showed"' }
     ],
     deepener: ['"When was the last time you called them?"', '"What happened?"', '"Have they tried to fix the issue?"']
+  },
+  data_caps: {
+    label: 'Data caps',
+    freq: '9%',
+    empathy: '"Unlimited should mean unlimited. You shouldn\'t have to watch your usage like a meter."',
+    subs: [
+      { id:'throttled_after_limit', label:'Throttled after limit', quote:'"After 20 GB it slows to a crawl"' },
+      { id:'overage_charges', label:'Overage charges', quote:'"I got charged $50 extra for going over"' },
+      { id:'hotspot_as_primary', label:'Using hotspot as main internet', quote:'"I\'m just using my phone\'s hotspot"' },
+      { id:'cant_stream', label:'Can\'t stream without hitting cap', quote:'"I can\'t even watch Netflix without hitting my limit"' }
+    ],
+    deepener: ['"What\'s your data cap?"', '"How quickly do you hit it?"', '"How much are overage fees?"']
   },
   provider_shutting_down: {
     label: 'Provider shutting down',
@@ -2714,7 +2715,6 @@ const futureStates = {
   locked_in_satellite: '"No more being trapped. Month-to-month, cancel anytime. You stay because you want to."',
   satellite_not_worth: '"You\'re finally getting what you\'re paying for. Real speeds, unlimited data, and it works in the rain."',
   // keeps_dropping
-  daily_drops: '"What if your internet just... stayed on? All day, every day. No random drops, no wondering if it\'s going to cut out."',
   evening_slowdown: '"It\'s 8 PM, everyone\'s home, the kids are streaming, you\'re watching your show — and it just works. Same speed at 8 PM as noon."',
   random_outages: '"No more losing internet for hours and wondering when it\'s coming back. 99.99% uptime — it just stays on."',
   att_air_drops: '"No more AT&T box randomly dying on you. A dedicated connection that stays solid all day."',
@@ -2773,8 +2773,7 @@ const REFLECT_MAP = {
   keeps_dropping: function() {
     var impacts = state.pain_impacts || [];
     var r = 'the internet keeps dropping on you';
-    if (impacts.includes('daily_drops')) r = 'the internet drops on you at least once a day';
-    else if (impacts.includes('evening_slowdown')) r = 'it slows way down every evening';
+    if (impacts.includes('evening_slowdown')) r = 'it slows way down every evening';
     else if (impacts.includes('random_outages')) r = 'you\'re dealing with random outages that last hours';
     else if (impacts.includes('att_air_drops')) r = 'your AT&T Air keeps cutting out';
     return r;
@@ -3282,12 +3281,12 @@ function getRecommendedSubs() {
   var rec = [];
 
   if (usage.includes('streaming')) rec.push('evening_slowdown', 'cant_stream', 'streaming_buffer');
-  if (usage.includes('gaming')) rec.push('daily_drops', 'evening_slowdown', 'gaming_lag');
-  if (usage.includes('wfh')) rec.push('wfh_struggles', 'upload_terrible', 'daily_drops', 'video_call_freeze');
+  if (usage.includes('gaming')) rec.push('evening_slowdown', 'gaming_lag');
+  if (usage.includes('wfh')) rec.push('wfh_struggles', 'upload_terrible', 'video_call_freeze');
   if (usage.includes('browsing')) rec.push('speed_fraction', 'multiple_devices_slow', 'loading_forever');
 
   if (pains.includes('too_expensive')) rec.push('promo_expired', 'hidden_fees', 'hundred_plus');
-  if (pains.includes('keeps_dropping')) rec.push('daily_drops', 'random_outages');
+  if (pains.includes('keeps_dropping')) rec.push('random_outages');
   if (pains.includes('too_slow')) rec.push('speed_fraction', 'multiple_devices_slow');
   if (pains.includes('buffering')) rec.push('streaming_buffer', 'quality_drops');
   if (pains.includes('bill_keeps_changing')) rec.push('surprise_fees', 'rate_creep');
@@ -3403,7 +3402,6 @@ var subPhrases = {
   locked_in_satellite: { issue:'locked into a contract you can\'t get out of' },
   satellite_not_worth: { issue:'not getting what you\'re paying for' },
   // keeps_dropping
-  daily_drops: { issue:'the internet drops on you every day' },
   evening_slowdown: { issue:'it slows way down every evening' },
   random_outages: { issue:'you get random multi-hour outages' },
   att_air_drops: { issue:'your AT&T Air/5G keeps cutting out' },
@@ -3814,7 +3812,7 @@ function renderROI() {
   // Build personal callback for combined script
   var usageLabelsMap = { streaming: 'streaming', gaming: 'gaming', wfh: 'working from home', browsing: 'browsing', smart_home: 'smart home devices', school: 'school' };
   var usageText = state.usage_types.length ? state.usage_types.map(function(u) { return usageLabelsMap[u] || u; }).join(', ') : 'your usage';
-  var householdText = state.household_size ? state.household_size + ' people in the house' : 'your household';
+  var householdText = state.household_type === 'whole_household' ? 'the full household' : state.household_type === 'partner' ? 'you and your partner' : state.household_size ? state.household_size + ' people in the house' : 'your household';
 
   // Use subPhrases for natural pain language instead of getPainLabel() tile labels
   var painText = '';
@@ -4010,7 +4008,9 @@ function setCloseResponse(el, response) {
     saveToLocalStorage();
     setTimeout(function() { scrollToSection('sec-close'); }, 300);
   } else if (response === 'objection') {
-    openObjectionPanel();
+    // Auto-highlight spouse objection if DM is spouse or spouse was frustrated
+    var spouseHint = (state.decision_maker === 'spouse' || state.spouse_feeling === 'frustrated');
+    openObjectionPanel(spouseHint ? 'talk_to_spouse' : null);
     renderSpouseAmmo();
     saveToLocalStorage();
   }
@@ -4344,12 +4344,26 @@ function setHouseholdMulti(el, val) {
   // Visually select the matching Q2 pill
   var q2Card = document.getElementById('q2-card');
   if (q2Card) {
-    q2Card.querySelectorAll('.pill').forEach(function(p) {
+    var q2Pills = document.getElementById('q2-pills');
+    var q2Script = document.getElementById('q2-script');
+    var q2Already = document.getElementById('q2-already-answered');
+    q2Card.querySelectorAll('#q2-pills .pill').forEach(function(p) {
       var n = parseInt(p.textContent);
       if (isNaN(n) && p.textContent.indexOf('5') >= 0) n = 5;
       p.classList.toggle('selected', n === autoSize);
     });
     q2Card.classList.add('answered');
+    // Gray out Q2 when whole_household or partner selected (already answered above)
+    if (val === 'whole_household' || val === 'partner') {
+      if (q2Pills) q2Pills.style.opacity = '0.4';
+      if (q2Pills) q2Pills.style.pointerEvents = 'none';
+      if (q2Script) q2Script.style.opacity = '0.4';
+      if (q2Already) { q2Already.classList.remove('hidden'); q2Already.textContent = val === 'whole_household' ? 'Already answered above \u2014 "Whole household" selected. Skip to DM trap below.' : 'Already answered above \u2014 "Partner" selected. Skip to DM trap below.'; }
+    } else {
+      if (q2Pills) { q2Pills.style.opacity = '1'; q2Pills.style.pointerEvents = 'auto'; }
+      if (q2Script) q2Script.style.opacity = '1';
+      if (q2Already) q2Already.classList.add('hidden');
+    }
     // Trigger DM trap for 2+ people
     var dmInline = document.getElementById('dm-trap-inline');
     var dmScript = document.getElementById('dm-trap-script');
@@ -4359,7 +4373,7 @@ function setHouseholdMulti(el, val) {
       if (dmScript) dmScript.innerHTML = '"Nice! And if you both decided you wanted to switch, is that something you\'d decide together, or you handle the internet stuff?"';
       if (dmInline) dmInline.classList.remove('hidden');
     } else {
-      if (dmScript) dmScript.innerHTML = '"Nice! And if you all decided you wanted to switch, is that something you\'d all decide together, or do you handle the internet stuff?"';
+      if (dmScript) dmScript.innerHTML = '"If you all decided you wanted to switch, is that something you\'d decide together, or do you handle the internet stuff?"';
       if (dmInline) dmInline.classList.remove('hidden');
     }
   }
@@ -4467,6 +4481,8 @@ function selectPlan(planId) {
   document.querySelectorAll('#plan-grid .plan-card').forEach(function(c, i) {
     if (ids[i] === planId) c.classList.add('selected');
   });
+  // Keep RECOMMENDED badge synced with auto-recommendation algorithm
+  autoRecommendPlan();
   // v5.9.1: Keep plan cards visible after selection (don't collapse)
   var coachNote = document.getElementById('plan-coach-note');
   if (coachNote) coachNote.classList.add('hidden');
@@ -4887,6 +4903,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.10.1', date:'2026-03-26', changes:['Update: shorten recording disclosure script (Evan feedback)','Fix: pain tiles reordered by actual transcript frequency (45%→5%)','Update: too_expensive empathy shortened — removed "not getting money\'s worth"','Remove: all daily_drops references (deprecated sub-option)','Feature: Q2 grayed out when "Whole household" or "Partner" already selected in Opening','Feature: spouse objection auto-highlighted when DM=spouse and Objection clicked','Fix: RECOMMENDED badge syncs with auto-recommendation on plan select + init','Fix: ROI script uses "full household" / "you and your partner" instead of raw number'] },
   { ver:'v5.10.0g', date:'2026-03-25', changes:['Remove: "Drops daily" sub-option from keeps_dropping','Feature: household type auto-sets household size + DM trap in Qualifying','Fix: plan recommendation logic — just_me gets Essentials, partner respects usage','Feature: recommended plan auto-selected on first visit','Feature: "Sound good?" trial close added after ROI pitch script'] },
   { ver:'v5.10.0f', date:'2026-03-25', changes:['Fix: hesitant button auto-scrolls to Advanced Closes (Section 7)'] },
   { ver:'v5.10.0e', date:'2026-03-25', changes:['Fix: Step 2 prompt consolidated into purple box only — no duplication','Fix: satellite references removed from sub-phrase deepeners','Fix: trigger pills now populate response for all selections','Fix: annotation popovers appear to the right instead of below','Fix: recommended badge stays on plan card after selecting different plan','Update: ROI pitch script moved above plan cards — rep reads script first','Update: Step 2 prompt uses pain label: "when you say it\'s too expensive..."'] },
@@ -5137,7 +5154,7 @@ function exportAnnotations() {
   }
   var data = {
     tool: 'Alamo Broadband Sales Intelligence',
-    version: 'v5.10.0',
+    version: 'v5.10.1',
     exportDate: new Date().toISOString(),
     exportedBy: state.team_member || 'Unknown',
     totalAnnotations: devAnnotations.length,
@@ -5564,9 +5581,19 @@ function showObjection(id) {
   detail.classList.add('open');
 }
 
-function openObjectionPanel() {
+function openObjectionPanel(autoHighlightId) {
   document.getElementById('objection-overlay').classList.add('open');
   document.getElementById('backdrop').classList.add('open');
+  // Auto-highlight a specific objection handler (e.g., spouse)
+  if (autoHighlightId) {
+    setTimeout(function() {
+      var tile = document.querySelector('#objection-tiles .obj-tile[data-id="' + autoHighlightId + '"]');
+      if (tile) {
+        tile.style.boxShadow = '0 0 0 2px var(--purple), 0 0 12px rgba(167,139,250,0.4)';
+        tile.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 200);
+  }
 }
 
 function closeAllPanels() {
@@ -6060,6 +6087,15 @@ function init() {
         p.classList.add('multi-selected');
       }
     });
+    // Gray out Q2 if whole_household or partner was previously selected
+    if (state.household_type === 'whole_household' || state.household_type === 'partner') {
+      var q2Pills = document.getElementById('q2-pills');
+      var q2Script = document.getElementById('q2-script');
+      var q2Already = document.getElementById('q2-already-answered');
+      if (q2Pills) { q2Pills.style.opacity = '0.4'; q2Pills.style.pointerEvents = 'none'; }
+      if (q2Script) q2Script.style.opacity = '0.4';
+      if (q2Already) { q2Already.classList.remove('hidden'); q2Already.textContent = state.household_type === 'whole_household' ? 'Already answered above \u2014 "Whole household" selected. Skip to DM trap below.' : 'Already answered above \u2014 "Partner" selected. Skip to DM trap below.'; }
+    }
   }
 
   // v5.1: Restore all visual state from localStorage
@@ -6165,13 +6201,14 @@ function init() {
   loadSavedSettings();
   syncColorPickers();
   renderAll();
+  autoRecommendPlan();
   renderSessionManager();
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.0g') {
+  if (annotationVer !== 'v5.10.1') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.0g');
+    localStorage.setItem('alamo_annotation_version', 'v5.10.1');
   }
 
   // v5.10: Restore dev mode if previously unlocked
