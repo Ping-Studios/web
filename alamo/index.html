@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.10.3</title>
+<title>Alamo Broadband — Sales Intelligence v5.10.4</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -2227,7 +2227,9 @@ const painTree = {
     empathy: '"Losing internet every time it rains isn\'t acceptable. You need something reliable."',
     subs: [
       { id:'rain_outages', label:'Goes out in any rain', quote:'"Every time it rains, internet dies"' },
+      { id:'light_rain', label:'Even light rain kills it', quote:'"It doesn\'t even have to be a real storm"' },
       { id:'storm_hours_down', label:'Hours down after storms', quote:'"After a storm it takes hours to come back"' },
+      { id:'wind_outages', label:'Wind knocks it out', quote:'"Any time it\'s windy the signal drops"' },
       { id:'seasonal_issues', label:'Worse in certain seasons', quote:'"Spring and fall are terrible"' }
     ],
     deepener: ['"How long does it typically take to come back?"', '"Is this with satellite service?"', '"Does it happen with light rain too?"']
@@ -2240,7 +2242,9 @@ const painTree = {
       { id:'speed_fraction', label:'Getting fraction of promised', quote:'"They said 25 Mbps, I\'m getting 4"' },
       { id:'upload_terrible', label:'Upload speeds terrible', quote:'"I can\'t even do a video call"' },
       { id:'multiple_devices_slow', label:'Slows with multiple devices', quote:'"It\'s okay for one person but dies with the whole family"' },
-      { id:'wfh_struggles', label:'Work from home struggles', quote:'"I keep freezing on Zoom calls"' }
+      { id:'wfh_struggles', label:'Work from home struggles', quote:'"I keep freezing on Zoom calls"' },
+      { id:'slow_streaming', label:'Can\'t stream in HD', quote:'"Everything plays in low quality"' },
+      { id:'slow_downloads', label:'Downloads take forever', quote:'"A simple update takes all night"' }
     ],
     deepener: ['"What speeds were you promised?"', '"Have you run a speed test recently?"', '"How many devices are usually connected?"']
   },
@@ -2251,6 +2255,8 @@ const painTree = {
     subs: [
       { id:'streaming_buffer', label:'Shows keep buffering' },
       { id:'quality_drops', label:'Video quality drops to blurry' },
+      { id:'gaming_stutter', label:'Games freeze / rubber-band', quote:'"I\'m lagging every fight"' },
+      { id:'video_call_buffer', label:'Video calls freeze up', quote:'"My face freezes on Zoom"' },
       { id:'music_skips', label:'Music/audio cuts out' },
       { id:'loading_forever', label:'Pages take forever to load' }
     ],
@@ -2263,6 +2269,8 @@ const painTree = {
     subs: [
       { id:'only_satellite', label:'Only option is satellite', quote:'"Out here it\'s either HughesNet or nothing"' },
       { id:'no_cable_fiber', label:'No cable or fiber available', quote:'"Spectrum/AT&T says they don\'t serve my address"' },
+      { id:'cell_hotspot_only', label:'Using phone hotspot', quote:'"I just use my phone for everything"' },
+      { id:'dsl_only', label:'Only have old DSL', quote:'"AT&T DSL is all we can get"' },
       { id:'been_searching', label:'Been searching for years', quote:'"I\'ve been looking for something better for years"' }
     ],
     deepener: ['"What have you tried?"', '"How long have you been looking?"', '"Is satellite your only current option?"']
@@ -2274,6 +2282,10 @@ const painTree = {
     subs: [
       { id:'evening_slowdown', label:'Slows down in evenings', quote:'"It\'s fine during the day but terrible at night"' },
       { id:'random_outages', label:'Random multi-hour outages', quote:'"Sometimes it\'s out for hours"' },
+      { id:'drops_streaming', label:'Cuts out mid-show', quote:'"I\'m watching something and it just dies"' },
+      { id:'drops_gaming', label:'Drops during gaming', quote:'"I get kicked out of matches constantly"' },
+      { id:'drops_wfh', label:'Drops on work calls', quote:'"My Zoom calls disconnect all the time"' },
+      { id:'drops_multiple', label:'Dies when everyone\'s on', quote:'"One person is fine but the whole family kills it"' },
       { id:'att_air_drops', label:'AT&T Air / 5G drops', quote:'"The AT&T box just stops working"' }
     ],
     deepener: ['"How often does it drop?"', '"What time of day is worst?"', '"Has your provider tried to fix it?"']
@@ -2716,15 +2728,23 @@ const futureStates = {
   // keeps_dropping
   evening_slowdown: '"It\'s 8 PM, everyone\'s home, the kids are streaming, you\'re watching your show — and it just works. Same speed at 8 PM as noon."',
   random_outages: '"No more losing internet for hours and wondering when it\'s coming back. 99.99% uptime — it just stays on."',
+  drops_streaming: '"You\'re in the middle of a show and it just keeps playing. No more cutting out right at the good part."',
+  drops_gaming: '"You\'re in the middle of a match and you stay in. No more getting kicked because the internet dropped."',
+  drops_wfh: '"You\'re on a work call and it stays connected. No more dropping off mid-sentence."',
+  drops_multiple: '"Everyone\'s on at the same time — streaming, gaming, working — and nobody drops. It just handles it."',
   att_air_drops: '"No more AT&T box randomly dying on you. A dedicated connection that stays solid all day."',
   // too_slow
   speed_fraction: '"You run a speed test and the number matches what you\'re paying for. Consistently. Not just at 3 AM."',
   upload_terrible: '"Your upload is strong enough for video calls, cloud backup, streaming — whatever you need to send up, it just goes."',
   multiple_devices_slow: '"Everyone in the house is online — phones, laptops, smart TV, gaming — and nobody notices. It just handles it."',
   wfh_struggles: '"You\'re on a Zoom call and your face isn\'t frozen, your voice isn\'t cutting out — you look professional."',
+  slow_streaming: '"You hit play and it\'s HD instantly. Not blurry, not buffering — just crisp and clear."',
+  slow_downloads: '"Updates download in minutes, not hours. Files just fly."',
   // buffering
   streaming_buffer: '"You hit play and it just plays. No spinning wheel, no waiting — just your show, instantly."',
   quality_drops: '"Crystal clear picture from start to finish. No more blurry drops to 480p in the middle of a movie."',
+  gaming_stutter: '"Smooth gameplay, instant response. No more rubber-banding or freezing when it matters."',
+  video_call_buffer: '"Your face doesn\'t freeze mid-sentence. Video calls just work — clear and smooth."',
   music_skips: '"Your music plays smooth, your podcasts don\'t skip, your audio just works."',
   loading_forever: '"Pages load instantly. No more staring at a loading bar wondering if it\'s going to finish."',
   // bill_keeps_changing
@@ -2732,11 +2752,15 @@ const futureStates = {
   rate_creep: '"The rate you sign up for is the rate you keep. A year from now, two years from now — same price."',
   // storms
   rain_outages: '"It rains, it storms — your internet doesn\'t care. It just stays on."',
+  light_rain: '"Light rain, heavy rain — doesn\'t matter. Our towers are local, not in space."',
   storm_hours_down: '"After the storm passes, your internet is already working. No waiting hours for it to come back."',
+  wind_outages: '"Wind, rain — your connection stays solid. Our equipment is built for Texas weather."',
   seasonal_issues: '"Spring storms, fall weather — doesn\'t matter. Your connection stays solid through all of it."',
   // no_options
   only_satellite: '"Real home internet — not satellite. Unlimited data, low latency, and it works in the rain."',
   no_cable_fiber: '"You finally have a real option. Not satellite, not hotspot — real dedicated home internet."',
+  cell_hotspot_only: '"No more draining your phone data. Real home internet, unlimited, dedicated to your house."',
+  dsl_only: '"You\'re finally off DSL. Real speeds, real reliability — not technology from 20 years ago."',
   been_searching: '"After years of looking, you\'ve got reliable internet that actually works. And the price never changes."',
   // data_caps
   throttled_after_limit: '"Stream all day, game all night, work from home all week — your speed never drops because you \'used too much.\' There\'s no cap to hit."',
@@ -2772,7 +2796,11 @@ const REFLECT_MAP = {
   keeps_dropping: function() {
     var impacts = state.pain_impacts || [];
     var r = 'the internet keeps dropping on you';
-    if (impacts.includes('evening_slowdown')) r = 'it slows way down every evening';
+    if (impacts.includes('drops_streaming')) r = 'the internet cuts out in the middle of your shows';
+    else if (impacts.includes('drops_gaming')) r = 'you keep getting kicked out of games';
+    else if (impacts.includes('drops_wfh')) r = 'your work calls keep disconnecting';
+    else if (impacts.includes('drops_multiple')) r = 'it dies when everyone gets online';
+    else if (impacts.includes('evening_slowdown')) r = 'it slows way down every evening';
     else if (impacts.includes('random_outages')) r = 'you\'re dealing with random outages that last hours';
     else if (impacts.includes('att_air_drops')) r = 'your AT&T Air keeps cutting out';
     return r;
@@ -3312,20 +3340,20 @@ function getRecommendedSubs() {
   var multi = state.household_multi;
   var rec = [];
 
-  if (usage.includes('streaming')) rec.push('evening_slowdown', 'cant_stream', 'streaming_buffer');
-  if (usage.includes('gaming')) rec.push('evening_slowdown', 'gaming_lag');
-  if (usage.includes('wfh')) rec.push('wfh_struggles', 'upload_terrible', 'video_call_freeze');
-  if (usage.includes('browsing')) rec.push('speed_fraction', 'multiple_devices_slow', 'loading_forever');
+  if (usage.includes('streaming')) rec.push('evening_slowdown', 'cant_stream', 'streaming_buffer', 'drops_streaming', 'slow_streaming', 'quality_drops');
+  if (usage.includes('gaming')) rec.push('evening_slowdown', 'gaming_lag', 'drops_gaming', 'gaming_stutter');
+  if (usage.includes('wfh')) rec.push('wfh_struggles', 'upload_terrible', 'video_call_freeze', 'drops_wfh', 'video_call_buffer');
+  if (usage.includes('browsing')) rec.push('speed_fraction', 'multiple_devices_slow', 'loading_forever', 'slow_downloads');
 
   // Multi-user household → prioritize multi-device sub-options
   if (multi) rec.push('multiple_devices_slow', 'evening_slowdown');
 
   if (pains.includes('too_expensive')) rec.push('promo_expired', 'hidden_fees', 'hundred_plus');
-  if (pains.includes('keeps_dropping')) rec.push('random_outages');
-  if (pains.includes('too_slow')) rec.push('speed_fraction', 'multiple_devices_slow');
-  if (pains.includes('buffering')) rec.push('streaming_buffer', 'quality_drops');
+  if (pains.includes('keeps_dropping')) rec.push('random_outages', 'drops_streaming', 'drops_gaming', 'drops_wfh', 'drops_multiple');
+  if (pains.includes('too_slow')) rec.push('speed_fraction', 'multiple_devices_slow', 'slow_streaming', 'slow_downloads');
+  if (pains.includes('buffering')) rec.push('streaming_buffer', 'quality_drops', 'gaming_stutter', 'video_call_buffer');
   if (pains.includes('bill_keeps_changing')) rec.push('surprise_fees', 'rate_creep');
-  if (pains.includes('storms')) rec.push('rain_outages', 'storm_hours_down');
+  if (pains.includes('storms')) rec.push('rain_outages', 'light_rain', 'storm_hours_down');
   if (pains.includes('data_caps')) rec.push('throttled_after_limit', 'cant_stream');
   if (pains.includes('laggy')) rec.push('gaming_lag', 'video_call_freeze');
   if (pains.includes('bad_service')) rec.push('long_hold_times', 'no_resolution');
@@ -3440,15 +3468,23 @@ var subPhrases = {
   // keeps_dropping
   evening_slowdown: { issue:'it slows way down every evening' },
   random_outages: { issue:'you get random multi-hour outages' },
+  drops_streaming: { issue:'the internet cuts out in the middle of your shows' },
+  drops_gaming: { issue:'you keep getting kicked out of games' },
+  drops_wfh: { issue:'your work calls keep disconnecting' },
+  drops_multiple: { issue:'it dies when everyone gets online' },
   att_air_drops: { issue:'your AT&T Air/5G keeps cutting out' },
   // too_slow
   speed_fraction: { issue:'you\'re getting a fraction of the speed you were promised' },
   upload_terrible: { issue:'your upload speed is terrible' },
   multiple_devices_slow: { issue:'it crawls when multiple devices are on' },
   wfh_struggles: { issue:'you keep freezing on work calls' },
+  slow_streaming: { issue:'you can\'t even stream in HD' },
+  slow_downloads: { issue:'downloads take forever' },
   // buffering
   streaming_buffer: { issue:'your shows keep buffering' },
   quality_drops: { issue:'the video quality keeps dropping to blurry' },
+  gaming_stutter: { issue:'your games keep freezing and rubber-banding' },
+  video_call_buffer: { issue:'your video calls keep freezing up' },
   music_skips: { issue:'your music and audio keeps cutting out' },
   loading_forever: { issue:'pages take forever to load' },
   // bill_keeps_changing
@@ -3456,11 +3492,15 @@ var subPhrases = {
   rate_creep: { issue:'the rate keeps going up every year' },
   // storms
   rain_outages: { issue:'the internet dies every time it rains' },
+  light_rain: { issue:'even light rain kills your internet' },
   storm_hours_down: { issue:'it takes hours to come back after storms' },
+  wind_outages: { issue:'wind knocks out your connection' },
   seasonal_issues: { issue:'it\'s worse in certain seasons' },
   // no_options
   only_satellite: { issue:'satellite is your only option out here' },
   no_cable_fiber: { issue:'cable and fiber don\'t serve your address' },
+  cell_hotspot_only: { issue:'you\'re stuck using your phone as your internet' },
+  dsl_only: { issue:'all you can get is old DSL' },
   been_searching: { issue:'you\'ve been looking for something better for years' },
   // data_caps
   throttled_after_limit: { issue:'hitting the cap and getting throttled' },
@@ -4942,6 +4982,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.10.4', date:'2026-03-27', changes:['Update: keeps_dropping 3→7 subs (streaming/gaming/wfh/multi-device)','Update: storms 3→5 subs (light rain, wind)','Update: buffering 4→6 subs (gaming stutter, video call freeze)','Update: too_slow 4→6 subs (can\'t stream HD, slow downloads)','Update: no_options 3→5 subs (phone hotspot, old DSL)','Update: all new subs wired into subPhrases, futureStates, REFLECT_MAP, getRecommendedSubs'] },
   { ver:'v5.10.3', date:'2026-03-27', changes:['Fix: trigger responses key mismatch — all 9 pills now show responses','Fix: Step 2 hints now household-aware (single vs multi-user)','Fix: Step 1 probe text uses household context (you/you two/you guys)','Fix: recommended subs highlight multi-device options for multi-user households','Update: Steps 1-3 notes shortened — less coach-speak, more concise'] },
   { ver:'v5.10.2', date:'2026-03-27', changes:['Remove: "Ask: what\'s keeping it from a 10?" static text (Evan annotation)','Update: Step 2 "Get Specific" now references usage context + pain combo','Update: Step 3 deepener opening personalized by household size','Remove: Free TV Service benefit weave from buffering pain','Remove: Local San Antonio Support weave (hidden pending redesign)','Update: Value Match bridge split into reflect → pause → flip format'] },
   { ver:'v5.10.1', date:'2026-03-26', changes:['Update: shorten recording disclosure script (Evan feedback)','Fix: pain tiles reordered by actual transcript frequency (45%→5%)','Update: too_expensive empathy shortened — removed "not getting money\'s worth"','Remove: all daily_drops references (deprecated sub-option)','Feature: Q2 grayed out when "Whole household" or "Partner" already selected in Opening','Feature: spouse objection auto-highlighted when DM=spouse and Objection clicked','Fix: RECOMMENDED badge syncs with auto-recommendation on plan select + init','Fix: ROI script uses "full household" / "you and your partner" instead of raw number'] },
@@ -5195,7 +5236,7 @@ function exportAnnotations() {
   }
   var data = {
     tool: 'Alamo Broadband Sales Intelligence',
-    version: 'v5.10.3',
+    version: 'v5.10.4',
     exportDate: new Date().toISOString(),
     exportedBy: state.team_member || 'Unknown',
     totalAnnotations: devAnnotations.length,
@@ -6247,9 +6288,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.3') {
+  if (annotationVer !== 'v5.10.4') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.3');
+    localStorage.setItem('alamo_annotation_version', 'v5.10.4');
   }
 
   // v5.10: Restore dev mode if previously unlocked
