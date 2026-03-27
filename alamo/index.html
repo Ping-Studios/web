@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.10.9</title>
+<title>Alamo Broadband — Sales Intelligence v5.11.1</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -926,7 +926,7 @@ textarea:focus { border-color: var(--accent); }
       "Hey, is this <span class="var" data-var="lead_name">[Name]</span>?" <span class="coaching">Wait for confirmation.</span>
     </div>
     <div class="script-block">
-      "Hey <span class="var" data-var="lead_name">[Name]</span>, it's <span class="var" data-var="team_member">[Your Name]</span> from Alamo Broadband. You were looking into internet options at <span class="var" data-var="lead_address">[Address]</span> recently, right?" <span class="coaching">Wait for confirmation.</span>
+      "Hey <span class="var" data-var="lead_name">[Name]</span>, it's <span class="var" data-var="team_member">[Your Name]</span> at Alamo Broadband. You were looking for better internet at <span class="var" data-var="lead_address">[Address]</span>, right?" <span class="coaching">Wait for confirmation.</span>
     </div>
     <div class="script-block">
       "Awesome. Call is recorded &mdash; just a few quick questions so I can match you with the right plan. Sound good?<br><br>
@@ -937,11 +937,12 @@ textarea:focus { border-color: var(--accent); }
   <!-- INBOUND SCRIPT (Standard mode) -->
   <div id="script-opening-inbound" class="hidden standard-only" style="margin-top:16px">
     <div class="script-block">
-      "Thanks for calling Alamo Broadband, this is <span class="var" data-var="team_member">[Your Name]</span> on a recorded line. Who do I have the pleasure of speaking with today?"
-      <span class="coaching">Get their name, then: "And what address are we looking at service for?"</span>
+      "Thank you for calling Alamo Broadband. This is <span class="var" data-var="team_member">[Your Name]</span>. How may I help you?"
+      <span class="coaching">They'll say they're looking for service. Get their name + address.</span>
     </div>
     <div class="script-block">
-      "Great! So I'm just going to ask you a few questions to make sure the plan we recommend isn't too much or too little for what you need. Sound good?<br><br>
+      "Great, I'm just going to ask you a few questions so I can match you with the right plan. Sound good?<br><br>
+      Awesome. Call is recorded.<br><br>
       So what do you use the internet for most &mdash; streaming, gaming, working from home?"
     </div>
   </div>
@@ -1222,6 +1223,7 @@ textarea:focus { border-color: var(--accent); }
           <div class="pill" onclick="setSpouseFeeling(this,'happy')">Happy with current</div>
           <div class="pill" onclick="setSpouseFeeling(this,'unaware')">Unaware of issues</div>
           <div class="pill" onclick="setSpouseFeeling(this,'on_board')">On board to switch</div>
+          <div class="pill" onclick="setSpouseFeeling(this,'skeptical')">Skeptical of us</div>
         </div>
         <input type="text" id="inp-dm-inline-feeling" placeholder="Notes &mdash; what did they say?" oninput="updateState('spouse_feeling',this.value)" style="font-size:12px">
       </div>
@@ -1256,6 +1258,9 @@ textarea:focus { border-color: var(--accent); }
     <div id="mining-interest-interested" class="hidden" style="margin-top:12px">
       <div class="script-block" style="border-left-color:var(--success)">
         "Great! Let me learn a bit more about what you're dealing with so I can recommend the right plan."
+      </div>
+      <div class="mining-coach-note" style="margin-top:8px">
+        <strong>Call warming up?</strong> If they're engaging and asking questions, switch to Standard mode for the full pitch &mdash; Settings (gear icon) &rarr; Mode toggle. Standard gives you full pain deepener, Paint the Picture, and all 8 closing techniques.
       </div>
       <button class="next-btn" onclick="scrollToSection('sec-pain')">Continue to Pain Discovery &darr;</button>
     </div>
@@ -1494,6 +1499,10 @@ textarea:focus { border-color: var(--accent); }
       <button class="resp-btn neutral" onclick="setAnchorResponse(this,'still_hesitant')">Still Hesitant</button>
       <button class="resp-btn objection" onclick="setAnchorResponse(this,'hard_no')">Hard No &mdash; Set Follow-Up</button>
     </div>
+    <div id="still-hesitant-coach" class="hidden" style="margin-top:10px;padding:10px 12px;background:var(--warning-dim);border:1px solid var(--warning);border-radius:var(--radius)">
+      <div style="font-size:11px;font-weight:700;color:var(--warning);margin-bottom:4px">ANCHOR DIDN'T CLOSE &mdash; PIVOT</div>
+      <div style="font-size:12px;color:var(--text-secondary);line-height:1.5">Don't redeploy the 30-day guarantee &mdash; they've heard it. Try a different angle below: <strong>#4 Tentative Appointment</strong> (most common win), <strong>#7 Month-to-Month</strong> (removes all commitment), <strong>#5 Site Survey</strong> (equipment doubters).</div>
+    </div>
   </div>
 
   <!-- Spouse Close — conditional: shown when DM = spouse AND close1 = hesitant or objection -->
@@ -1569,10 +1578,13 @@ textarea:focus { border-color: var(--accent); }
 
       <div style="margin-bottom:12px">
         <div style="font-size:12px;font-weight:700;color:var(--warning);margin-bottom:4px">8. SAVINGS MATH CLOSE</div>
-        <div class="script-block" style="border-left-color:var(--warning)">
+        <div class="script-block" id="close8-savings-block" style="border-left-color:var(--warning)">
           "You're paying $<span class="var" data-var="current_price">[current]</span> now. Our plan is $<span class="var" data-var="plan_price">[plan]</span>. That's $<span id="close-savings-diff">__</span> savings per month, $<span id="close-savings-annual">__</span> per year. And the price never goes up. The math just works."
         </div>
-        <div class="coach-note" style="margin-top:4px">Best for: price shoppers, analytical buyers. Let the numbers do the selling.</div>
+        <div class="script-block hidden" id="close8-value-block" style="border-left-color:var(--warning)">
+          "Here's how I'd look at it &mdash; you're getting unlimited data, free TV service, and a price that's locked forever. <span class="var" data-var="current_provider">[Provider]</span> WILL raise your rate &mdash; they always do. When that bill goes up in 6 or 12 months, you'll be glad you made the switch now."
+        </div>
+        <div class="coach-note" style="margin-top:4px">Best for: price shoppers, analytical buyers. When plan costs more than current, pivot to value + rate-hike framing.</div>
       </div>
 
     </div>
@@ -1783,6 +1795,11 @@ textarea:focus { border-color: var(--accent); }
       <div class="pill" onclick="setProperty(this,'home_type','townhouse')">Townhouse</div>
     </div>
 
+    <div id="manufactured-lot-note" class="hidden" style="margin-top:8px;padding:10px 12px;background:var(--warning-dim);border:1px solid var(--warning);border-radius:var(--radius)">
+      <div style="font-size:11px;font-weight:700;color:var(--warning);margin-bottom:4px">MANUFACTURED HOME &mdash; FLAG FOR INSTALL TEAM</div>
+      <div style="font-size:12px;color:var(--text-secondary);line-height:1.5">&bull; Tripod mount &mdash; no roof penetration needed<br>&bull; If in a mobile home park, lot owner / park manager approval may be required<br>&bull; Ask: <em>"Do you own the lot or rent it from the park?"</em></div>
+    </div>
+
     <div id="story-question" style="margin-top:12px">
       <div class="script-block" style="font-size:13px">
         "One story or two?"
@@ -1890,6 +1907,22 @@ textarea:focus { border-color: var(--accent); }
     <div class="pill" onclick="setDisposition(this,'do_not_contact')">Do Not Contact</div>
     <div class="pill" onclick="setDisposition(this,'marketing_call')">Marketing Call/Number</div>
     <div class="pill" onclick="setDisposition(this,'not_a_fit')" style="border-color:var(--text-muted)">Not a Fit</div>
+  </div>
+
+  <!-- Standard mode callback date/time (v5.11.0) -->
+  <div id="standard-callback-row" class="hidden standard-only" style="margin-top:10px;margin-bottom:4px;padding:12px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius)">
+    <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:6px">SCHEDULE CALLBACK</div>
+    <div class="script-block" style="margin:0 0 8px 0">"When would be a good time for me to call you back?"</div>
+    <div style="display:flex;gap:12px;align-items:center">
+      <div class="input-row" style="margin:0;flex:1">
+        <label>Date</label>
+        <input type="date" id="inp-standard-callback-date" oninput="updateState('callback_date',this.value)">
+      </div>
+      <div class="input-row" style="margin:0;flex:1">
+        <label>Time</label>
+        <input type="text" id="inp-standard-callback-time" placeholder="e.g. 2:00 PM" oninput="updateState('callback_time',this.value)">
+      </div>
+    </div>
   </div>
 
   <!-- Mining mode dispositions -->
@@ -2196,8 +2229,7 @@ const painTree = {
       { id:'hidden_fees', label:'Hidden fees & surcharges', quote:'"My bill has all these charges I never agreed to"' },
       { id:'bundle_confusion', label:'Bundle pricing confusion', quote:'"I can\'t tell what I\'m paying for internet vs. TV"' },
       { id:'loyal_customer_penalty', label:'Loyal customer paying more', quote:'"New customers get a better deal than me"' },
-      { id:'locked_in_satellite', label:'Locked in satellite contract', quote:'"I\'m stuck in a 2-year contract with Viasat"' },
-      { id:'satellite_not_worth', label:'Not worth what I pay', quote:'"For what I\'m paying I should have way better speeds"' }
+      { id:'not_worth_it', label:'Not worth what I pay', quote:'"For what I\'m paying I should have way better service"' }
     ],
     deepener: ['"So what\'s going on with the bill? Walk me through it."', '"Have you called them about it?"', '"What are you paying now vs. what you signed up for?"']
   },
@@ -2727,8 +2759,7 @@ const futureStates = {
   hidden_fees: '"One price. No equipment rental, no broadcast fee, no hidden taxes that double your bill. What I quote you is what you pay."',
   bundle_confusion: '"One simple bill. Internet. That\'s it. No bundle confusion, no hidden fees, no mystery charges."',
   loyal_customer_penalty: '"With us, there are no tiers. The price you get on day one is the same price every customer pays. No loyalty penalty."',
-  locked_in_satellite: '"No more being trapped. Month-to-month, cancel anytime. You stay because you want to."',
-  satellite_not_worth: '"You\'re finally getting what you\'re paying for. Real speeds, unlimited data, and it works in the rain."',
+  not_worth_it: '"You\'re finally getting what you\'re paying for. Real speeds, unlimited data, and reliable service."',
   // keeps_dropping
   evening_slowdown: '"It\'s 8 PM, everyone\'s home, the kids are streaming, you\'re watching your show — and it just works. Same speed at 8 PM as noon."',
   random_outages: '"No more losing internet for hours and wondering when it\'s coming back. 99.99% uptime — it just stays on."',
@@ -2793,7 +2824,7 @@ const REFLECT_MAP = {
     if (impacts.includes('promo_expired')) r = 'your promo expired and now you\'re paying way more than you signed up for';
     else if (impacts.includes('hidden_fees')) r = 'hidden fees keep adding up on your bill';
     else if (impacts.includes('loyal_customer_penalty')) r = 'new customers get better deals while you\'re paying full price';
-    else if (impacts.includes('locked_in_satellite')) r = 'you\'re stuck in a satellite contract';
+    else if (impacts.includes('not_worth_it')) r = 'you\'re not getting what you\'re paying for';
     return r;
   },
   keeps_dropping: function() {
@@ -2923,6 +2954,9 @@ const objections = [
       if (feeling === 'frustrated' || feeling === 'on_board') {
         return '"You know, you mentioned earlier that '+(state.spouse_name||'your spouse')+' is frustrated with the internet too. So really, you\'d both be getting what you want. And with the 30-day money-back guarantee, you\'re not committing to anything — you\'re just testing it. If either of you doesn\'t love it, we come get the equipment and refund every penny."';
       }
+      if (feeling === 'skeptical') {
+        return '"That\'s completely fair — and honestly, that\'s the right attitude. Here\'s what I\'d tell '+(state.spouse_name||'them')+': we have 4.6 stars on Google, we\'re a local San Antonio company, and there\'s a 30-day money-back guarantee. We\'re not asking for trust on faith — we\'re asking for a 30-day test. Full refund if it doesn\'t deliver. And you don\'t even cancel '+(state.current_provider||'your current provider')+' first — run both side by side."';
+      }
       if (feeling === 'doesnt_care' || feeling === 'happy' || feeling === 'unaware') {
         return '"What if we get you set up and you both get to test it for 30 days? That way you\'re not asking for permission — you\'re bringing them a solution to try. If either of you doesn\'t love it, full refund."';
       }
@@ -2976,7 +3010,7 @@ const objections = [
     id:'send_contract_first', label:'"Can you send me the contract/agreement first?"',
     validate:'"That\'s a smart request — you want to know exactly what you\'re signing up for."',
     isolate:'"Are you looking at the terms and conditions specifically, or just the pricing details?"',
-    reframe:'"I can send you all the pricing details and plan information by email right now. The full terms and conditions are presented electronically on the day of installation — our technician walks you through everything before any work begins. And remember, you have 30 days to cancel for a full refund."',
+    reframe:'"All of our plan pricing is at alamobroadband.com — you can review everything before the appointment. Our technician walks you through the full terms before any work begins, so you see it all in advance. And remember, you have 30 days to cancel for a full refund — no questions asked."',
     reclose:'"Let me get your email and send that over. In the meantime, would you like to hold a tentative spot on the calendar? No obligation."'
   },
   {
@@ -3102,6 +3136,7 @@ const competitors = {
     response: '"I hear that constantly. HughesNet advertises certain speeds but the reality is very different because of satellite limitations. Many of our customers who switched from HughesNet say it\'s like night and day. Our signal only travels a few miles from a local tower, not 22,000 miles to space."',
     table: [
       ['Technology', 'Satellite (22,000 mi)', 'Ground tower (few miles)'],
+      ['Weather Impact', 'Significant — rain/storms', 'Minimal — local tower'],
       ['Real Speeds', 'Often 1-4 Mbps actual', 'Consistent performance'],
       ['Latency', '600ms+', '~20ms'],
       ['Price', '$64-170/mo', 'Starting at $59.95/mo'],
@@ -3470,8 +3505,7 @@ var subPhrases = {
   hidden_fees: { issue:'hidden fees keep adding up on your bill' },
   bundle_confusion: { issue:'the bundle pricing is confusing and you don\'t know what you\'re paying' },
   loyal_customer_penalty: { issue:'new customers get better deals while you\'re paying full price' },
-  locked_in_satellite: { issue:'locked into a contract you can\'t get out of' },
-  satellite_not_worth: { issue:'not getting what you\'re paying for' },
+  not_worth_it: { issue:'not getting what you\'re paying for' },
   // keeps_dropping
   evening_slowdown: { issue:'it slows way down every evening' },
   random_outages: { issue:'you get random multi-hour outages' },
@@ -3618,7 +3652,7 @@ function renderPainDeepener() {
   if (allIssues.length) {
     var issueStr = allIssues.slice(0, 3).join(', and ');
     if (isPriceOnly) {
-      openingQ = '"So ' + (hhPrefix || '') + issueStr + ' — walk me through what\'s going on with the bill."';
+      openingQ = '"So ' + (hhPrefix || '') + issueStr + ' — that\'s no fun."';
     } else {
       openingQ = hhPrefix
         ? '"So ' + hhPrefix + issueStr + ' — what does that actually look like day to day?"'
@@ -4114,6 +4148,17 @@ function setAnchorResponse(el, response) {
   updateChecklist();
   if (response === 'yes') {
     setTimeout(function() { scrollToSection('sec-schedule'); }, 500);
+  } else if (response === 'still_hesitant') {
+    // v5.11.0: Expand closing techniques instead of dead-ending at referral
+    var closes = document.getElementById('advanced-closes');
+    var icon = document.getElementById('advanced-closes-icon');
+    if (closes && closes.classList.contains('hidden')) {
+      closes.classList.remove('hidden');
+      if (icon) icon.style.transform = 'rotate(180deg)';
+    }
+    var coachEl = document.getElementById('still-hesitant-coach');
+    if (coachEl) coachEl.classList.remove('hidden');
+    setTimeout(function() { scrollToSection('sec-close'); }, 300);
   } else {
     setTimeout(function() { scrollToSection('sec-referral'); }, 500);
   }
@@ -4994,6 +5039,8 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.11.1', date:'2026-03-27', changes:['Update: outbound opener — "at Alamo Broadband" + "looking for better internet"','Update: inbound script — natural flow: greeting → get name/address → "call is recorded" after Sound good','Remove: satellite subs from too_expensive (locked_in_satellite removed, satellite_not_worth → not_worth_it)','Update: price-only deepener "walk me through what\'s going on with the bill" → "that\'s no fun"'] },
+  { ver:'v5.11.0', date:'2026-03-27', changes:['Fix: "Still Hesitant" after anchor close now expands Closing Techniques + shows pivot coaching instead of routing to Referral','Fix: Savings Math Close #8 swaps to value-play script when plan costs more than current price (no more broken dashes)','Fix: send_contract_first reframe removes unfulfillable "send by email right now" promise — redirects to alamobroadband.com','Feature: HughesNet competitor card now includes Weather Impact row (matches Viasat card)','Feature: Mining → Standard promotion prompt added to "Interested" response','Feature: "Skeptical of us" spouse feeling state added (6th option) with social-proof reframe in handler + spouse ammo','Feature: Standard mode "Requested Call-Back" now shows date/time capture (parity with Mining mode)','Feature: Manufactured Home selection triggers lot-owner approval flag in Post-Close Details'] },
   { ver:'v5.10.9', date:'2026-03-27', changes:['Remove: "$100+ monthly for satellite" sub-option + all references','Fix: "install team" → "tech" in Post-Close (missed 2x)','Fix: "Sound good?" moved into ROI pitch quote (not separate block)','Fix: "Alright, let\'s get you on the calendar" (missed 2x)','Fix: install_date renders as "March 26" not "2026-03-26"','Update: "Is that a house or something else?" replaces listing types','Update: "Mobile Home" pill → "Manufactured Home"','Feature: story question grayed out when Manufactured Home selected'] },
   { ver:'v5.10.8', date:'2026-03-27', changes:['Fix: FLIP_MAP too_slow removes "whole family" — now household-neutral','Fix: ROI savings script removes hardcoded provider price comparison','Fix: Don\'t Cancel "run us both" instead of "run them both"','Update: trial close "Not bad, right?" replaces "Does that sound like what you\'re looking for?"','Update: schedule script tightened','Update: confirm install tightened','Update: referral ask tightened'] },
   { ver:'v5.10.7', date:'2026-03-27', changes:['Fix: Step 3 deepener now updates when Step 2 sub-options are clicked','Priority: sub-option-specific questions take precedence over generic scenario when subs are selected'] },
@@ -5253,7 +5300,7 @@ function exportAnnotations() {
   }
   var data = {
     tool: 'Alamo Broadband Sales Intelligence',
-    version: 'v5.10.9',
+    version: 'v5.11.1',
     exportDate: new Date().toISOString(),
     exportedBy: state.team_member || 'Unknown',
     totalAnnotations: devAnnotations.length,
@@ -5367,14 +5414,18 @@ function setProperty(el, key, val) {
   // Gray out story question for manufactured homes (single story assumed)
   if (key === 'home_type') {
     var storyQ = document.getElementById('story-question');
+    var lotNote = document.getElementById('manufactured-lot-note');
     if (storyQ) {
       if (val === 'manufactured') {
         storyQ.style.opacity = '0.4';
         storyQ.style.pointerEvents = 'none';
         state.stories = '1';
+        // v5.11.0: Show lot-owner approval flag for manufactured homes
+        if (lotNote) lotNote.classList.remove('hidden');
       } else {
         storyQ.style.opacity = '1';
         storyQ.style.pointerEvents = 'auto';
+        if (lotNote) lotNote.classList.add('hidden');
       }
     }
   }
@@ -5399,6 +5450,9 @@ function setDisposition(el, value) {
   if (sendInfoRow) sendInfoRow.classList.toggle('hidden', value !== 'send_info');
   var callbackRow = document.getElementById('mining-callback-row');
   if (callbackRow) callbackRow.classList.toggle('hidden', value !== 'mining_callback');
+  // v5.11.0: Standard mode callback date/time
+  var standardCallbackRow = document.getElementById('standard-callback-row');
+  if (standardCallbackRow) standardCallbackRow.classList.toggle('hidden', value !== 'callback');
   checkState.disposition = 'completed';
   saveToLocalStorage();
   updateChecklist();
@@ -6061,6 +6115,11 @@ function renderSpouseAmmo() {
     lines.push('"You mentioned earlier that ' + spouseName + ' is ' + (feeling === 'frustrated' ? 'frustrated with the internet too' : 'on board to switch') + '. So really, you\'d both be getting what you want here."');
     lines.push('"And with the 30-day money-back guarantee, you\'re not making a permanent decision &mdash; you\'re just testing it. If either of you doesn\'t love it, we come get the equipment and refund every penny. You\'re not even canceling ' + (state.current_provider || 'your current provider') + ' &mdash; you run both side by side and decide."');
     lines.push('"So let\'s get you on the calendar &mdash; what works better, mornings or afternoons?"');
+  } else if (feeling === 'skeptical') {
+    // v5.11.0: Skeptical spouse needs social proof, not the 30-day pitch
+    lines.push('"Here\'s what I\'d say to ' + spouseName + ': We have 4.6 stars on Google from real San Antonio customers. We\'ve been serving this area for years. We\'re not a random company &mdash; we\'re local."');
+    lines.push('"And the 30-day money-back guarantee means they\'re not trusting us on faith &mdash; they\'re running a test. Full refund if it doesn\'t deliver. You don\'t even cancel ' + (state.current_provider || 'your current provider') + ' first &mdash; run both side by side for 30 days."');
+    lines.push('"What I\'d suggest: schedule a site survey so ' + spouseName + ' can meet the tech in person. That face-to-face builds more trust than anything I can say on the phone."');
   } else if (feeling === 'happy' || feeling === 'doesnt_care' || feeling === 'unaware') {
     lines.push('"Here\'s the thing &mdash; you don\'t need ' + spouseName + '\'s permission to TEST something. This is a 30-day trial. No contract, no commitment. If either of you doesn\'t like it, full refund."');
     lines.push('"And at ' + price + '/month with the price locked forever, the worst case is you tried something better and it didn\'t work out. That\'s it."');
@@ -6093,6 +6152,8 @@ function renderSpouseScheduleNote() {
     var feeling = state.spouse_feeling;
     if (feeling === 'frustrated' || feeling === 'on_board') {
       text.innerHTML = 'Since ' + spouseName + ' is ' + (feeling === 'frustrated' ? 'frustrated too' : 'on board') + ', schedule when convenient. Both are aligned.';
+    } else if (feeling === 'skeptical') {
+      text.innerHTML = 'Schedule the site survey &mdash; ' + spouseName + ' can meet the tech in person. Face-to-face beats a phone pitch for trust-resistant spouses.';
     } else if (feeling === 'happy' || feeling === 'doesnt_care' || feeling === 'unaware') {
       text.innerHTML = 'Try to schedule when ' + spouseName + ' will be home so they can see the install and meet the tech. "Would it help if we came when you\'re both there?"';
     } else {
@@ -6107,15 +6168,20 @@ function renderSpouseScheduleNote() {
 function renderCloseSavings() {
   var diffEl = document.getElementById('close-savings-diff');
   var annualEl = document.getElementById('close-savings-annual');
+  var savingsBlock = document.getElementById('close8-savings-block');
+  var valueBlock = document.getElementById('close8-value-block');
   if (!diffEl || !annualEl) return;
   if (state.current_price && state.plan_price) {
     var diff = state.current_price - state.plan_price;
     if (diff > 0) {
       diffEl.textContent = diff.toFixed(0);
       annualEl.textContent = (diff * 12).toFixed(0);
+      if (savingsBlock) savingsBlock.classList.remove('hidden');
+      if (valueBlock) valueBlock.classList.add('hidden');
     } else {
-      diffEl.textContent = '—';
-      annualEl.textContent = '—';
+      // v5.11.0: Plan costs more — swap to value-play script instead of broken dashes
+      if (savingsBlock) savingsBlock.classList.add('hidden');
+      if (valueBlock) valueBlock.classList.remove('hidden');
     }
   }
 }
@@ -6319,9 +6385,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.10.9') {
+  if (annotationVer !== 'v5.11.1') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.10.9');
+    localStorage.setItem('alamo_annotation_version', 'v5.11.1');
   }
 
   // v5.10: Restore dev mode if previously unlocked
