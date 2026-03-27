@@ -5080,6 +5080,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 
 var devChangelog = [
   { ver:'v5.11.4', date:'2026-03-27', changes:['Feature: Opening outbound script — Yes/No confirmation pills after "right?" — Yes reveals call-recorded script, No shows Facebook/Instagram memory jog','Fix: Price Lock weave shortened to "One big difference with us: the price I give you today never goes up. Period."','Fix: Closing Techniques reordered — #1 Tentative Appointment, #2 Month-to-Month, #3 Site Survey moved to top (best for Still Hesitant leads); original #1-3 become #4-6','Fix: Still Hesitant coach note updated to reference new numbers (#1/#2/#3 instead of #4/#7/#5)','Fix: Anchor close script now uses subPhrases natural language instead of raw pain label (e.g. "not getting what you\'re paying for" instead of "not worth what I pay")'] },
+  { ver:'v5.11.5', date:'2026-03-27', changes:['Update: serviceability webhook URL updated to new Make.com endpoint'] },
   { ver:'v5.11.4', date:'2026-03-27', changes:['Fix: anchor close script — removed awkward painPhrase insertion, now just uses score + provider'] },
   { ver:'v5.11.3', date:'2026-03-27', changes:['Fix: removed "Overpaying for satellite?" from Step 2 hint text (both single + multi maps)'] },
   { ver:'v5.11.2', date:'2026-03-27', changes:['Fix: removed ALL 6 remaining "walk me through" instances across all deepener paths','Fix: referral "Not Right Now" now scrolls to "No worries" response instead of skipping past it'] },
@@ -5424,7 +5425,7 @@ function checkServiceability() {
   resultEl.style.border = '1px solid var(--accent)';
   resultEl.textContent = 'Checking availability...';
 
-  fetch('https://hook.us1.make.com/pv6il7m6t9pcrelbkoyvdi8g1331xjf9', {
+  fetch('https://hook.us1.make.com/jmw88osal7aupih21toxs65oqq2vel36', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ address: address, city: city, state: st, zip: zip })
