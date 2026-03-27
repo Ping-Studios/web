@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alamo Broadband — Sales Intelligence v5.11.1</title>
+<title>Alamo Broadband — Sales Intelligence v5.11.2</title>
 <style>
 /* ===== THEMES ===== */
 :root {
@@ -2231,7 +2231,7 @@ const painTree = {
       { id:'loyal_customer_penalty', label:'Loyal customer paying more', quote:'"New customers get a better deal than me"' },
       { id:'not_worth_it', label:'Not worth what I pay', quote:'"For what I\'m paying I should have way better service"' }
     ],
-    deepener: ['"So what\'s going on with the bill? Walk me through it."', '"Have you called them about it?"', '"What are you paying now vs. what you signed up for?"']
+    deepener: ['"So what\'s going on with the bill?"', '"Have you called them about it?"', '"What are you paying now vs. what you signed up for?"']
   },
   bill_keeps_changing: {
     label: 'Bill keeps changing',
@@ -3572,7 +3572,7 @@ function buildDynamicDeepener(painType, selectedSubs) {
   var issueStr = issues.length ? issues.join(' and ') : tree.label.toLowerCase();
 
   if (painType === 'too_expensive') {
-    questions.push('"So ' + (issues[0] || 'you\'re paying too much') + '? Walk me through that — what are you paying now?"');
+    questions.push('"So ' + (issues[0] || 'you\'re paying too much') + '? That\'s no fun. What are you paying now?"');
     questions.push('"And for that price, is the service at least good, or are you paying more AND dealing with problems?"');
   } else if (painType === 'keeps_dropping') {
     questions.push('"So the internet ' + issueStr + ' — and... how often is that happening?"');
@@ -3588,7 +3588,7 @@ function buildDynamicDeepener(painType, selectedSubs) {
     questions.push('"Is it worse at certain times of day?"');
     questions.push('"How long has that been going on?"');
   } else if (painType === 'bill_keeps_changing') {
-    questions.push('"So ' + (issues[0] || 'the bill keeps changing') + '? Walk me through that — what are you seeing on the bill?"');
+    questions.push('"So ' + (issues[0] || 'the bill keeps changing') + '? That\'s no fun. What are you seeing on the bill?"');
     questions.push('"Do you even know what you\'re paying for at this point?"');
   } else if (painType === 'storms') {
     questions.push('"So ' + issueStr + ' — how long does it typically take to come back?"');
@@ -3602,7 +3602,7 @@ function buildDynamicDeepener(painType, selectedSubs) {
     questions.push('"How bad is it — like unusable or just annoying?"');
     questions.push('"How long has that been going on?"');
   } else if (painType === 'bad_service') {
-    questions.push('"So ' + issueStr + ' — walk me through what happens when you try to get help."');
+    questions.push('"So ' + issueStr + ' — that\'s rough. What happens when you try to get help?"');
     questions.push('"How long have you been dealing with that?"');
   } else {
     return tree.deepener || [];
@@ -3664,9 +3664,9 @@ function renderPainDeepener() {
   } else {
     var painStr = painLabels.join(' and ');
     if (isPriceOnly) {
-      openingQ = '"So ' + (hhPrefix || 'you\'re dealing with ') + painStr + ' — what\'s going on? Walk me through it."';
+      openingQ = '"So ' + (hhPrefix || 'you\'re dealing with ') + painStr + ' — that\'s no fun."';
     } else {
-      openingQ = '"So ' + (hhPrefix || 'you\'re dealing with ') + painStr + ' — walk me through what that looks like on a typical day."';
+      openingQ = '"So ' + (hhPrefix || 'you\'re dealing with ') + painStr + ' — what does that look like day to day?"';
     }
   }
 
@@ -4687,10 +4687,14 @@ function setReferral(el, val) {
   setActiveResp(el);
   checkState.referral = 'completed';
   document.getElementById('referral-name-row').classList.toggle('hidden', val !== 'got_name');
-  document.getElementById('referral-no-row').classList.toggle('hidden', val !== 'not_now' && val !== 'skip');
+  var noRow = document.getElementById('referral-no-row');
+  noRow.classList.toggle('hidden', val !== 'not_now' && val !== 'skip');
   saveToLocalStorage();
   updateChecklist();
-  if (val !== 'got_name') setTimeout(function() { scrollToSection('sec-house'); }, 500);
+  // Scroll to the "No worries" response first, then auto-advance after a pause
+  if (val === 'not_now' || val === 'skip') {
+    noRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
 function setTimeSlot(el, slot) {
@@ -5039,6 +5043,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 ];
 
 var devChangelog = [
+  { ver:'v5.11.2', date:'2026-03-27', changes:['Fix: removed ALL 6 remaining "walk me through" instances across all deepener paths','Fix: referral "Not Right Now" now scrolls to "No worries" response instead of skipping past it'] },
   { ver:'v5.11.1', date:'2026-03-27', changes:['Update: outbound opener — "at Alamo Broadband" + "looking for better internet"','Update: inbound script — natural flow: greeting → get name/address → "call is recorded" after Sound good','Remove: satellite subs from too_expensive (locked_in_satellite removed, satellite_not_worth → not_worth_it)','Update: price-only deepener "walk me through what\'s going on with the bill" → "that\'s no fun"'] },
   { ver:'v5.11.0', date:'2026-03-27', changes:['Fix: "Still Hesitant" after anchor close now expands Closing Techniques + shows pivot coaching instead of routing to Referral','Fix: Savings Math Close #8 swaps to value-play script when plan costs more than current price (no more broken dashes)','Fix: send_contract_first reframe removes unfulfillable "send by email right now" promise — redirects to alamobroadband.com','Feature: HughesNet competitor card now includes Weather Impact row (matches Viasat card)','Feature: Mining → Standard promotion prompt added to "Interested" response','Feature: "Skeptical of us" spouse feeling state added (6th option) with social-proof reframe in handler + spouse ammo','Feature: Standard mode "Requested Call-Back" now shows date/time capture (parity with Mining mode)','Feature: Manufactured Home selection triggers lot-owner approval flag in Post-Close Details'] },
   { ver:'v5.10.9', date:'2026-03-27', changes:['Remove: "$100+ monthly for satellite" sub-option + all references','Fix: "install team" → "tech" in Post-Close (missed 2x)','Fix: "Sound good?" moved into ROI pitch quote (not separate block)','Fix: "Alright, let\'s get you on the calendar" (missed 2x)','Fix: install_date renders as "March 26" not "2026-03-26"','Update: "Is that a house or something else?" replaces listing types','Update: "Mobile Home" pill → "Manufactured Home"','Feature: story question grayed out when Manufactured Home selected'] },
@@ -5300,7 +5305,7 @@ function exportAnnotations() {
   }
   var data = {
     tool: 'Alamo Broadband Sales Intelligence',
-    version: 'v5.11.1',
+    version: 'v5.11.2',
     exportDate: new Date().toISOString(),
     exportedBy: state.team_member || 'Unknown',
     totalAnnotations: devAnnotations.length,
@@ -6385,9 +6390,9 @@ function init() {
 
   // v5.10: Clear implemented annotations on version bump
   var annotationVer = localStorage.getItem('alamo_annotation_version');
-  if (annotationVer !== 'v5.11.1') {
+  if (annotationVer !== 'v5.11.2') {
     localStorage.removeItem('alamo_dev_annotations');
-    localStorage.setItem('alamo_annotation_version', 'v5.11.1');
+    localStorage.setItem('alamo_annotation_version', 'v5.11.2');
   }
 
   // v5.10: Restore dev mode if previously unlocked
