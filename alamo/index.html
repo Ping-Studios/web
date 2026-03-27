@@ -1741,21 +1741,8 @@ textarea:focus { border-color: var(--accent); }
     </div>
 
     <!-- Install confirmation (default) -->
-    <div id="sched-confirm-install" style="margin-top:8px">
-      <div class="script-block" style="font-size:13px">
-        "Got you down for <span class="var" data-var="install_date">[date]</span>. Tech will call about 30 minutes before they arrive. Sound good?"
-      </div>
-      <div style="margin-top:6px;display:flex;flex-direction:column;gap:5px">
-        <div style="padding:7px 12px;background:var(--success-dim);border:1px solid var(--success);border-radius:var(--radius);font-size:12px">
-          <strong style="color:var(--success)">YES:</strong> "Perfect &mdash; you're all set. We'll send a confirmation. See you [date]!"
-        </div>
-        <div style="padding:7px 12px;background:var(--warning-dim);border:1px solid var(--warning);border-radius:var(--radius);font-size:12px">
-          <strong style="color:var(--warning)">HESITANT:</strong> "Totally get it &mdash; what's your concern? We can adjust the time or date, whatever works best."
-        </div>
-        <div style="padding:7px 12px;background:rgba(239,68,68,0.08);border:1px solid var(--danger);border-radius:var(--radius);font-size:12px">
-          <strong style="color:var(--danger)">OBJECTION:</strong> Use objection panel &rarr; address concern, then re-confirm the date.
-        </div>
-      </div>
+    <div id="sched-confirm-install" class="script-block" style="margin-top:8px;font-size:13px">
+      "Got you down for <span class="var" data-var="install_date">[date]</span>. Tech will call about 30 minutes before they arrive. Sound good?"
     </div>
     <!-- Site survey confirmation (hidden by default) -->
     <div id="sched-confirm-survey" class="hidden script-block" style="margin-top:8px;font-size:13px;border-left-color:var(--purple)">
@@ -1770,7 +1757,7 @@ textarea:focus { border-color: var(--accent); }
 
     <div style="margin-top:12px">
       <div class="response-group">
-        <button class="resp-btn positive" onclick="setScheduleResponse(this,'scheduled')">Scheduled!</button>
+        <button class="resp-btn positive" onclick="setScheduleResponse(this,'scheduled')">Yes</button>
         <button class="resp-btn neutral" onclick="setScheduleResponse(this,'hesitant')">Hesitant</button>
         <button class="resp-btn objection" onclick="setScheduleResponse(this,'objection')">Objection</button>
       </div>
@@ -5214,6 +5201,7 @@ var DEV_ANNOTATABLE_SELECTORS = [
 
 var devChangelog = [
   { ver:'v5.11.4', date:'2026-03-27', changes:['Feature: Opening outbound script — Yes/No confirmation pills after "right?" — Yes reveals call-recorded script, No shows Facebook/Instagram memory jog','Fix: Price Lock weave shortened to "One big difference with us: the price I give you today never goes up. Period."','Fix: Closing Techniques reordered — #1 Tentative Appointment, #2 Month-to-Month, #3 Site Survey moved to top (best for Still Hesitant leads); original #1-3 become #4-6','Fix: Still Hesitant coach note updated to reference new numbers (#1/#2/#3 instead of #4/#7/#5)','Fix: Anchor close script now uses subPhrases natural language instead of raw pain label (e.g. "not getting what you\'re paying for" instead of "not worth what I pay")'] },
+  { ver:'v5.11.10', date:'2026-03-27', changes:['Remove: Yes/Hesitant/Objection inline branches from sched-confirm-install (revert to plain script)','Update: Schedule response button "Scheduled!" → "Yes"'] },
   { ver:'v5.11.9', date:'2026-03-27', changes:['Remove: existing fiber connection question from housekeeping (annotation)','Update: sched-confirm-install now shows Yes/Hesitant/Objection inline response branches','Update: setup fee script now cohesive — installation free, first month due at install, router included, no contract, 30-day guarantee','Update: disposition pills — added Survey Scheduled, Rescheduled, Send Info to standard; added Rescheduled to mining'] },
   { ver:'v5.11.8', date:'2026-03-27', changes:['Fix: Finalize & Submit button now always visible in live modes (was never showing)','Feature: 3-type schedule toggle (Installation / Survey+Install / Site Survey) with correct time slots per type','Feature: Today\'s Commitment block in wrap-up (free install, no contract, 1st month due at install, router included + plan summary)','Feature: Offer badge row in Setup Fee section','Feature: Adult 18+ present question in housekeeping','Feature: New state fields: adult_present, offer_* (in JSON payload)'] },
   { ver:'v5.11.7', date:'2026-03-27', changes:['Feature: Mock Inbound + Mock Outbound mode buttons in header toggle — disables Finalize & Submit in training mode','Remove: red Mock Call Complete button replaced by purple training notice'] },
@@ -5483,7 +5471,7 @@ function exportAnnotations() {
   }
   var data = {
     tool: 'Alamo Broadband Sales Intelligence',
-    version: 'v5.11.9',
+    version: 'v5.11.10',
     exportDate: new Date().toISOString(),
     exportedBy: state.team_member || 'Unknown',
     totalAnnotations: devAnnotations.length,
