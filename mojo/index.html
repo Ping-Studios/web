@@ -2028,8 +2028,9 @@ textarea:focus { border-color: var(--accent); }
   </div>
 
   <div style="margin-top:16px">
-    <button class="complete-btn" id="finalize-btn" onclick="finalizeAndSubmit()">Finalize &amp; Submit &#10148;</button>
+    <button class="complete-btn" id="finalize-btn" onclick="finalizeAndSubmit()" style="display:none">Finalize &amp; Submit &#10148;</button>
     <div id="webhook-status" style="font-size:12px;margin-top:6px;display:none;padding:8px 12px;border-radius:var(--radius);font-weight:600"></div>
+    <button style="width:100%;padding:16px 24px;font-size:16px;font-weight:800;background:#e53e3e;color:#fff;border:none;border-radius:var(--radius-lg);cursor:pointer;text-transform:uppercase;letter-spacing:1px" onclick="this.textContent='Mock Call Complete!';this.style.background='#888';this.style.cursor='default'">Mock Call Complete</button>
     <button class="next-btn" style="width:100%;margin-top:12px;background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border)" onclick="newCall()">Start New Call</button>
   </div>
 </div>

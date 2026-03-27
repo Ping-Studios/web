@@ -2048,8 +2048,9 @@ textarea:focus { border-color: var(--accent); }
   </div>
 
   <div style="margin-top:16px">
-    <button class="complete-btn" id="finalize-btn" onclick="finalizeAndSubmit()">Finalize &amp; Submit &#10148;</button>
+    <button class="complete-btn" id="finalize-btn" onclick="finalizeAndSubmit()" style="display:none">Finalize &amp; Submit &#10148;</button>
     <div id="webhook-status" style="font-size:12px;margin-top:6px;display:none;padding:8px 12px;border-radius:var(--radius);font-weight:600"></div>
+    <button style="width:100%;padding:16px 24px;font-size:16px;font-weight:800;background:#e53e3e;color:#fff;border:none;border-radius:var(--radius-lg);cursor:pointer;text-transform:uppercase;letter-spacing:1px" onclick="this.textContent='Mock Call Complete!';this.style.background='#888';this.style.cursor='default'">Mock Call Complete</button>
     <button class="next-btn" style="width:100%;margin-top:12px;background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border)" onclick="newCall()">Start New Call</button>
   </div>
 </div>
@@ -3138,7 +3139,7 @@ const competitors = {
     response:'"US Cellular home internet is convenient — plug it in and go. The issue is it runs on the same towers as phone customers, and home internet gets deprioritized. So evenings, weekends, anytime the tower is busy, your speeds drop. And there\'s no guaranteed minimum speed. With us, you get a dedicated connection that doesn\'t compete with mobile users. Consistent performance all day. Try us 30 days."',
     table:[['Technology','Cellular (shared tower)','Fixed wireless (dedicated)'],['Priority','Deprioritized behind mobile','Dedicated connection'],['Speed guarantee','No minimum guaranteed','Consistent as quoted'],['Peak hours','Slows when tower is busy','Same speed 24/7'],['Upload','Typically very low','Strong upload for WFH'],['Contract','No contract','No contract'],['Monthly cost','$50/mo','Competitive, price locked'],['Guarantee','No guarantee','30-day money-back guarantee']]
   }
-};};
+};
 
 // ===== TRIGGER RESPONSES =====
 // v5.10.3: Keys aligned to pill onclick values
@@ -6057,6 +6058,18 @@ function openTechExplainer() {
 }
 
 // ===== ADVANCED CLOSES TOGGLE =====
+function toggleBusinessPlans() {
+  var el = document.getElementById('business-plans');
+  var btn = document.getElementById('business-plans-toggle');
+  if (el.classList.contains('hidden')) {
+    el.classList.remove('hidden');
+    if (btn) btn.textContent = 'Hide Business Plans';
+  } else {
+    el.classList.add('hidden');
+    if (btn) btn.textContent = 'Show Business Plans';
+  }
+}
+
 function toggleAdvancedCloses() {
   var el = document.getElementById('advanced-closes');
   var icon = document.getElementById('advanced-closes-icon');
