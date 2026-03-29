@@ -696,8 +696,10 @@ textarea:focus { border-color: var(--accent); }
 <!-- HEADER -->
 <div id="header">
   <button id="hamburger" onclick="toggleSidebar()">&#9776;</button>
-  <select id="client-selector" onchange="switchClient(this.value)" style="background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border);border-radius:var(--radius);padding:4px 6px;font-size:10px;cursor:pointer;display:none">
+  <select id="client-selector" onchange="switchClient(this.value)" style="background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border);border-radius:var(--radius);padding:4px 6px;font-size:10px;cursor:pointer">
     <option value="alamo">Alamo</option>
+    <option value="mojo">Mojo</option>
+    <option value="jcwifi">JC WiFi</option>
   </select>
   <div class="logo">ALAMO BROADBAND<span class="mode-badge" id="mode-badge">MINING</span></div>
   <div class="breadcrumbs" id="breadcrumbs">
@@ -2274,6 +2276,220 @@ var CLIENT_CONFIGS = {
       unfiber300: { name: 'Pro',        speed: '300 Mbps', upload: '50 Mbps',  price: 159.95, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
     },
     competitors: null // will be set after competitors object is defined below
+  },
+
+  mojo: {
+    id: 'mojo_broadband',
+    name: 'Mojo Broadband',
+    version: 'v5.11.8',
+    phone: '480-575-7550',
+    phoneSalesDirect: '480-300-4415',
+    website: 'mojobroadband.co',
+    approvalEmail: 'approval@mojobroadband.co',
+    location: 'Phoenix/Scottsdale, AZ',
+    city: 'Phoenix',
+    leadStateDefault: 'AZ',
+    googleRating: null,
+    uptime: '99.99%',
+    storagePrefix: 'mojo',
+    paymentMethods: 'credit/debit/ACH only (no cash, no paper bills)',
+    planBenefits: 'Install Waived for On-Call Signups, No Contract, First Month Due at Install, Router Included',
+    priceLockDuration: '3 years',
+    referralReward: '$50',
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize:       'https://hook.us1.make.com/fi223x1r9jckxs72oaugymkb2ikvuizd',
+      serviceability: 'https://hook.us1.make.com/hfbh22mmd1nk4ywup4cn7tncrkwl2xba',
+      calendar:       null
+    },
+    features: {
+      hasMining: true,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: true,
+      hasPoleFees: true,
+      hasBusinessPlans: false
+    },
+    team: [
+      { value: 'Aaron Lim',     label: 'Aaron L.',  fullLabel: 'Aaron Lim' },
+      { value: 'Jade Jupia',    label: 'Jade J.',   fullLabel: 'Jade Jupia' },
+      { value: 'Mario Gan Jr',  label: 'Mario G.',  fullLabel: 'Mario Gan Jr' },
+      { value: 'Paul Gonzales', label: 'Paul G.',   fullLabel: 'Paul Gonzales' },
+      { value: 'Rose Carbon',   label: 'Rose C.',   fullLabel: 'Rose Carbon' },
+      { value: 'Sam Rivera',    label: 'Sam R.',    fullLabel: 'Sam Rivera' }
+    ],
+    plans: {
+      plan_a: { name: 'Basic',    speed: '100 Mbps', upload: '20 Mbps',  price: 66,  tagline: 'Everyday Internet', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Standard', speed: '250 Mbps', upload: '50 Mbps',  price: 77,  tagline: 'Most Popular',      desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Premium',  speed: '500 Mbps', upload: '100 Mbps', price: 88,  tagline: 'Max Performance',   desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: {
+      cox: {
+        name: 'Cox', match: ['cox'],
+        killer: '"What are you paying Cox right now? And what did you sign up for originally?"',
+        response: '"Cox is reliable in the city, but they\'re expensive. Most Cox customers we talk to are paying $130-170 a month and their rate goes up every year. With us, you get unlimited data at $66-88 a month and the price is locked for 3 years."',
+        table: [['Price','$130-170/mo','$66-88/mo'],['Data','Caps on basic','Unlimited'],['Price Lock','No (promo expires)','3-year lock'],['Contract','Often 1-2 year','Month-to-month'],['Support','National call center','Local Phoenix area team']]
+      },
+      trinet: {
+        name: 'TriNet', match: ['trinet','tri net','tri-net'],
+        killer: '"Have you noticed TriNet slowing down or having more outages lately?"',
+        response: '"TriNet is a good company but they\'ve been growing really fast and a lot of their customers are telling us the service isn\'t what it used to be. We\'re building our network differently \u2014 we don\'t oversell capacity."',
+        table: [['Reliability','Declining','Consistent'],['Support','Wait times growing','Local team'],['Price Lock','No','3 years'],['Data','Varies','Unlimited']]
+      },
+      centurylink: {
+        name: 'CenturyLink', match: ['centurylink','century link','lumen'],
+        killer: '"What speeds are you actually getting with CenturyLink?"',
+        response: '"CenturyLink is running on old copper lines out here. Most of their customers are getting 10-20 Mbps on a good day. We\'re giving you 100-500 Mbps on a dedicated wireless connection."',
+        table: [['Technology','Old DSL copper','Modern wireless'],['Speed','10-20 Mbps','100-500 Mbps'],['Support','Offshore call center','Local team'],['Price Lock','No','3 years']]
+      },
+      starlink: {
+        name: 'Starlink', match: ['starlink','spacex','elon'],
+        killer: '"What are you paying Starlink total \u2014 including the equipment cost?"',
+        response: '"Starlink works anywhere, but it\'s expensive \u2014 $120 a month plus the $599 dish. And the speeds bounce around a lot. With us, you get consistent speeds at $66-88 a month, equipment included, and a 3-year price lock."',
+        table: [['Monthly','$120/mo','$66-88/mo'],['Equipment','$599 upfront','Included'],['Latency','30-60ms','Low'],['Price Lock','No','3 years'],['Data','Deprioritized','Unlimited']]
+      },
+      airbeam: {
+        name: 'AirBeam', match: ['airbeam','air beam'],
+        killer: '"Did AirBeam notify you about the tower changes in your area?"',
+        response: '"A lot of AirBeam customers are coming to us right now because they\'re decommissioning towers. We\'re actually building where they\'re pulling out. We can usually get you set up within a few days."',
+        table: [['Network','Shutting down','Expanding'],['Reliability','Declining','99.9% uptime'],['Future','Uncertain','3-year price lock'],['Data','Varies','Unlimited']]
+      },
+      hughesnet: {
+        name: 'HughesNet', match: ['hughesnet','hughes net','hughes'],
+        killer: '"Are you hitting your data cap with HughesNet?"',
+        response: '"HughesNet bounces your signal off a satellite 22,000 miles away. That\'s why it\'s slow and laggy. We\'re a local tower just a few miles from you \u2014 faster, more reliable, unlimited data, and cheaper."',
+        table: [['Latency','600ms+','Low'],['Data','Capped','Unlimited'],['Price','$65-150/mo','$66-88/mo'],['Speed','25 Mbps','100-500 Mbps'],['Contract','2-year with ETF','Month-to-month']]
+      },
+      bam: {
+        name: 'BAM/Desert iNet', match: ['bam','desert inet','desert i-net'],
+        killer: '"Have you noticed a difference since BAM got bought out?"',
+        response: '"When BAM sold to an out-of-state company, a lot of customers lost that local feel. We\'re locally owned and operated right here in the Phoenix area \u2014 when you call, you get a real person."',
+        table: [['Ownership','Out-of-state','Local'],['Support','Declined','Local team'],['Network','Neglected','Growing'],['Price Lock','No','3 years']]
+      },
+      tmobile: {
+        name: 'T-Mobile Home Internet', match: ['t-mobile','tmobile','t mobile','tmo'],
+        killer: '"T-Mobile 5G Home is affordable, but a lot of customers have issues with their streaming services thinking they\'re in a different city. Have you run into that?"',
+        response: '"That\'s the IP rotation problem \u2014 T-Mobile\'s 5G bounces your connection around different towers, so Hulu or Netflix might think you\'re in a different city. With Mojo Broadband, you get a fixed connection pointed directly at your home. Your IP stays consistent, your streaming works perfectly, and you get a more reliable connection overall."',
+        table: [['Connection Type','Shared 5G (scattered)','Fixed wireless (direct to home)'],['IP Address','Rotates (streaming issues)','Consistent \u2014 no location problems'],['Reliability','Varies by congestion','99.99% uptime'],['Data','Deprioritized after threshold','Truly unlimited'],['Support','National call center','Local Phoenix area team']]
+      },
+      viasat: {
+        name: 'Viasat', match: ['viasat','exede','wildblue'],
+        killer: '"Viasat customers often tell us they\'re paying over $100 a month but the speeds don\'t come close to what was promised. Sound familiar?"',
+        response: '"Satellite internet has to travel 22,000 miles to space and back \u2014 that\'s why it\'s slow and drops in bad weather. Our towers are right here in the Phoenix area, just a few miles from your home. You\'ll notice the difference immediately. Lower price, faster speeds, and no weather headaches."',
+        table: [['Technology','Satellite (22,000 mi)','Ground tower (few miles)'],['Latency','600ms+','~20ms'],['Weather Impact','Major \u2014 rain/storms','Minimal'],['Price','$100-170/mo','Starting at $66/mo'],['Data','Capped + throttled','Truly unlimited']]
+      }
+    }
+  },
+
+  jcwifi: {
+    id: 'jcwifi',
+    name: 'Ping Broadband',
+    displayName: 'JC WiFi / Ping Broadband',
+    version: 'v5.11.8',
+    phone: '815-233-2138',
+    website: 'jcwifi.com',
+    approvalEmail: 'approval@jcwifi.com',
+    location: 'Freeport, IL area',
+    city: 'Freeport',
+    leadStateDefault: 'IL',
+    googleRating: null,
+    uptime: '99.99%',
+    storagePrefix: 'jcwifi',
+    paymentMethods: 'card, cash, and check',
+    planBenefits: 'No Contract, First Month Due at Install, Router Included',
+    priceLockDuration: 'forever',
+    referralReward: '$25 credit',
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 59,
+    webhooks: {
+      finalize:       'https://hook.us1.make.com/fodryenonlzyyzufx4i6a6him6fbcx49',
+      serviceability: 'https://hook.us1.make.com/8a59h2a4kkwbp3tfdzirhj3ws7rh9mqb',
+      calendar:       'https://pinggravity.app.n8n.cloud/webhook/google-calendar-events-fetch'
+    },
+    features: {
+      hasMining: true,
+      hasCalendar: true,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: true
+    },
+    team: [
+      { value: 'Aaron Lim',     label: 'Aaron L.',   fullLabel: 'Aaron Lim' },
+      { value: 'AI Ashley',     label: 'AI Ashley',  fullLabel: 'AI Ashley' },
+      { value: 'Mario Gan',     label: 'Mario G.',   fullLabel: 'Mario Gan' },
+      { value: 'MJ Ramirez',    label: 'MJ R.',      fullLabel: 'MJ Ramirez' },
+      { value: 'Paul Gonzales', label: 'Paul G.',     fullLabel: 'Paul Gonzales' },
+      { value: 'Sam Rivera',    label: 'Sam R.',      fullLabel: 'Sam Rivera' }
+    ],
+    plans: {
+      plan_a: { name: 'Bronze', speed: '50 Mbps',  upload: '10 Mbps', price: 24.95, tagline: 'Great Value',  desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Silver', speed: '100 Mbps', upload: '20 Mbps', price: 50.00, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Gold',   speed: '300 Mbps', upload: '50 Mbps', price: 67.00, tagline: 'Full Power',   desc: '5+ people, gaming + WFH + 4K' }
+    },
+    businessPlans: {
+      plan_biz_a: { name: 'Dedicated Link',     price: 167, tagline: 'Business',  desc: 'Dedicated business connection' },
+      plan_biz_b: { name: 'Dedicated Link Pro', price: 278, tagline: 'Business+', desc: 'Premium business connection' }
+    },
+    competitors: {
+      spectrum: {
+        name: 'Spectrum', match: ['spectrum','charter','time warner','twc','bright house'],
+        killer: '"Do you know what your Spectrum bill will be 12 months from now?"',
+        response: '"Spectrum is a big name \u2014 I get it. Here\'s the thing: that $30 rate is a promo. After 12 months it jumps to $55, $65, sometimes $75. No cap on increases. With us, the price is locked. No contract, no promo games. Try us 30 days \u2014 if you don\'t notice a difference, every penny back."',
+        table: [['Intro price','$30-50/mo (12-month promo)','Quoted rate from day one'],['After promo','$55-75/mo and climbing','Same \u2014 price is locked'],['Contract','No, but rate jumps after promo','No contract, rate never changes'],['Bandwidth','Shared cable (peak slowdowns)','Dedicated connection'],['Data caps','"Unlimited" but throttling reported','Truly unlimited, no throttling'],['Support','Long hold, overseas centers','Local support team'],['Risk','Cancel old service, hope for best','30-day money-back guarantee']]
+      },
+      xfinity: {
+        name: 'Xfinity / Comcast', match: ['xfinity','comcast'],
+        killer: '"When you look at your Xfinity bill, do you know how much you\'re actually paying once you add equipment rental and fees?"',
+        response: '"Xfinity looks competitive at first glance. But the equipment rental is about $15/mo, there\'s a 1.2 TB data cap with overages up to $100/mo, and most plans need a contract. With us \u2014 no equipment fee, no data cap, no contract. Try us 30 days."',
+        table: [['Advertised price','$40-65/mo (contract required)','Quoted rate, no contract'],['Equipment fees','$14-15/mo router rental','No monthly equipment fee'],['Data cap','1.2 TB/mo (overages to $100/mo)','Truly unlimited'],['Contract','1-2 years, ETF if cancel early','Month-to-month'],['After promo','Increases significantly','Locked in forever'],['Hidden costs','Broadcast, sports, equipment fees','Price quoted = price paid'],['Risk','Locked into contract','30-day money-back guarantee']]
+      },
+      frontier: {
+        name: 'Frontier', match: ['frontier','fios','verizon fios','brightspeed'],
+        killer: '"Do you know if you\'re on Frontier\'s DSL or their fiber?"',
+        response: '"Frontier\'s been around a long time. What we hear from folks is speeds don\'t hold up \u2014 especially DSL at 10-15 Mbps. We deliver consistent speeds, local support, no week-long repair waits. Try us 30 days."',
+        table: [['Typical speeds','3-25 Mbps (DSL)','Consistent speeds as quoted'],['Reliability','Frequent outages reported','Dedicated, consistent uptime'],['Technology','Aging copper DSL lines','Modern infrastructure'],['Support','Days to weeks for repairs','Local team, responsive'],['Contract','Varies','No contract'],['Data caps','Varies','Truly unlimited'],['Risk','Stuck hoping it improves','30-day money-back guarantee']]
+      },
+      starlink: {
+        name: 'Starlink', match: ['starlink','spacex','elon'],
+        killer: '"Are you comfortable with speeds that vary from 25 to 220 Mbps depending on congestion and weather?"',
+        response: '"Starlink is impressive tech. Where people get frustrated is consistency \u2014 speeds bounce around, weather affects it, and at $120/mo plus $599 equipment, it\'s a big investment. With us, consistent connection, lower monthly cost, $99 one-time install, and 30-day money-back."',
+        table: [['Monthly cost','$120/mo','Lower rate, locked in'],['Upfront cost','$599 equipment','$99 one-time install'],['Speeds','25-220 Mbps (highly variable)','Consistent as quoted'],['Latency','25-60ms+ (spikes common)','Low, reliable for video/gaming'],['Weather impact','Rain/snow/clouds degrade signal','Not affected by weather'],['Contract','No, but $599 sunk cost','No contract, 30-day guarantee'],['Support','App/email only','Local support team']]
+      },
+      mediacom: {
+        name: 'Mediacom', match: ['mediacom'],
+        killer: '"Do you know what happens to your Mediacom rate after the first year?"',
+        response: '"Mediacom is the big name around here \u2014 I get that. But here\'s what we keep hearing: the promo rate jumps after 12 months, data caps hit when you least expect it, and when something goes wrong, good luck getting someone on the phone. With us \u2014 price locked forever, truly unlimited data, and when you call, a real person picks up. Try us 30 days side by side."',
+        table: [['Intro price','$49-70/mo (12-month promo)','Quoted rate from day one'],['After promo','$80-120/mo','Same \u2014 price is locked'],['Data caps','1-5 TB with overage fees','Truly unlimited, no caps'],['Contract','No, but rate jumps after promo','No contract, rate never changes'],['Bandwidth','Shared cable (peak slowdowns)','Dedicated connection'],['Support','Long hold times reported','Local support team'],['Risk','Cancel old service, hope for best','30-day money-back guarantee']]
+      },
+      tmobile: {
+        name: 'T-Mobile Home Internet', match: ['t-mobile','tmobile','t mobile','metro'],
+        killer: '"If your speeds drop during the evening and T-Mobile doesn\'t guarantee any minimum speed, what\'s your backup plan?"',
+        response: '"T-Mobile is solid on paper \u2014 $50, no contract. The challenge is consistency. Same towers as phone customers, and home internet gets lower priority. Evenings, speeds drop. With us, dedicated connection, consistent speeds, real upload for video calls. Try us 30 days."',
+        table: [['Monthly cost','$50/mo','Competitive, price locked'],['Speeds','33-245 Mbps (no guarantee)','Consistent as quoted'],['Peak hours','Deprioritized behind mobile','Dedicated, no deprioritization'],['Upload','Typically 5-10 Mbps','Strong upload for WFH'],['Latency','Variable, spikes with congestion','Low, consistent'],['Installation','Self-install, signal is trial/error','Professional install ($99)'],['Guarantee','No speed guarantee','30-day money-back guarantee']]
+      },
+      hughesnet: {
+        name: 'HughesNet', match: ['hughesnet','hughes net','hughes'],
+        killer: '"How often do you hit your data cap with HughesNet?"',
+        response: '"HughesNet is one of the only options in a lot of rural areas \u2014 I get why you signed up. But satellite internet comes with real limitations: high latency means video calls stutter and gaming is basically impossible, data caps mean you\'re rationing your usage, and rain or clouds can knock you offline. With us, you get a dedicated ground-based connection \u2014 low latency, truly unlimited data, and weather doesn\'t affect it. Plus no contract. Try us 30 days side by side."',
+        table: [['Technology','Satellite (22,000 miles away)','Fixed wireless (local tower)'],['Latency','600-900ms (video calls stutter)','Low (smooth video & gaming)'],['Data caps','15-100 GB/mo + throttling','Truly unlimited, no throttling'],['Weather','Rain/snow degrades signal','Not affected by weather'],['Contract','2-year contract, $400 ETF','No contract, cancel anytime'],['Monthly cost','$65-150/mo','Lower, price locked forever'],['Guarantee','No money-back guarantee','30-day money-back guarantee']]
+      },
+      viasat: {
+        name: 'Viasat', match: ['viasat','exede','wild blue','wildblue'],
+        killer: '"Are you on one of Viasat\'s unlimited plans, or do you have a data cap?"',
+        response: '"Viasat is similar to HughesNet \u2014 satellite internet that works when there\'s no other option. The challenge is the same: high latency makes video calls and gaming rough, their \'unlimited\' plans still get throttled after a priority data threshold, and weather affects the signal. With us, you get a ground-based connection with low latency, truly unlimited data with no throttling ever, and weather doesn\'t matter. No contract, 30-day guarantee."',
+        table: [['Technology','Satellite','Fixed wireless (local tower)'],['Latency','600-900ms','Low (smooth video & gaming)'],['Data caps','"Unlimited" but throttled after priority threshold','Truly unlimited, no throttling'],['Weather','Rain/snow/clouds degrade signal','Not affected by weather'],['Contract','2-year contract','No contract'],['Monthly cost','$70-200/mo','Lower, price locked forever'],['Guarantee','No money-back guarantee','30-day money-back guarantee']]
+      },
+      uscellular: {
+        name: 'US Cellular Home Internet', match: ['us cellular','uscellular','u.s. cellular'],
+        killer: '"Have you noticed your US Cellular speeds drop in the evening when everyone\'s on their phones?"',
+        response: '"US Cellular home internet is convenient \u2014 plug it in and go. The issue is it runs on the same towers as phone customers, and home internet gets deprioritized. So evenings, weekends, anytime the tower is busy, your speeds drop. And there\'s no guaranteed minimum speed. With us, you get a dedicated connection that doesn\'t compete with mobile users. Consistent performance all day. Try us 30 days."',
+        table: [['Technology','Cellular (shared tower)','Fixed wireless (dedicated)'],['Priority','Deprioritized behind mobile','Dedicated connection'],['Speed guarantee','No minimum guaranteed','Consistent as quoted'],['Peak hours','Slows when tower is busy','Same speed 24/7'],['Upload','Typically very low','Strong upload for WFH'],['Contract','No contract','No contract'],['Monthly cost','$50/mo','Competitive, price locked'],['Guarantee','No guarantee','30-day money-back guarantee']]
+      }
+    }
   }
 };
 
@@ -6429,6 +6645,8 @@ function loadClient(clientId) {
   renderTeamSelect();
   applyFeatureFlags();
   renderBranding();
+  var sel = document.getElementById('client-selector');
+  if (sel) sel.value = clientId;
   try { localStorage.setItem('last_client', clientId); } catch(e) {}
 }
 
