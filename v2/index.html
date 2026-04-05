@@ -690,6 +690,29 @@ textarea:focus { border-color: var(--accent); }
   padding: 2px 8px; border-radius: 10px; letter-spacing: .5px; animation: devPulse 2s infinite;
 }
 @keyframes devPulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
+
+/* ===== GAP SELLING STEP SYSTEM (v3) ===== */
+.gs-step{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:14px;transition:all 0.3s ease;position:relative}
+.gs-step.gs-locked{opacity:0.25;pointer-events:none}
+.gs-step.gs-active{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.gs-step.gs-done{border-color:var(--success)}
+.gs-step.gs-done .gs-num{background:var(--success)}
+.gs-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.gs-num{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;transition:background 0.3s}
+.gs-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.gs-title{font-size:17px;font-weight:700;letter-spacing:-0.3px}
+.gs-mirror{background:linear-gradient(135deg,rgba(167,139,250,0.12),rgba(167,139,250,0.03));border-left:3px solid var(--purple);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;font-size:14px;line-height:1.7;color:var(--text-primary);margin:12px 0}
+.gs-drill{background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin:6px 0;cursor:pointer;transition:all 0.15s;font-size:13px;color:var(--text-secondary);line-height:1.5}
+.gs-drill:hover{border-color:var(--coral,#f97316);background:rgba(249,115,22,0.08);color:var(--text-primary)}
+.gs-drill.gs-sel{border-color:var(--coral,#f97316);background:rgba(249,115,22,0.08);color:var(--text-primary);font-weight:500;box-shadow:0 0 0 2px rgba(249,115,22,0.12)}
+.gs-drill .gs-dl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--coral,#f97316);margin-bottom:2px}
+.gs-quant-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:12px 0}
+.gs-quant-card{background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.gs-quant-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-muted);margin-bottom:8px;text-align:center}
+.gs-quant-pills{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+@keyframes gsSlideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.gs-slide{animation:gsSlideIn 0.3s ease forwards}
+@media(max-width:600px){.gs-quant-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -697,9 +720,36 @@ textarea:focus { border-color: var(--accent); }
 <div id="header">
   <button id="hamburger" onclick="toggleSidebar()">&#9776;</button>
   <select id="client-selector" onchange="switchClient(this.value)" style="background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border);border-radius:var(--radius);padding:4px 6px;font-size:10px;cursor:pointer">
-    <option value="alamo">Alamo</option>
-    <option value="mojo">Mojo</option>
+    <option value="alamo">Alamo Broadband</option>
+    <option value="altitude">Altitude ISP</option>
+    <option value="aristotle">Aristotle Internet</option>
+    <option value="beecreek">Bee Creek</option>
+    <option value="broadbandcorp">Broadband Corp</option>
+    <option value="buffalofiber">Buffalo Fiber</option>
+    <option value="cbnflx">Community Broadband</option>
+    <option value="celerity">Celerity Internet</option>
+    <option value="centralvalley">Central Valley</option>
+    <option value="communitywireless">Community Wireless</option>
+    <option value="countrywireless">Country Wireless</option>
+    <option value="crosslink">Crosslink Fiber</option>
+    <option value="fallsnet">FallsNet</option>
+    <option value="gvtc">GVTC Communications</option>
+    <option value="inlandfiber">Inland Fiber</option>
     <option value="jcwifi">JC WiFi</option>
+    <option value="lightwave">Lightwave Wireless</option>
+    <option value="matrix">Matrix Broadband</option>
+    <option value="mojo">Mojo Broadband</option>
+    <option value="mounthoreb">Mount Horeb</option>
+    <option value="nativenetwork">Native Network</option>
+    <option value="netwave">NetWave Broadband</option>
+    <option value="oasis">Oasis Broadband</option>
+    <option value="optimus">Optimus Broadband</option>
+    <option value="rivercanyon">River Canyon</option>
+    <option value="seamless">Seamless Fiber</option>
+    <option value="simpliunlimited">SimpliUnlimited</option>
+    <option value="tecinfo">TecInfo</option>
+    <option value="tnet">TNET Broadband</option>
+    <option value="vtx1">VTX1 Internet</option>
   </select>
   <div class="logo">ALAMO BROADBAND<span class="mode-badge" id="mode-badge">MINING</span></div>
   <div class="breadcrumbs" id="breadcrumbs">
@@ -998,292 +1048,302 @@ textarea:focus { border-color: var(--accent); }
     </div>
   </div>
 
-  <!-- USAGE: First real question, baked into opening (Standard mode) -->
-  <div class="standard-only" style="margin-top:16px">
-    <div class="section-label">Usage <span style="color:var(--success);font-size:9px;letter-spacing:0">&mdash; 95% of sold calls ask this</span></div>
-    <div class="pill-group" id="usage-pills">
-      <div class="pill" onclick="toggleUsage(this,'streaming')">Streaming</div>
-      <div class="pill" onclick="toggleUsage(this,'gaming')">Gaming</div>
-      <div class="pill" onclick="toggleUsage(this,'wfh')">Work from Home</div>
-      <div class="pill" onclick="toggleUsage(this,'browsing')">Browsing</div>
-      <div class="pill" onclick="toggleUsage(this,'smart_home')">Smart Home</div>
-      <div class="pill" onclick="toggleUsage(this,'school')">School</div>
+  <button class="next-btn standard-only" onclick="scrollToSection('sec-gap')">Continue to Discovery &darr;</button>
+</div>
+
+<!-- ==================== SECTION 2: GAP SELLING DISCOVERY (v3 Flow) ==================== -->
+<div class="section standard-only" id="sec-gap" data-check="pain">
+  <div class="section-label">Section 2</div>
+  <div class="section-title">Gap Selling Discovery</div>
+  <p style="font-size:11px;color:var(--text-muted);margin-bottom:14px">Build the pain first. Then ask what would fix it. Then pitch.</p>
+
+  <!-- STEP 1: USAGE -->
+  <div class="gs-step gs-active" id="gs-s1">
+    <div class="gs-header"><div class="gs-num">1</div><div><div class="gs-label">Opening</div><div class="gs-title">What do you use the internet for most?</div></div></div>
+    <div class="script-block">
+      "Awesome. Call is recorded. Just a few quick questions so I can match you with the right plan. Sound good?<br><br>
+      So what do you use the internet for most? Streaming, gaming, working from home?"
+      <span class="coaching">Let them answer. Tag everything they mention.</span>
+    </div>
+    <div class="pill-group" id="gs-usage-tags" style="flex-wrap:wrap;gap:6px;margin-top:8px">
+      <div class="pill" onclick="gsTogUsage(this,'streaming')">Streaming</div>
+      <div class="pill" onclick="gsTogUsage(this,'gaming')">Gaming</div>
+      <div class="pill" onclick="gsTogUsage(this,'wfh')">Work from Home</div>
+      <div class="pill" onclick="gsTogUsage(this,'browsing')">Browsing</div>
+      <div class="pill" onclick="gsTogUsage(this,'smart_home')">Smart Home</div>
+      <div class="pill" onclick="gsTogUsage(this,'school')">School / Homework</div>
+      <div class="pill" onclick="gsTogUsage(this,'video_calls')">Video Calls</div>
     </div>
   </div>
 
-  <!-- HOUSEHOLD: Just me vs Whole household (Standard mode) -->
-  <div class="standard-only" style="margin-top:12px">
-    <div class="section-label">Household</div>
+  <!-- STEP 2: HOUSEHOLD -->
+  <div class="gs-step gs-locked" id="gs-s2">
+    <div class="gs-header"><div class="gs-num">2</div><div><div class="gs-label">Household</div><div class="gs-title">Who's using it?</div></div></div>
     <div class="script-block">
       "And is it just you using the internet, or is the whole household on at the same time?"
-      <span class="coaching">Click one below based on their answer.</span>
+      <span class="coaching">Sets up plan rec and DM trap later. Don't ask DM here. Build pain first.</span>
     </div>
-    <div class="pill-group" id="household-pills">
-      <div class="pill" onclick="setHouseholdMulti(this, 'just_me')">Just me</div>
-      <div class="pill" onclick="setHouseholdMulti(this, 'partner')">Partner</div>
-      <div class="pill" onclick="setHouseholdMulti(this, 'whole_household')">Whole household</div>
+    <div class="pill-group" id="gs-who-tags" style="flex-wrap:wrap;gap:6px;margin-top:8px">
+      <div class="pill" onclick="gsTogWho(this,'just_me')">Just me</div>
+      <div class="pill" onclick="gsTogWho(this,'partner')">Me and my partner</div>
+      <div class="pill" onclick="gsTogWho(this,'family')">Whole family</div>
+      <div class="pill" onclick="gsTogWho(this,'kids')">Kids too</div>
+      <div class="pill" onclick="gsTogWho(this,'roommates')">Roommates</div>
     </div>
   </div>
 
-  <!-- SCORE: Right after usage (Standard mode) -->
-  <div class="standard-only" style="margin-top:16px">
+  <!-- STEP 3: SCORE -->
+  <div class="gs-step gs-locked" id="gs-s3">
+    <div class="gs-header"><div class="gs-num">3</div><div><div class="gs-label">Open the gap</div><div class="gs-title">Score</div></div></div>
     <div class="script-block">
-      "So... on a scale of 1 to 10, how would you rate your current internet?"
+      "So on a scale of 1 to 10, how would you rate your current internet?"
+      <span class="coaching">Let them answer. Don't fill the silence.</span>
     </div>
-    <div class="score-group">
-      <div class="score-btn" onclick="setScore(1)">1</div>
-      <div class="score-btn" onclick="setScore(2)">2</div>
-      <div class="score-btn" onclick="setScore(3)">3</div>
-      <div class="score-btn" onclick="setScore(4)">4</div>
-      <div class="score-btn" onclick="setScore(5)">5</div>
-      <div class="score-btn" onclick="setScore(6)">6</div>
-      <div class="score-btn" onclick="setScore(7)">7</div>
-      <div class="score-btn" onclick="setScore(8)">8</div>
-      <div class="score-btn" onclick="setScore(9)">9</div>
-      <div class="score-btn" onclick="setScore(10)">10</div>
+    <div class="score-group" style="margin-top:10px">
+      <div class="score-btn" onclick="gsSetScore(1)">1</div>
+      <div class="score-btn" onclick="gsSetScore(2)">2</div>
+      <div class="score-btn" onclick="gsSetScore(3)">3</div>
+      <div class="score-btn" onclick="gsSetScore(4)">4</div>
+      <div class="score-btn" onclick="gsSetScore(5)">5</div>
+      <div class="score-btn" onclick="gsSetScore(6)">6</div>
+      <div class="score-btn" onclick="gsSetScore(7)">7</div>
+      <div class="score-btn" onclick="gsSetScore(8)">8</div>
+      <div class="score-btn" onclick="gsSetScore(9)">9</div>
+      <div class="score-btn" onclick="gsSetScore(10)">10</div>
+    </div>
+    <div id="gs-score-resp" class="hidden" style="margin-top:10px"></div>
+  </div>
+
+  <!-- STEP 4: IMPACT / SURFACE THE PAIN -->
+  <div class="gs-step gs-locked" id="gs-s4">
+    <div class="gs-header"><div class="gs-num">4</div><div><div class="gs-label">Surface the pain</div><div class="gs-title">How is that affecting things?</div></div></div>
+    <div class="script-block" id="gs-impact-script">
+      "With it being a <span class="var" id="gs-impact-score">__</span>, how is that affecting things? Like with your <span class="var" id="gs-impact-usage">streaming, working from home</span><span id="gs-impact-who-insert"></span>... what's actually happening?"
+      <span class="coaching">This question forces them to recall a specific memory. Tag the pain you hear.</span>
+    </div>
+    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-top:10px;margin-bottom:4px">Tag what you're hearing</div>
+    <div class="pill-group" id="gs-pain-tags" style="flex-wrap:wrap;gap:6px">
+      <div class="pill" onclick="gsTogPain(this,'slow')">Slow speeds</div>
+      <div class="pill" onclick="gsTogPain(this,'drops')">Drops / disconnects</div>
+      <div class="pill" onclick="gsTogPain(this,'buffering')">Buffering</div>
+      <div class="pill" onclick="gsTogPain(this,'outages')">Outages</div>
+      <div class="pill" onclick="gsTogPain(this,'price')">Paying too much</div>
+      <div class="pill" onclick="gsTogPain(this,'data_cap')">Data caps</div>
+      <div class="pill" onclick="gsTogPain(this,'support')">Bad support</div>
+      <div class="pill" onclick="gsTogPain(this,'latency')">Lag / latency</div>
+      <div class="pill" onclick="gsTogPain(this,'inconsistent')">Inconsistent</div>
+    </div>
+    <div class="coach-note" style="margin-top:10px">"Anything else going on, or is that the main thing?" &mdash; Get all the pains before moving on.</div>
+  </div>
+
+  <!-- STEP 5: DRILL INTO THE EVENT -->
+  <div class="gs-step gs-locked" id="gs-s5">
+    <div class="gs-header"><div class="gs-num">5</div><div><div class="gs-label">Find the emotional event</div><div class="gs-title">What's actually happening?</div></div></div>
+    <div class="coach-note" style="margin-top:0">They told you the pain. Now drill into the specific moment it hurts. Pick the scenario that matches what they're describing.</div>
+    <div id="gs-drill-cards"><div style="color:var(--text-muted);font-size:13px;padding:16px;text-align:center">Tag pain in Step 4 to see matching scenarios...</div></div>
+    <div style="margin-top:12px">
+      <input type="text" id="gs-custom-drill" placeholder="Or just type what they said... (e.g. 'calls drop every afternoon')" oninput="gsState.customDrill=this.value" style="font-size:13px">
     </div>
   </div>
 
-  <!-- SCORE BRANCH: Dynamic empathy response -->
-  <div id="score-branch" class="hidden" style="margin-top:12px">
-    <div class="script-block" id="score-branch-script"></div>
+  <!-- STEP 6: MIRROR -->
+  <div class="gs-step gs-locked" id="gs-s6">
+    <div class="gs-header"><div class="gs-num">6</div><div><div class="gs-label">Make them feel heard</div><div class="gs-title">Mirror</div></div></div>
+    <div class="coach-note" style="margin-top:0">Reflect their pain back with emotion. Read this, then pause 2-3 seconds. Let it land.</div>
+    <div class="gs-mirror" id="gs-mirror-script">Select a scenario in Step 5 to generate the mirror...</div>
+    <div class="script-block" style="border-left-color:var(--purple);margin-top:12px">
+      <span class="coaching" style="margin-top:0">After the mirror, pause. Then softly:</span>
+      "That's really what you're looking for though, right? Just... internet that actually works. Every time."
+      <span class="coaching">This is a trial close. Listen for agreement.</span>
+    </div>
   </div>
 
-  <button class="next-btn" onclick="scrollToSection('sec-pain')">Continue to Pain Discovery &darr;</button>
+  <!-- STEP 7: QUANTIFY THE GAP -->
+  <div class="gs-step gs-locked" id="gs-s7">
+    <div class="gs-header"><div class="gs-num">7</div><div><div class="gs-label">Lock in the urgency</div><div class="gs-title">Quantify the gap</div></div></div>
+    <div class="script-block">
+      "How often is that happening? Like, every day, or more like a few times a week?"
+      <span class="coaching">Three quick questions. These build urgency and show you've been listening.</span>
+    </div>
+    <div class="gs-quant-grid">
+      <div class="gs-quant-card"><div class="gs-quant-label">How often?</div><div class="gs-quant-pills">
+        <div class="pill" onclick="gsSetQ(this,'freq','daily')">Daily</div>
+        <div class="pill" onclick="gsSetQ(this,'freq','few_week')">Few / week</div>
+        <div class="pill" onclick="gsSetQ(this,'freq','weekly')">Weekly</div>
+        <div class="pill" onclick="gsSetQ(this,'freq','sometimes')">Sometimes</div>
+      </div></div>
+      <div class="gs-quant-card"><div class="gs-quant-label">How long?</div><div class="gs-quant-pills">
+        <div class="pill" onclick="gsSetQ(this,'dur','weeks')">Weeks</div>
+        <div class="pill" onclick="gsSetQ(this,'dur','months')">Months</div>
+        <div class="pill" onclick="gsSetQ(this,'dur','6mo')">6+ months</div>
+        <div class="pill" onclick="gsSetQ(this,'dur','years')">Years</div>
+      </div></div>
+      <div class="gs-quant-card"><div class="gs-quant-label">Called provider?</div><div class="gs-quant-pills">
+        <div class="pill" onclick="gsSetQ(this,'called','yes_no_help')">Yes, no help</div>
+        <div class="pill" onclick="gsSetQ(this,'called','yes_temp')">Temp fix</div>
+        <div class="pill" onclick="gsSetQ(this,'called','no')">Never</div>
+        <div class="pill" onclick="gsSetQ(this,'called','gave_up')">Gave up</div>
+      </div></div>
+    </div>
+    <div id="gs-quant-tie" class="hidden">
+      <div class="script-block" style="border-left-color:var(--teal,#14b8a6)">
+        <span class="coaching" style="margin-top:0">Tie it all together. Read with conviction:</span>
+        <span id="gs-quant-line"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 8: WHAT WOULD MAKE IT A 10? -->
+  <div class="gs-step gs-locked" id="gs-s8">
+    <div class="gs-header"><div class="gs-num">8</div><div><div class="gs-label">Get permission to pitch</div><div class="gs-title">What would make it a 10?</div></div></div>
+    <div class="coach-note" style="margin-top:0">Pain is fully built. Now they're open. This question gets them to tell you what they want, which gives you permission to offer it.</div>
+    <div class="script-block" style="border-left-color:var(--success)">
+      "So... what would you say would make it a 10, then?"
+      <span class="coaching">Let them answer. They'll basically describe your service back to you.</span>
+    </div>
+    <div id="gs-ten-response" class="hidden" style="margin-top:10px">
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-top:10px;margin-bottom:4px">What did they say?</div>
+      <div class="pill-group" style="flex-wrap:wrap;gap:6px">
+        <div class="pill" onclick="gsTogTen(this,'reliable')">Just want it to work</div>
+        <div class="pill" onclick="gsTogTen(this,'faster')">Faster speeds</div>
+        <div class="pill" onclick="gsTogTen(this,'no_buffer')">No buffering</div>
+        <div class="pill" onclick="gsTogTen(this,'cheaper')">Lower price</div>
+        <div class="pill" onclick="gsTogTen(this,'no_caps')">No data caps</div>
+        <div class="pill" onclick="gsTogTen(this,'better_support')">Better support</div>
+        <div class="pill" onclick="gsTogTen(this,'consistent')">Consistent / stable</div>
+      </div>
+    </div>
+    <div id="gs-ten-bridge" class="hidden" style="margin-top:12px">
+      <div class="script-block" style="border-left-color:var(--success)" id="gs-ten-bridge-script"></div>
+    </div>
+  </div>
+
+  <!-- STEP 9: PROVIDER + PRICE -->
+  <div class="gs-step gs-locked" id="gs-s9">
+    <div class="gs-header"><div class="gs-num">9</div><div><div class="gs-label">Qualifying</div><div class="gs-title">Who are you with and what are you paying?</div></div></div>
+    <div class="script-block">"And who are you with right now?"</div>
+    <div class="pill-group" style="flex-wrap:wrap;gap:4px;margin-top:6px;margin-bottom:6px" id="gs-provider-tags">
+      <div class="pill" onclick="gsSetProv(this,'AT&amp;T')">AT&amp;T</div>
+      <div class="pill" onclick="gsSetProv(this,'AT&amp;T Air')">AT&amp;T Air</div>
+      <div class="pill" onclick="gsSetProv(this,'AT&amp;T Fiber')">AT&amp;T Fiber</div>
+      <div class="pill" onclick="gsSetProv(this,'CenturyLink')">CenturyLink</div>
+      <div class="pill" onclick="gsSetProv(this,'Frontier')">Frontier</div>
+      <div class="pill" onclick="gsSetProv(this,'GVEC')">GVEC</div>
+      <div class="pill" onclick="gsSetProv(this,'HughesNet')">HughesNet</div>
+      <div class="pill" onclick="gsSetProv(this,'Rise Broadband')">Rise Broadband</div>
+      <div class="pill" onclick="gsSetProv(this,'Spectrum')">Spectrum</div>
+      <div class="pill" onclick="gsSetProv(this,'Starlink')">Starlink</div>
+      <div class="pill" onclick="gsSetProv(this,'T-Mobile')">T-Mobile</div>
+      <div class="pill" onclick="gsSetProv(this,'Verizon')">Verizon</div>
+      <div class="pill" onclick="gsSetProv(this,'Viasat')">Viasat</div>
+      <div class="pill" onclick="gsSetProv(this,'Xfinity')">Xfinity</div>
+      <div class="pill" onclick="gsSetProv(this,'None')">None / First Time</div>
+      <div class="pill" onclick="gsSetProv(this,'Other')">Other</div>
+    </div>
+    <input type="text" id="gs-prov-other" class="hidden" placeholder="Other provider &mdash; type here..." oninput="updateState('current_provider',this.value);gsState.provider=this.value" style="margin-top:8px;font-size:12px">
+    <div id="gs-provider-intel-hint" class="hidden" style="margin-top:6px;font-size:12px;color:var(--warning);cursor:pointer" onclick="openCompetitorPanel()">Competitor intel available &rarr;</div>
+
+    <div class="script-block" style="margin-top:16px">"And what are you paying a month for that?"</div>
+    <div style="display:flex;gap:12px;align-items:center;margin:8px 0">
+      <label style="font-size:13px;color:var(--text-secondary);white-space:nowrap;min-width:70px">$ / month</label>
+      <input type="number" id="gs-inp-price" placeholder="e.g. 99" oninput="gsState.price=parseFloat(this.value)||0;updateState('current_price',parseFloat(this.value)||0)" style="flex:1;font-size:13px">
+    </div>
+
+    <div id="gs-price-lock-weave" class="hidden" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(76,175,80,0.08),rgba(76,175,80,0.02));border:1px solid rgba(76,175,80,0.25);border-radius:var(--radius)">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--success);margin-bottom:4px">WEAVE: Price Lock</div>
+      <div class="script-block" style="border-left-color:var(--success);margin:0;font-size:12px">
+        "And by the way, one big difference with us: the price I give you today never goes up. Period."
+        <span class="coaching">Drop this right after they tell you what they're paying. Plant the seed.</span>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <div class="script-block">"And are you looking for the best reliability, lowest price, or mix of both?"</div>
+      <div class="pill-group" style="flex-wrap:wrap;gap:6px;margin-top:6px">
+        <div class="pill" onclick="gsSetPri(this,'reliability')">Best Reliability</div>
+        <div class="pill" onclick="gsSetPri(this,'price')">Lowest Price</div>
+        <div class="pill" onclick="gsSetPri(this,'mix')">Mix of Both</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 10: DM CHECK -->
+  <div class="gs-step gs-locked" id="gs-s10">
+    <div class="gs-header"><div class="gs-num">10</div><div><div class="gs-label">Decision maker</div><div class="gs-title">Who makes the call?</div></div></div>
+    <div class="script-block" style="border-left-color:var(--danger)" id="gs-dm-script">
+      "And if you <span id="gs-dm-who-text">and your partner</span> decided you wanted to switch, is that something you decide together, or do you handle the internet stuff?"
+      <span class="coaching">Find out who makes the call. Critical for closing later.</span>
+    </div>
+    <div class="pill-group" id="gs-dm-tags" style="flex-wrap:wrap;gap:6px;margin-top:8px">
+      <div class="pill" onclick="gsSetDM(this,'sole')">I handle it</div>
+      <div class="pill" onclick="gsSetDM(this,'together')">We decide together</div>
+      <div class="pill" onclick="gsSetDM(this,'spouse')">Spouse decides</div>
+      <div class="pill" onclick="gsSetDM(this,'landlord')">Landlord involved</div>
+    </div>
+    <div id="gs-dm-spouse-row" class="hidden" style="margin-top:10px">
+      <div class="script-block" style="border-left-color:var(--purple)">
+        "And how do they feel about the internet right now? Are they frustrated too?"
+        <span class="coaching">If spouse is frustrated too, you can use this later to overcome "I need to talk to my wife."</span>
+      </div>
+      <div class="pill-group" style="flex-wrap:wrap;gap:6px;margin-top:6px">
+        <div class="pill" onclick="gsSetSpouse(this,'frustrated')">Frustrated too</div>
+        <div class="pill" onclick="gsSetSpouse(this,'doesnt_care')">Doesn't care</div>
+        <div class="pill" onclick="gsSetSpouse(this,'happy')">Happy with current</div>
+        <div class="pill" onclick="gsSetSpouse(this,'on_board')">On board to switch</div>
+      </div>
+      <input type="text" id="gs-inp-spouse-name" placeholder="Spouse name (if they mention it)" oninput="updateState('spouse_name',this.value)" style="margin-top:8px;font-size:12px">
+    </div>
+  </div>
+
+  <!-- GAP SUMMARY -->
+  <div class="hidden" id="gs-summary" style="background:var(--bg-card);border:2px solid var(--success);border-radius:var(--radius-lg);padding:20px 24px;margin-top:14px">
+    <div style="font-size:14px;font-weight:700;color:var(--success);margin-bottom:12px">Discovery Complete</div>
+    <div id="gs-sum-grid" style="display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13px"></div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);text-align:center">
+      <div style="font-size:11px;color:var(--text-muted)">Ready for Value Match + Plan Recommendation</div>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="scrollToSection('sec-value')">Continue to Value Match &darr;</button>
 </div>
 
-<!-- ==================== SECTION 2: PAIN DISCOVERY ==================== -->
-<div class="section" id="sec-pain" data-check="pain">
+<!-- MINING-ONLY: Kept for Mining mode backward compat -->
+<div class="section mining-only" id="sec-pain" data-check="pain">
   <div class="section-label">Section 2</div>
-  <div class="section-title">Pain Discovery</div>
-  <p style="font-size:11px;color:var(--text-muted);margin-bottom:8px">As they answer, click each pain below. You can select multiple. Steps 1&ndash;3 will guide you through what to say.</p>
+  <div class="section-title">Pain Discovery (Mining Quick)</div>
+  <div class="mining-coach-note">Keep it quick. 60-90 seconds max for discovery on cold calls.</div>
+  <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">Pain discovery for mining mode is handled in the Opening section above.</p>
 
-  <!-- Usage context banner -->
-  <div id="usage-context-banner" style="display:none;margin-bottom:10px;padding:6px 12px;background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(99,102,241,0.04));border:1px solid rgba(99,102,241,0.25);border-radius:var(--radius);font-size:11px;color:var(--text-secondary)">
-    <span style="font-weight:700;color:var(--accent);margin-right:4px">CONTEXT:</span>
-    <span id="usage-context-list"></span>
-  </div>
-
-  <!-- Pain tiles (always visible, horizontal wrap) -->
+  <!-- Pain tiles (still available for mining mode) -->
   <div class="pain-grid" id="pain-tiles"></div>
 
-  <!-- STEP 1: Empathize + collect all pains -->
-  <div class="pain-step" id="pain-step-1">
-    <div class="pain-step-header">
-      <div class="pain-step-num">1</div>
-      <div class="pain-step-title">Empathize &mdash; Read This to the Customer</div>
-    </div>
-    <div class="pain-step-note">Read the empathy line, then ask if there's more. Keep clicking pains above until they're done.</div>
-    <div id="pain-empathy-stack"></div>
-    <div class="pain-probe-more" id="pain-probe-text"></div>
-  </div>
-
-  <!-- STEP 2: Get specifics for each pain -->
-  <div class="pain-step" id="pain-step-2">
-    <div class="pain-step-header">
-      <div class="pain-step-num">2</div>
-      <div class="pain-step-title">Get Specific &mdash; Click All That Apply</div>
-    </div>
-    <div class="pain-step-note">Click what matches what they said. You can pick multiple.</div>
-    <div id="step2-suggestion" style="display:none;margin-bottom:8px;padding:8px 12px;background:var(--purple);background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(167,139,250,0.05));border-left:3px solid var(--purple);border-radius:0 var(--radius) var(--radius) 0;font-size:12px;color:var(--text-primary)"></div>
-    <div id="pain-sub-container"></div>
-  </div>
-
-  <!-- STEP 3: Dig deeper with inline answer options -->
-  <div class="pain-step" id="pain-step-3">
-    <div class="pain-step-header">
-      <div class="pain-step-num">3</div>
-      <div class="pain-step-title">Dig Deeper &mdash; Ask These Questions</div>
-    </div>
-    <div class="pain-step-note">Ask these and let them talk. Click answers on the right to log.</div>
-    <div id="pain-deepener-script"></div>
-  </div>
-
-  <!-- WEAVE: Local San Antonio Support — HIDDEN per Evan annotation v5.10.2. Uncomment if relocating.
-  <div class="standard-only" id="weave-local-support" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(74,158,255,0.08),rgba(74,158,255,0.02));border:1px solid rgba(74,158,255,0.25);border-radius:var(--radius)">
-    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);margin-bottom:4px">WEAVE: Local San Antonio Support</div>
-    <div class="script-block" style="border-left-color:var(--accent);margin:0;font-size:12px">
-      "Yeah, that's the thing &mdash; we're a local company right here in San Antonio. When you call us, a real person picks up. 4.6 stars on Google. If something goes wrong, we actually fix it. Sound good?"
-    </div>
-  </div>
-  -->
-
-  <!-- Step 4: Trigger — moved from Section 3 -->
-  <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--accent)">Step 4 &mdash; Trigger: The Breaking Point</div>
-    </div>
-    <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">They've told you what's wrong. Now find out why they're finally doing something about it.</div>
-    <div class="q-card standard-only" id="q1-card">
-      <div class="q-num">Q1 &mdash; TRIGGER</div>
-      <div class="q-script">"So... what finally made you start looking? Did something happen, or you just got fed up?"</div>
-      <div class="pill-group" id="trigger-pills" style="flex-wrap:wrap;gap:6px">
-        <div class="pill" onclick="toggleTrigger(this,'fed_up')">Fed up</div>
-        <div class="pill" onclick="toggleTrigger(this,'bill_went_up')">Bill went up</div>
-        <div class="pill" onclick="toggleTrigger(this,'wfh')">Work from home now</div>
-        <div class="pill" onclick="toggleTrigger(this,'just_moved')">Just moved</div>
-        <div class="pill" onclick="toggleTrigger(this,'family_complaining')">Spouse/family complaining</div>
-        <div class="pill" onclick="toggleTrigger(this,'saw_ad')">Saw an ad</div>
-        <div class="pill" onclick="toggleTrigger(this,'referral')">Neighbor/friend referred</div>
-        <div class="pill" onclick="toggleTrigger(this,'saw_truck')">Saw your truck</div>
-        <div class="pill" onclick="toggleTrigger(this,'contract_ending')">Contract ending</div>
-      </div>
-      <div id="trigger-response" class="hidden script-block" style="margin-top:8px;border-left-color:var(--success)"></div>
-      <input type="text" id="inp-trigger-text" placeholder="Other trigger..." style="margin-top:8px" oninput="updateState('switch_trigger_text',this.value)">
-      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);margin-bottom:6px">And are you looking for...</div>
-        <div class="pill-group" id="q6-card">
-          <div class="pill" onclick="setPriority(this,'reliability')">Best Reliability</div>
-          <div class="pill" onclick="setPriority(this,'price')">Lowest Price</div>
-          <div class="pill" onclick="setPriority(this,'mix')">Mix of Both</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <button class="next-btn" onclick="scrollToSection('sec-discovery')">Continue to Qualifying &darr;</button>
-</div>
-
-<!-- ==================== SECTION 3: DISCOVERY ==================== -->
-<div class="section" id="sec-discovery" data-check="discovery">
-  <div class="section-label">Section 3</div>
-  <div class="section-title">Qualifying + Data Collection</div>
-
-  <!-- PROVIDER: Moved from Section 1 -->
-  <div class="standard-only" style="margin-top:16px">
-    <div class="script-block">
-      "And who is that with?"
-    </div>
-    <div class="pill-group" style="flex-wrap:wrap;gap:4px;margin-top:6px;margin-bottom:6px" id="provider-pills-opening">
-      <div class="pill" onclick="selectProvider(this,'AT&amp;T')">AT&amp;T</div>
-      <div class="pill" onclick="selectProvider(this,'AT&amp;T Air')">AT&amp;T Air</div>
-      <div class="pill" onclick="selectProvider(this,'AT&amp;T Fiber')">AT&amp;T Fiber</div>
-      <div class="pill" onclick="selectProvider(this,'CenturyLink')">CenturyLink</div>
-      <div class="pill" onclick="selectProvider(this,'Frontier')">Frontier</div>
-      <div class="pill" onclick="selectProvider(this,'GVEC')">GVEC</div>
-      <div class="pill" onclick="selectProvider(this,'HughesNet')">HughesNet</div>
-      <div class="pill" onclick="selectProvider(this,'Rise Broadband')">Rise Broadband</div>
-      <div class="pill" onclick="selectProvider(this,'Spectrum')">Spectrum</div>
-      <div class="pill" onclick="selectProvider(this,'Starlink')">Starlink</div>
-      <div class="pill" onclick="selectProvider(this,'T-Mobile')">T-Mobile</div>
-      <div class="pill" onclick="selectProvider(this,'Verizon')">Verizon</div>
-      <div class="pill" onclick="selectProvider(this,'Viasat')">Viasat</div>
-      <div class="pill" onclick="selectProvider(this,'Xfinity')">Xfinity</div>
-      <div class="pill" onclick="selectProvider(this,'None')">None / First Time</div>
-      <div class="pill" onclick="selectProvider(this,'Other')">Other</div>
-    </div>
-    <input type="text" id="inp-provider-opening" placeholder="Other provider &mdash; type here..." oninput="updateState('current_provider',this.value)" style="font-size:12px">
-    <div id="provider-intel-hint-opening" class="hidden" style="margin-top:6px;font-size:12px;color:var(--warning);cursor:pointer" onclick="openCompetitorPanel()">Competitor intel available &rarr;</div>
-    <div id="provider-coach-note-opening" class="hidden" style="margin-top:8px;padding:8px 12px;border-left:3px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;font-size:11px;color:var(--text-secondary);background:var(--bg-input);line-height:1.5"></div>
-  </div>
-
-  <!-- BILLING: Right after provider -->
-  <div class="standard-only" style="margin-top:12px">
-    <div class="script-block">
-      "And what are you paying a month for that?"
-    </div>
-    <input type="number" id="inp-price-opening" placeholder="e.g. 90" oninput="updateState('current_price',parseFloat(this.value)||0)" onchange="updateState('current_price',parseFloat(this.value)||0)">
-  </div>
-
-  <!-- WEAVE: Price Lock — drop after they tell you what they're paying -->
-  <div class="standard-only" id="weave-price-lock" style="margin-top:12px;padding:10px 14px;background:linear-gradient(135deg,rgba(76,175,80,0.08),rgba(76,175,80,0.02));border:1px solid rgba(76,175,80,0.25);border-radius:var(--radius)">
-    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--success);margin-bottom:4px">WEAVE: Price Lock</div>
-    <div class="script-block" style="border-left-color:var(--success);margin:0;font-size:12px">
-      "One big difference with us: the price I give you today never goes up. Period."
-    </div>
-  </div>
-
-  <!-- Mining mode: coach note for quick discovery -->
-  <div class="mining-only">
-    <div class="mining-coach-note">Keep it quick. 60-90 seconds max for discovery on cold calls.</div>
-    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">Mining discovery is handled in the Opening section above. Use this section to capture any additional details.</p>
-  </div>
-
-  <div class="q-card standard-only" id="q2-card">
-    <div class="q-num">Q2 &mdash; HOUSEHOLD / DM TRAP</div>
-    <div class="q-script" id="q2-script">"And... how many people are using the internet at the same time?"</div>
-    <div id="q2-already-answered" class="hidden" style="margin-bottom:8px;padding:6px 12px;background:var(--accent-dim);border:1px solid var(--accent);border-radius:var(--radius);font-size:11px;color:var(--accent);font-weight:600">Already answered above &mdash; "Whole household" selected. Skip to DM trap below.</div>
-    <div class="pill-group" id="q2-pills">
-      <div class="pill" onclick="setHousehold(this,1)">1</div>
-      <div class="pill" onclick="setHousehold(this,2)">2</div>
-      <div class="pill" onclick="setHousehold(this,3)">3</div>
-      <div class="pill" onclick="setHousehold(this,4)">4</div>
-      <div class="pill" onclick="setHousehold(this,5)">5+</div>
-    </div>
-    <!-- DM TRAP: Inline -->
-    <div id="dm-trap-inline" class="hidden" style="margin-top:12px;padding:12px;background:var(--danger-dim);border:1px solid var(--danger);border-radius:var(--radius)">
-      <div style="font-size:12px;color:var(--danger);font-weight:700;margin-bottom:6px">DECISION MAKER TRAP</div>
-      <div class="script-block" id="dm-trap-script" style="border-left-color:var(--danger);margin:0 0 8px 0">
-        "Nice! And if you both decided you wanted to switch, is that something you'd decide together, or you handle the internet stuff?"
-      </div>
-      <div class="pill-group">
-        <div class="pill" onclick="setDecisionMaker(this,'sole')">Sole decision maker</div>
-        <div class="pill" onclick="setDecisionMaker(this,'spouse')">Needs spouse</div>
-        <div class="pill" onclick="setDecisionMaker(this,'landlord')">Needs landlord</div>
-      </div>
-      <div id="spouse-feeling-row" class="hidden" style="margin-top:8px">
-        <div class="script-block" style="border-left-color:var(--purple);margin:0 0 8px 0">"And how do they feel about the internet right now? Are they frustrated too?"</div>
-        <div class="pill-group" style="margin-bottom:6px">
-          <div class="pill" onclick="setSpouseFeeling(this,'frustrated')">Frustrated too</div>
-          <div class="pill" onclick="setSpouseFeeling(this,'doesnt_care')">Doesn't care</div>
-          <div class="pill" onclick="setSpouseFeeling(this,'happy')">Happy with current</div>
-          <div class="pill" onclick="setSpouseFeeling(this,'unaware')">Unaware of issues</div>
-          <div class="pill" onclick="setSpouseFeeling(this,'on_board')">On board to switch</div>
-          <div class="pill" onclick="setSpouseFeeling(this,'skeptical')">Skeptical of us</div>
-        </div>
-        <input type="text" id="inp-dm-inline-feeling" placeholder="Notes &mdash; what did they say?" oninput="updateState('spouse_feeling',this.value)" style="font-size:12px">
-      </div>
-      <div id="spouse-name-row" class="hidden" style="margin-top:8px">
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Spouse's name (if they mention it)</div>
-        <input type="text" id="inp-spouse-name" placeholder="Spouse name" oninput="updateState('spouse_name',this.value)" style="font-size:12px">
-      </div>
-    </div>
-  </div>
-
-  <button class="next-btn standard-only" onclick="scrollToSection('sec-value')">Continue to Value Match &darr;</button>
-
-  <!-- ===== MINING INTEREST CHECK ===== -->
-  <div class="mining-only" id="mining-interest-check" style="margin-top:20px;padding:16px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-lg)">
+  <div id="mining-interest-check" style="margin-top:20px;padding:16px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-lg)">
     <div class="section-label" style="color:var(--warning)">Interest Level Check</div>
     <p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">Based on the conversation so far, how interested are they?</p>
-
     <div style="display:flex;gap:8px;margin-bottom:12px">
       <div class="interest-pill interested" onclick="setMiningInterest(this,'interested')">Interested</div>
       <div class="interest-pill mildly" onclick="setMiningInterest(this,'mildly')">Mildly Interested</div>
       <div class="interest-pill not-interested" onclick="setMiningInterest(this,'not_interested')">Not Interested</div>
     </div>
-
     <div class="coach-note" style="margin-top:0">
       <strong>Reading signals:</strong><br>
       &bull; If they're asking questions about plans or pricing &rarr; they're interested<br>
       &bull; If they say "just send me something" &rarr; mildly interested, get the email<br>
       &bull; If they say "not interested" or "I'm happy" &rarr; graceful exit, plant the seed
     </div>
-
-    <!-- Interested response -->
     <div id="mining-interest-interested" class="hidden" style="margin-top:12px">
-      <div class="script-block" style="border-left-color:var(--success)">
-        "Great! Let me learn a bit more about what you're dealing with so I can recommend the right plan."
-      </div>
-      <div class="mining-coach-note" style="margin-top:8px">
-        <strong>Call warming up?</strong> If they're engaging and asking questions, switch to Standard mode for the full pitch &mdash; Settings (gear icon) &rarr; Mode toggle. Standard gives you full pain deepener, Paint the Picture, and all 8 closing techniques.
-      </div>
-      <button class="next-btn" onclick="scrollToSection('sec-pain')">Continue to Pain Discovery &darr;</button>
+      <div class="script-block" style="border-left-color:var(--success)">"Great! Let me learn a bit more about what you're dealing with so I can recommend the right plan."</div>
+      <div class="mining-coach-note" style="margin-top:8px"><strong>Call warming up?</strong> Switch to Standard mode for the full gap selling flow.</div>
+      <button class="next-btn" onclick="scrollToSection('sec-gap')">Continue to Gap Selling &darr;</button>
     </div>
-
-    <!-- Mildly interested response -->
     <div id="mining-interest-mildly" class="hidden" style="margin-top:12px">
-      <div class="script-block" style="border-left-color:var(--warning)">
-        "No problem at all! Let me give you the quick highlights and I can send you the details."
-      </div>
+      <div class="script-block" style="border-left-color:var(--warning)">"No problem at all! Let me give you the quick highlights and I can send you the details."</div>
       <div style="display:flex;gap:8px;margin-top:8px">
         <button class="next-btn" onclick="scrollToSection('sec-value')" style="background:var(--warning);color:#000">Quick Value Pitch &darr;</button>
         <button class="next-btn" style="background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border)" onclick="scrollToSection('sec-schedule')">Schedule Site Survey &darr;</button>
         <button class="next-btn" style="background:var(--bg-input);color:var(--text-secondary);border:1px solid var(--border)" onclick="scrollToSection('sec-disposition')">Send Info &darr;</button>
       </div>
     </div>
-
-    <!-- Not interested response -->
     <div id="mining-interest-not-interested" class="hidden" style="margin-top:12px">
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);margin-bottom:6px">Graceful Exit</div>
       <div class="script-block" style="border-left-color:var(--text-muted)">
@@ -1292,9 +1352,11 @@ textarea:focus { border-color: var(--accent); }
       <button class="next-btn" onclick="scrollToSection('sec-disposition')" style="background:var(--text-muted)">Go to Disposition &darr;</button>
     </div>
   </div>
-
-  <button class="next-btn mining-only" onclick="scrollToSection('sec-value')">Continue &darr;</button>
+  <button class="next-btn" onclick="scrollToSection('sec-value')">Continue &darr;</button>
 </div>
+
+<!-- MINING-ONLY: Section 3 stub for checklist compat -->
+<div class="section mining-only" id="sec-discovery" data-check="discovery" style="display:none"></div>
 
 <!-- ==================== SECTION 4: VALUE MATCH ==================== -->
 <div class="section" id="sec-value" data-check="value">
@@ -1393,30 +1455,7 @@ textarea:focus { border-color: var(--accent); }
     <span style="font-size:12px;color:var(--accent);text-decoration:underline">Change Plan</span>
   </div>
   <div class="plan-grid" id="plan-grid">
-    <div class="plan-card" onclick="selectPlan('unfiber50')">
-      <div class="plan-name">Essentials</div>
-      <div class="plan-tagline">Great Value</div>
-      <div class="plan-price">$59<span>.95/mo</span></div>
-      <p style="font-size:11px;color:var(--success);margin-top:4px;font-weight:700">Unlimited Data</p>
-      <p class="feature-free-tv" style="font-size:11px;color:var(--accent);margin-top:2px">Free TV Service + Router Included</p>
-      <p style="font-size:11px;color:var(--text-muted);margin-top:4px">1-2 people, browsing &amp; streaming</p>
-    </div>
-    <div class="plan-card" onclick="selectPlan('unfiber100')">
-      <div class="plan-name">Plus</div>
-      <div class="plan-tagline">Most Popular</div>
-      <div class="plan-price">$99<span>.95/mo</span></div>
-      <p style="font-size:11px;color:var(--success);margin-top:4px;font-weight:700">Unlimited Data</p>
-      <p class="feature-free-tv" style="font-size:11px;color:var(--accent);margin-top:2px">Free TV Service + Router Included</p>
-      <p style="font-size:11px;color:var(--text-muted);margin-top:4px">3-5 people, WFH + streaming</p>
-    </div>
-    <div class="plan-card" onclick="selectPlan('unfiber300')">
-      <div class="plan-name">Pro</div>
-      <div class="plan-tagline">Full Power</div>
-      <div class="plan-price">$159<span>.95/mo</span></div>
-      <p style="font-size:11px;color:var(--success);margin-top:4px;font-weight:700">Unlimited Data</p>
-      <p class="feature-free-tv" style="font-size:11px;color:var(--accent);margin-top:2px">Free TV Service + Router Included</p>
-      <p style="font-size:11px;color:var(--text-muted);margin-top:4px">5+ people, gaming + WFH + 4K</p>
-    </div>
+    <!-- Plan cards rendered dynamically by renderPlanCards() -->
   </div>
 
   <!-- Don't Cancel — shown when a plan is selected -->
@@ -2223,12 +2262,209 @@ textarea:focus { border-color: var(--accent); }
 
 <!-- ==================== JAVASCRIPT ==================== -->
 <script>
-// ===== CLIENT CONFIGS =====
+// ===== SHARED COMPETITOR LIBRARY + CLIENT CONFIGS =====
+// ===== SHARED COMPETITOR LIBRARY =====
+var COMPETITOR_LIBRARY = {
+  spectrum: {
+    name: 'Spectrum',
+    match: ["spectrum", "charter", "time warner", "twc", "bright house"],
+    killer: '"Do you know what your Spectrum bill will be 12 months from now?"',
+    response: '"Spectrum starts low but the promo expires. After 12 months it jumps to $55, $65, sometimes $75 — and it keeps going up. With us, your price is locked. No contract, no promo games. Try us 30 days — if you don\'t notice a difference, every penny back."',
+    table: [["Intro price", "$30-50/mo (12-month promo)", "Quoted rate from day one"], ["After promo", "$55-75/mo and climbing", "Same \u2014 price is locked"], ["Contract", "No, but rate jumps after promo", "No contract, rate never changes"], ["Bandwidth", "Shared cable (peak slowdowns)", "Dedicated connection"], ["Data caps", "\"Unlimited\" but throttling reported", "Truly unlimited, no throttling"], ["Support", "National call center", "Local support team"]]
+  },
+  att: {
+    name: 'AT&T',
+    match: ["at&t", "att", "at and t", "uverse", "u-verse"],
+    killer: '"What speeds are you actually getting with AT&T — not what they advertise, but what you see day to day?"',
+    response: '"AT&T has been around forever, but a lot of their infrastructure is old copper lines. Customers tell us they\'re getting 10-25 Mbps on a good day and paying $70+ for it. We deliver consistent speeds, local support, and your price doesn\'t change."',
+    table: [["Technology", "Often old DSL copper", "Modern infrastructure"], ["Actual speeds", "10-25 Mbps (many areas)", "Consistent as quoted"], ["Price", "$55-80/mo (promos expire)", "Price locked"], ["Support", "Offshore call centers", "Local team"], ["Contract", "Often required", "No contract"], ["Data", "Caps on some plans", "Truly unlimited"]]
+  },
+  cox: {
+    name: 'Cox',
+    match: ["cox"],
+    killer: '"What are you paying Cox right now? And what did you sign up for originally?"',
+    response: '"Cox is reliable in the city, but they\'re expensive. Most Cox customers we talk to are paying $130-170 a month and their rate goes up every year. With us, you get unlimited data at a lower price and the price is locked."',
+    table: [["Price", "$130-170/mo", "Lower rate, locked"], ["Data", "Caps on basic plans", "Unlimited"], ["Price Lock", "No (promo expires)", "Price locked"], ["Contract", "Often 1-2 year", "Month-to-month"], ["Support", "National call center", "Local team"]]
+  },
+  centurylink: {
+    name: 'CenturyLink',
+    match: ["centurylink", "century link", "lumen", "brightspeed"],
+    killer: '"What speeds are you actually getting with CenturyLink?"',
+    response: '"CenturyLink is running on old copper lines in most areas. Their customers are often getting 10-20 Mbps on a good day. We deliver consistent, faster speeds on modern infrastructure with local support."',
+    table: [["Technology", "Old DSL copper", "Modern infrastructure"], ["Speed", "10-20 Mbps typical", "Consistent as quoted"], ["Support", "Offshore call center", "Local team"], ["Price Lock", "No", "Price locked"], ["Data", "Varies", "Truly unlimited"]]
+  },
+  frontier: {
+    name: 'Frontier',
+    match: ["frontier", "fios", "brightspeed"],
+    killer: '"Do you know if you\'re on Frontier\'s DSL or their fiber?"',
+    response: '"Frontier has been around a long time. What we hear is speeds don\'t hold up — especially DSL at 10-15 Mbps. We deliver consistent speeds, local support, no week-long repair waits. Try us 30 days."',
+    table: [["Typical speeds", "3-25 Mbps (DSL)", "Consistent as quoted"], ["Reliability", "Frequent outages reported", "Dedicated, consistent uptime"], ["Technology", "Aging copper DSL lines", "Modern infrastructure"], ["Support", "Days to weeks for repairs", "Local team, responsive"], ["Contract", "Varies", "No contract"], ["Guarantee", "No guarantee", "30-day money-back guarantee"]]
+  },
+  starlink: {
+    name: 'Starlink',
+    match: ["starlink", "spacex", "elon"],
+    killer: '"Are you comfortable with speeds that vary from 25 to 220 Mbps depending on congestion and weather?"',
+    response: '"Starlink is impressive tech. Where people get frustrated is consistency — speeds bounce around, weather affects it, and at $120/mo plus $599 equipment, it\'s a big investment. With us, consistent connection, lower cost, and 30-day money-back."',
+    table: [["Monthly cost", "$120/mo", "Lower rate, locked in"], ["Upfront cost", "$599 equipment", "Low install fee or free"], ["Speeds", "25-220 Mbps (variable)", "Consistent as quoted"], ["Latency", "25-60ms+ (spikes)", "Low, reliable"], ["Weather", "Rain/snow degrades signal", "Not affected"], ["Contract", "No, but $599 sunk cost", "No contract, 30-day guarantee"], ["Support", "App/email only", "Local support team"]]
+  },
+  hughesnet: {
+    name: 'HughesNet',
+    match: ["hughesnet", "hughes net", "hughes"],
+    killer: '"How often do you hit your data cap with HughesNet?"',
+    response: '"HughesNet bounces your signal off a satellite 22,000 miles away. That\'s why it\'s slow and laggy. We\'re local — faster, more reliable, unlimited data, and cheaper."',
+    table: [["Technology", "Satellite (22,000 miles)", "Local infrastructure"], ["Latency", "600-900ms (video calls stutter)", "Low (smooth video & gaming)"], ["Data caps", "15-100 GB/mo + throttling", "Truly unlimited"], ["Weather", "Rain/snow degrades signal", "Not affected"], ["Contract", "2-year, $400 ETF", "No contract"], ["Monthly cost", "$65-150/mo", "Lower, price locked"], ["Guarantee", "No money-back", "30-day money-back guarantee"]]
+  },
+  tmobile: {
+    name: 'T-Mobile Home Internet',
+    match: ["t-mobile", "tmobile", "t mobile", "tmo", "metro"],
+    killer: '"If your speeds drop during the evening and T-Mobile doesn\'t guarantee any minimum speed, what\'s your backup plan?"',
+    response: '"T-Mobile is solid on paper — $50, no contract. The challenge is consistency. Same towers as phone customers, and home internet gets lower priority. Evenings, speeds drop. With us, dedicated connection, consistent speeds. Try us 30 days."',
+    table: [["Monthly cost", "$50/mo", "Competitive, price locked"], ["Speeds", "33-245 Mbps (no guarantee)", "Consistent as quoted"], ["Peak hours", "Deprioritized behind mobile", "Dedicated, no deprioritization"], ["Upload", "Typically 5-10 Mbps", "Strong upload for WFH"], ["Installation", "Self-install", "Professional install"], ["Guarantee", "No speed guarantee", "30-day money-back guarantee"]]
+  },
+  viasat: {
+    name: 'Viasat',
+    match: ["viasat", "exede", "wildblue", "wild blue"],
+    killer: '"Are you on one of Viasat\'s unlimited plans, or do you have a data cap?"',
+    response: '"Viasat is satellite — same challenges as HughesNet. High latency, weather issues, and their \'unlimited\' plans still throttle after a threshold. We\'re ground-based, truly unlimited, no throttling, and weather doesn\'t matter."',
+    table: [["Technology", "Satellite", "Local infrastructure"], ["Latency", "600-900ms", "Low (smooth video & gaming)"], ["Data", "\"Unlimited\" but throttled", "Truly unlimited"], ["Weather", "Rain/snow degrades signal", "Not affected"], ["Contract", "2-year contract", "No contract"], ["Monthly cost", "$70-200/mo", "Lower, price locked"], ["Guarantee", "No money-back", "30-day money-back guarantee"]]
+  },
+  xfinity: {
+    name: 'Xfinity / Comcast',
+    match: ["xfinity", "comcast"],
+    killer: '"When you look at your Xfinity bill, do you know how much you\'re actually paying once you add equipment rental and fees?"',
+    response: '"Xfinity looks competitive at first. But equipment rental is $15/mo, there\'s a 1.2 TB data cap with overages up to $100/mo, and most plans need a contract. With us — no equipment fee, no data cap, no contract."',
+    table: [["Advertised price", "$40-65/mo (contract)", "Quoted rate, no contract"], ["Equipment fees", "$14-15/mo router rental", "No monthly equipment fee"], ["Data cap", "1.2 TB/mo (overages to $100)", "Truly unlimited"], ["Contract", "1-2 years, ETF if cancel", "Month-to-month"], ["After promo", "Increases significantly", "Locked in"], ["Guarantee", "Locked into contract", "30-day money-back guarantee"]]
+  },
+  mediacom: {
+    name: 'Mediacom',
+    match: ["mediacom"],
+    killer: '"Do you know what happens to your Mediacom rate after the first year?"',
+    response: '"Mediacom\'s promo rate jumps after 12 months, data caps hit when you least expect it, and when something goes wrong, good luck getting someone on the phone. With us — price locked, truly unlimited data, and a real person picks up."',
+    table: [["Intro price", "$49-70/mo (12-month promo)", "Quoted rate from day one"], ["After promo", "$80-120/mo", "Same \u2014 price is locked"], ["Data caps", "1-5 TB with overage fees", "Truly unlimited"], ["Bandwidth", "Shared cable (peak slowdowns)", "Dedicated connection"], ["Support", "Long hold times", "Local support team"], ["Guarantee", "No guarantee", "30-day money-back guarantee"]]
+  },
+  uscellular: {
+    name: 'US Cellular Home Internet',
+    match: ["us cellular", "uscellular", "u.s. cellular"],
+    killer: '"Have you noticed your US Cellular speeds drop in the evening when everyone\'s on their phones?"',
+    response: '"US Cellular home internet runs on the same towers as phone customers, and home internet gets deprioritized. Evenings and weekends, speeds drop. With us, dedicated connection that doesn\'t compete with mobile users."',
+    table: [["Technology", "Cellular (shared tower)", "Dedicated connection"], ["Priority", "Deprioritized behind mobile", "Dedicated"], ["Speed guarantee", "No minimum guaranteed", "Consistent as quoted"], ["Peak hours", "Slows when busy", "Same speed 24/7"], ["Contract", "No contract", "No contract"], ["Guarantee", "No guarantee", "30-day money-back guarantee"]]
+  },
+  windstream: {
+    name: 'Windstream',
+    match: ["windstream", "kinetic"],
+    killer: '"What speeds are you actually seeing with Windstream day to day?"',
+    response: '"Windstream is running on old DSL infrastructure in most areas. Customers tell us they\'re getting 10-25 Mbps and paying $60-80/mo. We deliver faster, more consistent speeds with local support and no contract."',
+    table: [["Technology", "Old DSL (most areas)", "Modern infrastructure"], ["Speed", "10-25 Mbps typical", "Consistent as quoted"], ["Support", "National call center", "Local team"], ["Contract", "Varies", "No contract"], ["Guarantee", "No guarantee", "30-day money-back guarantee"]]
+  },
+  midco: {
+    name: 'Midco',
+    match: ["midco", "midcontinent"],
+    killer: '"Midco is a solid regional provider. What made you start looking at other options?"',
+    response: '"Midco is decent in their coverage areas, but pricing can creep up and availability is limited. We offer competitive speeds with price lock and local support you can actually reach."',
+    table: [["Price", "Varies, can increase", "Price locked"], ["Coverage", "Limited to certain areas", "Expanding coverage"], ["Support", "Regional", "Local team"], ["Contract", "Varies", "No contract"], ["Guarantee", "Varies", "30-day money-back guarantee"]]
+  },
+  verizon: {
+    name: 'Verizon',
+    match: ["verizon", "fios"],
+    killer: '"What\'s your actual Verizon bill once you add all the fees?"',
+    response: '"Verizon has solid fiber where it\'s available, but many areas only get their 4G/5G home internet which is shared and deprioritized. Plus equipment fees and promo pricing that expires. With us, what we quote is what you pay."',
+    table: [["Pricing", "Promo rates expire", "Price locked"], ["Equipment", "Rental fees", "Included"], ["Support", "National call center", "Local team"], ["Contract", "Often required for best price", "No contract"], ["Guarantee", "Varies", "30-day money-back guarantee"]]
+  },
+};
+
 var CLIENT_CONFIGS = {
+  cbnflx: {
+    id: 'cbnflx',
+    name: 'Community Broadband Networks - FLX',
+    version: 'v6.0.0',
+    phone: '(315) 325-5000',
+    website: 'www.cbn-flx.com',
+    approvalEmail: null,
+    location: 'Finger Lakes region, upstate New York',
+    city: 'Finger Lakes region',
+    leadStateDefault: 'NY',
+    googleRating: '4.8',
+    uptime: null,
+    storagePrefix: 'cbnflx',
+    paymentMethods: null,
+    planBenefits: 'No Contract',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 50,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Plan A', speed: '50 Mbps', upload: '10 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  vtx1: {
+    id: 'vtx1',
+    name: 'VTX1 Internet',
+    version: 'v6.0.0',
+    phone: '(512) 897-1860',
+    website: 'www.soscomm.com (transitioning to VTX1)',
+    approvalEmail: null,
+    location: 'North and Central Texas',
+    city: 'North and Central Texas',
+    leadStateDefault: 'TX',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'vtx1',
+    paymentMethods: null,
+    planBenefits: 'No Contract',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Plan A', speed: '50 Mbps', upload: '10 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
   alamo: {
     id: 'alamo_broadband',
     name: 'Alamo Broadband',
-    version: 'v5.11.11',
+    version: 'v6.0.0',
     phone: '(210) 587-7201',
     website: 'alamobroadband.com',
     approvalEmail: 'approval@alamobroadband.com',
@@ -2256,7 +2492,7 @@ var CLIENT_CONFIGS = {
       hasFreeTV: true,
       hasMilitaryDiscount: false,
       hasPoleFees: true,
-      hasBusinessPlans: false
+      hasBusinessPlans: false,
     },
     team: [
       { value: 'Aaron Lim', label: 'Aaron L.', fullLabel: 'Aaron Lim' },
@@ -2264,24 +2500,738 @@ var CLIENT_CONFIGS = {
       { value: 'Ernie', label: 'Ernie', fullLabel: 'Ernie' },
       { value: 'Evan', label: 'Evan', fullLabel: 'Evan' },
       { value: 'Jay', label: 'Jay', fullLabel: 'Jay' },
-      { value: 'Mario Gan Jr', label: 'Mario G.', fullLabel: 'Mario Gan Jr' },
+      { value: 'Mario Gan Jr', label: 'Mario J.', fullLabel: 'Mario Gan Jr' },
       { value: 'Paul Gonzales', label: 'Paul G.', fullLabel: 'Paul Gonzales' },
       { value: 'Rose Carbon', label: 'Rose C.', fullLabel: 'Rose Carbon' },
       { value: 'Samantha', label: 'Samantha', fullLabel: 'Samantha' },
       { value: 'Walter', label: 'Walter', fullLabel: 'Walter' }
     ],
     plans: {
-      unfiber50:  { name: 'Essentials', speed: '50 Mbps',  upload: '10 Mbps',  price: 59.95,  tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
-      unfiber100: { name: 'Plus',       speed: '100 Mbps', upload: '20 Mbps',  price: 99.95,  tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
-      unfiber300: { name: 'Pro',        speed: '300 Mbps', upload: '50 Mbps',  price: 159.95, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+      plan_a: { name: 'Essentials', speed: '50 Mbps', upload: '10 Mbps', price: 59.95, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plus', speed: '100 Mbps', upload: '20 Mbps', price: 99.95, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Pro', speed: '300 Mbps', upload: '50 Mbps', price: 159.95, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
     },
-    competitors: null // will be set after competitors object is defined below
+    competitors: null // assigned below from shared library
+  },
+
+  altitude: {
+    id: 'altitude',
+    name: 'Altitude ISP',
+    version: 'v6.0.0',
+    phone: null,
+    website: 'altitudeisp.com',
+    approvalEmail: null,
+    location: 'Central Texas — Bell, Coryell, Lampasas Counties',
+    city: 'Central Texas — Bell',
+    leadStateDefault: 'TX',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'altitude',
+    paymentMethods: null,
+    planBenefits: 'No Contract',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Gigawave 100', speed: '100 Mbps', upload: '100 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Gigawave 300', speed: '300 Mbps', upload: '300 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Gigawave 1000', speed: '1000 Mbps', upload: '1000 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  aristotle: {
+    id: 'aristotle',
+    name: 'Aristotle Internet',
+    version: 'v6.0.0',
+    phone: '501-823-0108',
+    website: 'aristotle.net',
+    approvalEmail: null,
+    location: 'Arkansas Delta — rural eastern Arkansas along the Mississippi River',
+    city: 'Arkansas Delta — rural eastern Arkansas along the Mississippi River',
+    leadStateDefault: 'AR',
+    googleRating: '4.4',
+    uptime: null,
+    storagePrefix: 'aristotle',
+    paymentMethods: null,
+    planBenefits: 'No Contract',
+    priceLockDuration: null,
+    referralReward: '$50 credit',
+    guaranteeDays: 30,
+    installFee: 100,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Essentials', speed: '50 Mbps', upload: '5 Mbps', price: 44.95, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Premium', speed: '75 Mbps', upload: '15 Mbps', price: 75.95, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Ultimate', speed: '100 Mbps', upload: '20 Mbps', price: 93.95, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  beecreek: {
+    id: 'beecreek',
+    name: 'Bee Creek Communications, Inc.',
+    version: 'v6.0.0',
+    phone: '(830) 990-1258',
+    website: 'beecreek.net',
+    approvalEmail: null,
+    location: 'Fredericksburg, TX (Texas Hill Country)',
+    city: 'Fredericksburg',
+    leadStateDefault: 'TX',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'beecreek',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Free Install',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Plan A', speed: '50 Mbps', upload: '10 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  broadbandcorp: {
+    id: 'broadbandcorp',
+    name: 'Broadband Corp',
+    version: 'v6.0.0',
+    phone: '952-215-3800',
+    website: 'broadband-mn.com',
+    approvalEmail: null,
+    location: 'Central Minnesota — Meeker, McLeod, Carver, Wright, Sibley, Kandiyohi, Stearns Counties',
+    city: 'Central Minnesota — Meeker',
+    leadStateDefault: 'MN',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'broadbandcorp',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Router Included',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Home Basic', speed: '3 Mbps', upload: '10 Mbps', price: 35.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Home Value', speed: '50 Mbps', upload: '10 Mbps', price: 49.99, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Home Advantage', speed: '75 Mbps', upload: '10 Mbps', price: 74.99, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  buffalofiber: {
+    id: 'buffalofiber',
+    name: 'Buffalo Fiber',
+    version: 'v6.0.0',
+    phone: null,
+    website: 'https://ci.buffalo.mn.us/531/Buffalo-Fiber',
+    approvalEmail: null,
+    location: 'Buffalo, Minnesota',
+    city: 'Buffalo',
+    leadStateDefault: 'MN',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'buffalofiber',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Router Included',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Plan A', speed: '50 Mbps', upload: '10 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  celerity: {
+    id: 'celerity',
+    name: 'Celerity Internet',
+    version: 'v6.0.0',
+    phone: null,
+    website: 'celerityinternet.com',
+    approvalEmail: null,
+    location: 'Western South Dakota (Black Hills region) + NE Wyoming',
+    city: 'Western South Dakota (Black Hills region) + NE Wyoming',
+    leadStateDefault: 'SD',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'celerity',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Router Included',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Wireless 25', speed: '25 Mbps', upload: '10 Mbps', price: 54.95, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Wireless 50', speed: '50 Mbps', upload: '10 Mbps', price: 74.95, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Wireless 100', speed: '100 Mbps', upload: '10 Mbps', price: 104.95, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  centralvalley: {
+    id: 'centralvalley',
+    name: 'Central Valley Internet',
+    version: 'v6.0.0',
+    phone: 'Not specified in brief',
+    website: 'centralvalleyinternet.com',
+    approvalEmail: null,
+    location: 'Western San Joaquin Valley, Merced County',
+    city: 'Western San Joaquin Valley',
+    leadStateDefault: 'CA',
+    googleRating: '5.0',
+    uptime: null,
+    storagePrefix: 'centralvalley',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Free Install',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 100,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Basic/Everyday', speed: '100 Mbps', upload: '50 Mbps', price: 79.99, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Stream', speed: '200 Mbps', upload: '50 Mbps', price: 89.99, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Stream On', speed: '300 Mbps', upload: '50 Mbps', price: 99.99, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  communitywireless: {
+    id: 'communitywireless',
+    name: 'Community Wireless',
+    version: 'v6.0.0',
+    phone: '(812) 256-3701',
+    website: 'communitywireless.com (email: cwgo.net)',
+    approvalEmail: null,
+    location: 'Southern Indiana (Kentuckiana / Louisville metro fringe)',
+    city: 'Southern Indiana (Kentuckiana',
+    leadStateDefault: 'IN',
+    googleRating: '4.2',
+    uptime: null,
+    storagePrefix: 'communitywireless',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Free Install',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 150,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Plan A', speed: '50 Mbps', upload: '10 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  countrywireless: {
+    id: 'countrywireless',
+    name: 'Country Wireless',
+    version: 'v6.0.0',
+    phone: null,
+    website: 'countrywireless.com',
+    approvalEmail: null,
+    location: 'Central Wisconsin — Clark, Wood, Marathon, Lincoln, Taylor Counties',
+    city: 'Central Wisconsin — Clark',
+    leadStateDefault: 'WI',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'countrywireless',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Router Included',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Fixed Wireless 100', speed: '100 Mbps', upload: '10 Mbps', price: 49.99, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Fixed Wireless 200', speed: '200 Mbps', upload: '10 Mbps', price: 74.99, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Fiber', speed: 'Up to 1 Gbps (symmetrical)', upload: '10 Mbps', price: 100, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  crosslink: {
+    id: 'crosslink',
+    name: 'Crosslink Fiber',
+    version: 'v6.0.0',
+    phone: '(510) 663-5686',
+    website: 'crosslinknetworks.com',
+    approvalEmail: null,
+    location: 'Brentwood / Oakley, Contra Costa County, CA',
+    city: 'Brentwood',
+    leadStateDefault: 'CA',
+    googleRating: '4.5',
+    uptime: null,
+    storagePrefix: 'crosslink',
+    paymentMethods: null,
+    planBenefits: 'Free Install',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 150,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Plan A', speed: '50 Mbps', upload: '10 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  fallsnet: {
+    id: 'fallsnet',
+    name: 'FallsNet',
+    version: 'v6.0.0',
+    phone: '(320) 616-2166',
+    website: 'fallsnet.com',
+    approvalEmail: null,
+    location: null,
+    city: null,
+    leadStateDefault: 'MN',
+    googleRating: '4.7',
+    uptime: null,
+    storagePrefix: 'fallsnet',
+    paymentMethods: null,
+    planBenefits: 'Free Install',
+    priceLockDuration: null,
+    referralReward: '$100',
+    guaranteeDays: 30,
+    installFee: 199,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Plan A', speed: '50 Mbps', upload: '10 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  gvtc: {
+    id: 'gvtc',
+    name: 'GVTC Communications',
+    version: 'v6.0.0',
+    phone: null,
+    website: 'gvtc.com',
+    approvalEmail: null,
+    location: 'Texas Hill Country, Far North San Antonio, South Central Texas (2,000 sq mi)',
+    city: 'Texas Hill Country',
+    leadStateDefault: 'TX',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'gvtc',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Router Included',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Fiber 500', speed: '500 Mbps', upload: '10 Mbps', price: 47.96, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Fiber 1 Gig', speed: '1 Gbps', upload: '10 Mbps', price: 71.96, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Fiber 2 Gig', speed: '2 Gbps', upload: '10 Mbps', price: 116.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  inlandfiber: {
+    id: 'inlandfiber',
+    name: 'Inland Fiber Networks',
+    version: 'v6.0.0',
+    phone: null,
+    website: null,
+    approvalEmail: null,
+    location: 'The Palouse, Eastern Washington (Whitman County)',
+    city: 'The Palouse',
+    leadStateDefault: 'WA',
+    googleRating: '4.3',
+    uptime: null,
+    storagePrefix: 'inlandfiber',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Free Install',
+    priceLockDuration: null,
+    referralReward: '$20 credit',
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Plan A', speed: '50 Mbps', upload: '10 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  jcwifi: {
+    id: 'jcwifi',
+    name: 'JC WiFi',
+    displayName: 'JC WiFi (Ping Broadband)',
+    version: 'v6.0.0',
+    phone: '815-233-2138',
+    website: 'jcwifi.com',
+    approvalEmail: 'approval@jcwifi.com',
+    location: 'Freeport, IL area',
+    city: 'Freeport',
+    leadStateDefault: 'IL',
+    googleRating: null,
+    uptime: '99.99%',
+    storagePrefix: 'jcwifi',
+    paymentMethods: 'card, cash, and check',
+    planBenefits: 'No Contract, First Month Due at Install, Router Included',
+    priceLockDuration: 'forever',
+    referralReward: '$25 credit',
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 59,
+    webhooks: {
+      finalize: 'https://hook.us1.make.com/fodryenonlzyyzufx4i6a6him6fbcx49',
+      serviceability: 'https://hook.us1.make.com/8a59h2a4kkwbp3tfdzirhj3ws7rh9mqb',
+      calendar: 'https://pinggravity.app.n8n.cloud/webhook/google-calendar-events-fetch'
+    },
+    features: {
+      hasMining: true,
+      hasCalendar: true,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: true,
+    },
+    team: [
+      { value: 'Aaron Lim', label: 'Aaron L.', fullLabel: 'Aaron Lim' },
+      { value: 'AI Ashley', label: 'AI A.', fullLabel: 'AI Ashley' },
+      { value: 'Mario Gan', label: 'Mario G.', fullLabel: 'Mario Gan' },
+      { value: 'MJ Ramirez', label: 'MJ R.', fullLabel: 'MJ Ramirez' },
+      { value: 'Paul Gonzales', label: 'Paul G.', fullLabel: 'Paul Gonzales' },
+      { value: 'Sam Rivera', label: 'Sam R.', fullLabel: 'Sam Rivera' }
+    ],
+    plans: {
+      plan_a: { name: 'Bronze', speed: '50 Mbps', upload: '10 Mbps', price: 24.95, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Silver', speed: '100 Mbps', upload: '20 Mbps', price: 50.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Gold', speed: '300 Mbps', upload: '50 Mbps', price: 67.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    businessPlans: {
+      biz_plan_a: { name: 'Dedicated Link', price: 167.0, tagline: 'Business', desc: 'Dedicated business connection' },
+      biz_plan_b: { name: 'Dedicated Link Pro', price: 278.0, tagline: 'Business', desc: 'Dedicated business connection' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  lightwave: {
+    id: 'lightwave',
+    name: 'Lightwave Wireless',
+    version: 'v6.0.0',
+    phone: '760-749-3995',
+    website: 'lightwavebroadband.net',
+    approvalEmail: null,
+    location: 'San Diego County inland — northeast of Escondido',
+    city: 'San Diego County inland — northeast of Escondido',
+    leadStateDefault: 'CA',
+    googleRating: '5.0',
+    uptime: null,
+    storagePrefix: 'lightwave',
+    paymentMethods: null,
+    planBenefits: 'No Contract',
+    priceLockDuration: null,
+    referralReward: 'Free month',
+    guaranteeDays: 30,
+    installFee: 100,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Standard Plus', speed: '200 Mbps', upload: '50 Mbps', price: 60.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Pro', speed: '400 Mbps', upload: '100 Mbps', price: 70.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Premium', speed: '600 Mbps', upload: '200 Mbps', price: 80.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  matrix: {
+    id: 'matrix',
+    name: 'Matrix Broadband',
+    version: 'v6.0.0',
+    phone: '(209) 832-4420',
+    website: 'matrixbroadband.net',
+    approvalEmail: null,
+    location: null,
+    city: null,
+    leadStateDefault: 'CA',
+    googleRating: '4.4',
+    uptime: null,
+    storagePrefix: 'matrix',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Free Install',
+    priceLockDuration: null,
+    referralReward: '$100 credit',
+    guaranteeDays: 30,
+    installFee: 150,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Plan A', speed: '50 Mbps', upload: '10 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
   },
 
   mojo: {
     id: 'mojo_broadband',
     name: 'Mojo Broadband',
-    version: 'v5.11.8',
+    version: 'v6.0.0',
     phone: '480-575-7550',
     phoneSalesDirect: '480-300-4415',
     website: 'mojobroadband.co',
@@ -2300,9 +3250,9 @@ var CLIENT_CONFIGS = {
     installFee: 99,
     installFeeDiscounted: 0,
     webhooks: {
-      finalize:       'https://hook.us1.make.com/fi223x1r9jckxs72oaugymkb2ikvuizd',
+      finalize: 'https://hook.us1.make.com/fi223x1r9jckxs72oaugymkb2ikvuizd',
       serviceability: 'https://hook.us1.make.com/hfbh22mmd1nk4ywup4cn7tncrkwl2xba',
-      calendar:       null
+      calendar: null
     },
     features: {
       hasMining: true,
@@ -2310,188 +3260,468 @@ var CLIENT_CONFIGS = {
       hasFreeTV: false,
       hasMilitaryDiscount: true,
       hasPoleFees: true,
-      hasBusinessPlans: false
+      hasBusinessPlans: false,
     },
     team: [
-      { value: 'Aaron Lim',     label: 'Aaron L.',  fullLabel: 'Aaron Lim' },
-      { value: 'Jade Jupia',    label: 'Jade J.',   fullLabel: 'Jade Jupia' },
-      { value: 'Mario Gan Jr',  label: 'Mario G.',  fullLabel: 'Mario Gan Jr' },
-      { value: 'Paul Gonzales', label: 'Paul G.',   fullLabel: 'Paul Gonzales' },
-      { value: 'Rose Carbon',   label: 'Rose C.',   fullLabel: 'Rose Carbon' },
-      { value: 'Sam Rivera',    label: 'Sam R.',    fullLabel: 'Sam Rivera' }
+      { value: 'Aaron Lim', label: 'Aaron L.', fullLabel: 'Aaron Lim' },
+      { value: 'Jade Jupia', label: 'Jade J.', fullLabel: 'Jade Jupia' },
+      { value: 'Mario Gan Jr', label: 'Mario J.', fullLabel: 'Mario Gan Jr' },
+      { value: 'Paul Gonzales', label: 'Paul G.', fullLabel: 'Paul Gonzales' },
+      { value: 'Rose Carbon', label: 'Rose C.', fullLabel: 'Rose Carbon' },
+      { value: 'Sam Rivera', label: 'Sam R.', fullLabel: 'Sam Rivera' }
     ],
     plans: {
-      plan_a: { name: 'Basic',    speed: '100 Mbps', upload: '20 Mbps',  price: 66,  tagline: 'Everyday Internet', desc: '1-2 people, browsing & streaming' },
-      plan_b: { name: 'Standard', speed: '250 Mbps', upload: '50 Mbps',  price: 77,  tagline: 'Most Popular',      desc: '3-5 people, WFH + streaming' },
-      plan_c: { name: 'Premium',  speed: '500 Mbps', upload: '100 Mbps', price: 88,  tagline: 'Max Performance',   desc: '5+ people, gaming + WFH + 4K' }
+      plan_a: { name: 'Basic', speed: '100 Mbps', upload: '20 Mbps', price: 66.0, tagline: 'Everyday Internet', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Standard', speed: '250 Mbps', upload: '50 Mbps', price: 77.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Premium', speed: '500 Mbps', upload: '100 Mbps', price: 88.0, tagline: 'Max Performance', desc: '5+ people, gaming + WFH + 4K' }
     },
-    competitors: {
-      cox: {
-        name: 'Cox', match: ['cox'],
-        killer: '"What are you paying Cox right now? And what did you sign up for originally?"',
-        response: '"Cox is reliable in the city, but they\'re expensive. Most Cox customers we talk to are paying $130-170 a month and their rate goes up every year. With us, you get unlimited data at $66-88 a month and the price is locked for 3 years."',
-        table: [['Price','$130-170/mo','$66-88/mo'],['Data','Caps on basic','Unlimited'],['Price Lock','No (promo expires)','3-year lock'],['Contract','Often 1-2 year','Month-to-month'],['Support','National call center','Local Phoenix area team']]
-      },
-      trinet: {
-        name: 'TriNet', match: ['trinet','tri net','tri-net'],
-        killer: '"Have you noticed TriNet slowing down or having more outages lately?"',
-        response: '"TriNet is a good company but they\'ve been growing really fast and a lot of their customers are telling us the service isn\'t what it used to be. We\'re building our network differently \u2014 we don\'t oversell capacity."',
-        table: [['Reliability','Declining','Consistent'],['Support','Wait times growing','Local team'],['Price Lock','No','3 years'],['Data','Varies','Unlimited']]
-      },
-      centurylink: {
-        name: 'CenturyLink', match: ['centurylink','century link','lumen'],
-        killer: '"What speeds are you actually getting with CenturyLink?"',
-        response: '"CenturyLink is running on old copper lines out here. Most of their customers are getting 10-20 Mbps on a good day. We\'re giving you 100-500 Mbps on a dedicated wireless connection."',
-        table: [['Technology','Old DSL copper','Modern wireless'],['Speed','10-20 Mbps','100-500 Mbps'],['Support','Offshore call center','Local team'],['Price Lock','No','3 years']]
-      },
-      starlink: {
-        name: 'Starlink', match: ['starlink','spacex','elon'],
-        killer: '"What are you paying Starlink total \u2014 including the equipment cost?"',
-        response: '"Starlink works anywhere, but it\'s expensive \u2014 $120 a month plus the $599 dish. And the speeds bounce around a lot. With us, you get consistent speeds at $66-88 a month, equipment included, and a 3-year price lock."',
-        table: [['Monthly','$120/mo','$66-88/mo'],['Equipment','$599 upfront','Included'],['Latency','30-60ms','Low'],['Price Lock','No','3 years'],['Data','Deprioritized','Unlimited']]
-      },
-      airbeam: {
-        name: 'AirBeam', match: ['airbeam','air beam'],
-        killer: '"Did AirBeam notify you about the tower changes in your area?"',
-        response: '"A lot of AirBeam customers are coming to us right now because they\'re decommissioning towers. We\'re actually building where they\'re pulling out. We can usually get you set up within a few days."',
-        table: [['Network','Shutting down','Expanding'],['Reliability','Declining','99.9% uptime'],['Future','Uncertain','3-year price lock'],['Data','Varies','Unlimited']]
-      },
-      hughesnet: {
-        name: 'HughesNet', match: ['hughesnet','hughes net','hughes'],
-        killer: '"Are you hitting your data cap with HughesNet?"',
-        response: '"HughesNet bounces your signal off a satellite 22,000 miles away. That\'s why it\'s slow and laggy. We\'re a local tower just a few miles from you \u2014 faster, more reliable, unlimited data, and cheaper."',
-        table: [['Latency','600ms+','Low'],['Data','Capped','Unlimited'],['Price','$65-150/mo','$66-88/mo'],['Speed','25 Mbps','100-500 Mbps'],['Contract','2-year with ETF','Month-to-month']]
-      },
-      bam: {
-        name: 'BAM/Desert iNet', match: ['bam','desert inet','desert i-net'],
-        killer: '"Have you noticed a difference since BAM got bought out?"',
-        response: '"When BAM sold to an out-of-state company, a lot of customers lost that local feel. We\'re locally owned and operated right here in the Phoenix area \u2014 when you call, you get a real person."',
-        table: [['Ownership','Out-of-state','Local'],['Support','Declined','Local team'],['Network','Neglected','Growing'],['Price Lock','No','3 years']]
-      },
-      tmobile: {
-        name: 'T-Mobile Home Internet', match: ['t-mobile','tmobile','t mobile','tmo'],
-        killer: '"T-Mobile 5G Home is affordable, but a lot of customers have issues with their streaming services thinking they\'re in a different city. Have you run into that?"',
-        response: '"That\'s the IP rotation problem \u2014 T-Mobile\'s 5G bounces your connection around different towers, so Hulu or Netflix might think you\'re in a different city. With Mojo Broadband, you get a fixed connection pointed directly at your home. Your IP stays consistent, your streaming works perfectly, and you get a more reliable connection overall."',
-        table: [['Connection Type','Shared 5G (scattered)','Fixed wireless (direct to home)'],['IP Address','Rotates (streaming issues)','Consistent \u2014 no location problems'],['Reliability','Varies by congestion','99.99% uptime'],['Data','Deprioritized after threshold','Truly unlimited'],['Support','National call center','Local Phoenix area team']]
-      },
-      viasat: {
-        name: 'Viasat', match: ['viasat','exede','wildblue'],
-        killer: '"Viasat customers often tell us they\'re paying over $100 a month but the speeds don\'t come close to what was promised. Sound familiar?"',
-        response: '"Satellite internet has to travel 22,000 miles to space and back \u2014 that\'s why it\'s slow and drops in bad weather. Our towers are right here in the Phoenix area, just a few miles from your home. You\'ll notice the difference immediately. Lower price, faster speeds, and no weather headaches."',
-        table: [['Technology','Satellite (22,000 mi)','Ground tower (few miles)'],['Latency','600ms+','~20ms'],['Weather Impact','Major \u2014 rain/storms','Minimal'],['Price','$100-170/mo','Starting at $66/mo'],['Data','Capped + throttled','Truly unlimited']]
-      }
-    }
+    competitors: null // assigned below from shared library
   },
 
-  jcwifi: {
-    id: 'jcwifi',
-    name: 'JC WiFi',
-    displayName: 'JC WiFi (Ping Broadband)',
-    version: 'v5.11.8',
-    phone: '815-233-2138',
-    website: 'jcwifi.com',
-    approvalEmail: 'approval@jcwifi.com',
-    location: 'Freeport, IL area',
-    city: 'Freeport',
-    leadStateDefault: 'IL',
+  mounthoreb: {
+    id: 'mounthoreb',
+    name: 'Mount Horeb Telephone Company',
+    version: 'v6.0.0',
+    phone: null,
+    website: 'mhtc.net',
+    approvalEmail: null,
+    location: 'Southwestern Wisconsin (Dane County, Iowa County)',
+    city: 'Southwestern Wisconsin (Dane County',
+    leadStateDefault: 'WI',
     googleRating: null,
-    uptime: '99.99%',
-    storagePrefix: 'jcwifi',
-    paymentMethods: 'card, cash, and check',
-    planBenefits: 'No Contract, First Month Due at Install, Router Included',
+    uptime: null,
+    storagePrefix: 'mounthoreb',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Router Included',
     priceLockDuration: 'forever',
-    referralReward: '$25 credit',
+    referralReward: null,
     guaranteeDays: 30,
     installFee: 99,
-    installFeeDiscounted: 59,
+    installFeeDiscounted: 0,
     webhooks: {
-      finalize:       'https://hook.us1.make.com/fodryenonlzyyzufx4i6a6him6fbcx49',
-      serviceability: 'https://hook.us1.make.com/8a59h2a4kkwbp3tfdzirhj3ws7rh9mqb',
-      calendar:       'https://pinggravity.app.n8n.cloud/webhook/google-calendar-events-fetch'
+      finalize: null,
+      serviceability: null,
+      calendar: null
     },
     features: {
-      hasMining: true,
-      hasCalendar: true,
+      hasMining: false,
+      hasCalendar: false,
       hasFreeTV: false,
       hasMilitaryDiscount: false,
       hasPoleFees: true,
-      hasBusinessPlans: true
+      hasBusinessPlans: false,
     },
     team: [
-      { value: 'Aaron Lim',     label: 'Aaron L.',   fullLabel: 'Aaron Lim' },
-      { value: 'AI Ashley',     label: 'AI Ashley',  fullLabel: 'AI Ashley' },
-      { value: 'Mario Gan',     label: 'Mario G.',   fullLabel: 'Mario Gan' },
-      { value: 'MJ Ramirez',    label: 'MJ R.',      fullLabel: 'MJ Ramirez' },
-      { value: 'Paul Gonzales', label: 'Paul G.',     fullLabel: 'Paul Gonzales' },
-      { value: 'Sam Rivera',    label: 'Sam R.',      fullLabel: 'Sam Rivera' }
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
     ],
     plans: {
-      plan_a: { name: 'Bronze', speed: '50 Mbps',  upload: '10 Mbps', price: 24.95, tagline: 'Great Value',  desc: '1-2 people, browsing & streaming' },
-      plan_b: { name: 'Silver', speed: '100 Mbps', upload: '20 Mbps', price: 50.00, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
-      plan_c: { name: 'Gold',   speed: '300 Mbps', upload: '50 Mbps', price: 67.00, tagline: 'Full Power',   desc: '5+ people, gaming + WFH + 4K' }
+      plan_a: { name: 'Plan A', speed: '50 Mbps', upload: '10 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
     },
-    businessPlans: {
-      plan_biz_a: { name: 'Dedicated Link',     price: 167, tagline: 'Business',  desc: 'Dedicated business connection' },
-      plan_biz_b: { name: 'Dedicated Link Pro', price: 278, tagline: 'Business+', desc: 'Premium business connection' }
+    competitors: null // assigned below from shared library
+  },
+
+  nativenetwork: {
+    id: 'nativenetwork',
+    name: 'Native Network, Inc',
+    version: 'v6.0.0',
+    phone: '(509) 300-0116',
+    website: 'www.nativenetwork.com/local',
+    approvalEmail: null,
+    location: 'North Central Washington state',
+    city: 'North Central Washington state',
+    leadStateDefault: 'WA',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'nativenetwork',
+    paymentMethods: null,
+    planBenefits: 'No Contract',
+    priceLockDuration: null,
+    referralReward: '$40 credit',
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
     },
-    competitors: {
-      spectrum: {
-        name: 'Spectrum', match: ['spectrum','charter','time warner','twc','bright house'],
-        killer: '"Do you know what your Spectrum bill will be 12 months from now?"',
-        response: '"Spectrum is a big name \u2014 I get it. Here\'s the thing: that $30 rate is a promo. After 12 months it jumps to $55, $65, sometimes $75. No cap on increases. With us, the price is locked. No contract, no promo games. Try us 30 days \u2014 if you don\'t notice a difference, every penny back."',
-        table: [['Intro price','$30-50/mo (12-month promo)','Quoted rate from day one'],['After promo','$55-75/mo and climbing','Same \u2014 price is locked'],['Contract','No, but rate jumps after promo','No contract, rate never changes'],['Bandwidth','Shared cable (peak slowdowns)','Dedicated connection'],['Data caps','"Unlimited" but throttling reported','Truly unlimited, no throttling'],['Support','Long hold, overseas centers','Local support team'],['Risk','Cancel old service, hope for best','30-day money-back guarantee']]
-      },
-      xfinity: {
-        name: 'Xfinity / Comcast', match: ['xfinity','comcast'],
-        killer: '"When you look at your Xfinity bill, do you know how much you\'re actually paying once you add equipment rental and fees?"',
-        response: '"Xfinity looks competitive at first glance. But the equipment rental is about $15/mo, there\'s a 1.2 TB data cap with overages up to $100/mo, and most plans need a contract. With us \u2014 no equipment fee, no data cap, no contract. Try us 30 days."',
-        table: [['Advertised price','$40-65/mo (contract required)','Quoted rate, no contract'],['Equipment fees','$14-15/mo router rental','No monthly equipment fee'],['Data cap','1.2 TB/mo (overages to $100/mo)','Truly unlimited'],['Contract','1-2 years, ETF if cancel early','Month-to-month'],['After promo','Increases significantly','Locked in forever'],['Hidden costs','Broadcast, sports, equipment fees','Price quoted = price paid'],['Risk','Locked into contract','30-day money-back guarantee']]
-      },
-      frontier: {
-        name: 'Frontier', match: ['frontier','fios','verizon fios','brightspeed'],
-        killer: '"Do you know if you\'re on Frontier\'s DSL or their fiber?"',
-        response: '"Frontier\'s been around a long time. What we hear from folks is speeds don\'t hold up \u2014 especially DSL at 10-15 Mbps. We deliver consistent speeds, local support, no week-long repair waits. Try us 30 days."',
-        table: [['Typical speeds','3-25 Mbps (DSL)','Consistent speeds as quoted'],['Reliability','Frequent outages reported','Dedicated, consistent uptime'],['Technology','Aging copper DSL lines','Modern infrastructure'],['Support','Days to weeks for repairs','Local team, responsive'],['Contract','Varies','No contract'],['Data caps','Varies','Truly unlimited'],['Risk','Stuck hoping it improves','30-day money-back guarantee']]
-      },
-      starlink: {
-        name: 'Starlink', match: ['starlink','spacex','elon'],
-        killer: '"Are you comfortable with speeds that vary from 25 to 220 Mbps depending on congestion and weather?"',
-        response: '"Starlink is impressive tech. Where people get frustrated is consistency \u2014 speeds bounce around, weather affects it, and at $120/mo plus $599 equipment, it\'s a big investment. With us, consistent connection, lower monthly cost, $99 one-time install, and 30-day money-back."',
-        table: [['Monthly cost','$120/mo','Lower rate, locked in'],['Upfront cost','$599 equipment','$99 one-time install'],['Speeds','25-220 Mbps (highly variable)','Consistent as quoted'],['Latency','25-60ms+ (spikes common)','Low, reliable for video/gaming'],['Weather impact','Rain/snow/clouds degrade signal','Not affected by weather'],['Contract','No, but $599 sunk cost','No contract, 30-day guarantee'],['Support','App/email only','Local support team']]
-      },
-      mediacom: {
-        name: 'Mediacom', match: ['mediacom'],
-        killer: '"Do you know what happens to your Mediacom rate after the first year?"',
-        response: '"Mediacom is the big name around here \u2014 I get that. But here\'s what we keep hearing: the promo rate jumps after 12 months, data caps hit when you least expect it, and when something goes wrong, good luck getting someone on the phone. With us \u2014 price locked forever, truly unlimited data, and when you call, a real person picks up. Try us 30 days side by side."',
-        table: [['Intro price','$49-70/mo (12-month promo)','Quoted rate from day one'],['After promo','$80-120/mo','Same \u2014 price is locked'],['Data caps','1-5 TB with overage fees','Truly unlimited, no caps'],['Contract','No, but rate jumps after promo','No contract, rate never changes'],['Bandwidth','Shared cable (peak slowdowns)','Dedicated connection'],['Support','Long hold times reported','Local support team'],['Risk','Cancel old service, hope for best','30-day money-back guarantee']]
-      },
-      tmobile: {
-        name: 'T-Mobile Home Internet', match: ['t-mobile','tmobile','t mobile','metro'],
-        killer: '"If your speeds drop during the evening and T-Mobile doesn\'t guarantee any minimum speed, what\'s your backup plan?"',
-        response: '"T-Mobile is solid on paper \u2014 $50, no contract. The challenge is consistency. Same towers as phone customers, and home internet gets lower priority. Evenings, speeds drop. With us, dedicated connection, consistent speeds, real upload for video calls. Try us 30 days."',
-        table: [['Monthly cost','$50/mo','Competitive, price locked'],['Speeds','33-245 Mbps (no guarantee)','Consistent as quoted'],['Peak hours','Deprioritized behind mobile','Dedicated, no deprioritization'],['Upload','Typically 5-10 Mbps','Strong upload for WFH'],['Latency','Variable, spikes with congestion','Low, consistent'],['Installation','Self-install, signal is trial/error','Professional install ($99)'],['Guarantee','No speed guarantee','30-day money-back guarantee']]
-      },
-      hughesnet: {
-        name: 'HughesNet', match: ['hughesnet','hughes net','hughes'],
-        killer: '"How often do you hit your data cap with HughesNet?"',
-        response: '"HughesNet is one of the only options in a lot of rural areas \u2014 I get why you signed up. But satellite internet comes with real limitations: high latency means video calls stutter and gaming is basically impossible, data caps mean you\'re rationing your usage, and rain or clouds can knock you offline. With us, you get a dedicated ground-based connection \u2014 low latency, truly unlimited data, and weather doesn\'t affect it. Plus no contract. Try us 30 days side by side."',
-        table: [['Technology','Satellite (22,000 miles away)','Fixed wireless (local tower)'],['Latency','600-900ms (video calls stutter)','Low (smooth video & gaming)'],['Data caps','15-100 GB/mo + throttling','Truly unlimited, no throttling'],['Weather','Rain/snow degrades signal','Not affected by weather'],['Contract','2-year contract, $400 ETF','No contract, cancel anytime'],['Monthly cost','$65-150/mo','Lower, price locked forever'],['Guarantee','No money-back guarantee','30-day money-back guarantee']]
-      },
-      viasat: {
-        name: 'Viasat', match: ['viasat','exede','wild blue','wildblue'],
-        killer: '"Are you on one of Viasat\'s unlimited plans, or do you have a data cap?"',
-        response: '"Viasat is similar to HughesNet \u2014 satellite internet that works when there\'s no other option. The challenge is the same: high latency makes video calls and gaming rough, their \'unlimited\' plans still get throttled after a priority data threshold, and weather affects the signal. With us, you get a ground-based connection with low latency, truly unlimited data with no throttling ever, and weather doesn\'t matter. No contract, 30-day guarantee."',
-        table: [['Technology','Satellite','Fixed wireless (local tower)'],['Latency','600-900ms','Low (smooth video & gaming)'],['Data caps','"Unlimited" but throttled after priority threshold','Truly unlimited, no throttling'],['Weather','Rain/snow/clouds degrade signal','Not affected by weather'],['Contract','2-year contract','No contract'],['Monthly cost','$70-200/mo','Lower, price locked forever'],['Guarantee','No money-back guarantee','30-day money-back guarantee']]
-      },
-      uscellular: {
-        name: 'US Cellular Home Internet', match: ['us cellular','uscellular','u.s. cellular'],
-        killer: '"Have you noticed your US Cellular speeds drop in the evening when everyone\'s on their phones?"',
-        response: '"US Cellular home internet is convenient \u2014 plug it in and go. The issue is it runs on the same towers as phone customers, and home internet gets deprioritized. So evenings, weekends, anytime the tower is busy, your speeds drop. And there\'s no guaranteed minimum speed. With us, you get a dedicated connection that doesn\'t compete with mobile users. Consistent performance all day. Try us 30 days."',
-        table: [['Technology','Cellular (shared tower)','Fixed wireless (dedicated)'],['Priority','Deprioritized behind mobile','Dedicated connection'],['Speed guarantee','No minimum guaranteed','Consistent as quoted'],['Peak hours','Slows when tower is busy','Same speed 24/7'],['Upload','Typically very low','Strong upload for WFH'],['Contract','No contract','No contract'],['Monthly cost','$50/mo','Competitive, price locked'],['Guarantee','No guarantee','30-day money-back guarantee']]
-      }
-    }
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Plan A', speed: '50 Mbps', upload: '10 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  netwave: {
+    id: 'netwave',
+    name: 'NetWave Broadband',
+    version: 'v6.0.0',
+    phone: '952-209-0900',
+    website: '4netwave.net',
+    approvalEmail: null,
+    location: 'Southern Minnesota — south of Twin Cities metro',
+    city: 'Southern Minnesota — south of Twin Cities metro',
+    leadStateDefault: 'MN',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'netwave',
+    paymentMethods: null,
+    planBenefits: 'No Contract',
+    priceLockDuration: null,
+    referralReward: '$25 credit',
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Month-to-Month', speed: '125 Mbps', upload: '35 Mbps', price: 99.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: '1-Year Contract', speed: '125 Mbps', upload: '35 Mbps', price: 85.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: '2-Year Contract', speed: '125 Mbps', upload: '35 Mbps', price: 75.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  oasis: {
+    id: 'oasis',
+    name: 'Oasis Broadband',
+    version: 'v6.0.0',
+    phone: null,
+    website: null,
+    approvalEmail: null,
+    location: null,
+    city: null,
+    leadStateDefault: 'CA',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'oasis',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Router Included',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Plan A', speed: '50 Mbps', upload: '10 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  optimus: {
+    id: 'optimus',
+    name: 'Optimus Broadband',
+    version: 'v6.0.0',
+    phone: null,
+    website: 'optimusnet.us',
+    approvalEmail: null,
+    location: 'Grand Junction, CO (Mesa County)',
+    city: 'Grand Junction',
+    leadStateDefault: 'CO',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'optimus',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Free Install',
+    priceLockDuration: null,
+    referralReward: '$50',
+    guaranteeDays: 30,
+    installFee: 79,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Basic/Everyday', speed: '25 Mbps down', upload: '5 up', price: 60.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Protector', speed: '50 Mbps down', upload: '10 up', price: 80.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Guardian', speed: '100 Mbps down', upload: '15 up', price: 110.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  rivercanyon: {
+    id: 'rivercanyon',
+    name: 'River Canyon Wireless',
+    version: 'v6.0.0',
+    phone: null,
+    website: null,
+    approvalEmail: null,
+    location: 'Moab, UT / Southeastern Utah canyon country',
+    city: 'Moab',
+    leadStateDefault: 'UT',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'rivercanyon',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Free Install',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Plan A', speed: '50 Mbps', upload: '10 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  seamless: {
+    id: 'seamless',
+    name: 'Seamless Fiber Innovations',
+    version: 'v6.0.0',
+    phone: '217-686-4111',
+    website: 'seamlessfiberinnovations.com',
+    approvalEmail: null,
+    location: null,
+    city: null,
+    leadStateDefault: 'IL',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'seamless',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Free Install',
+    priceLockDuration: 'forever',
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Plan A', speed: '50 Mbps', upload: '10 Mbps', price: 50.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps', price: 75.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  simpliunlimited: {
+    id: 'simpliunlimited',
+    name: 'SimpliUnlimited',
+    version: 'v6.0.0',
+    phone: null,
+    website: 'simpliunlimited.com',
+    approvalEmail: null,
+    location: 'Eastern Washington (Nine Mile Falls area, Ritzville, Lind) + expanding',
+    city: 'Eastern Washington (Nine Mile Falls area',
+    leadStateDefault: 'WA',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'simpliunlimited',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Router Included',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'SimpliMax', speed: 'Up to 100 Mbps', upload: '10 Mbps', price: 109.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Other tiers', speed: 'Up to 300 Mbps (wireless)', upload: '1 Gbps', price: 75, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  tecinfo: {
+    id: 'tecinfo',
+    name: 'TecInfo Communications',
+    version: 'v6.0.0',
+    phone: null,
+    website: 'tecinfo.net',
+    approvalEmail: null,
+    location: 'Mississippi Delta — Washington, Bolivar, Sunflower Counties + Arkansas',
+    city: 'Mississippi Delta — Washington',
+    leadStateDefault: 'AR',
+    googleRating: '4.3',
+    uptime: null,
+    storagePrefix: 'tecinfo',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Router Included',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'Wireless 50', speed: '50 Mbps', upload: '10 Mbps', price: 49.95, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'Fiber 150', speed: '150 Mbps', upload: '10 Mbps', price: 55.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'Fiber 500', speed: '500 Mbps', upload: '10 Mbps', price: 80.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
+  },
+
+  tnet: {
+    id: 'tnet',
+    name: 'TNET Broadband Internet LLC',
+    version: 'v6.0.0',
+    phone: null,
+    website: 'tnet.biz',
+    approvalEmail: null,
+    location: 'Southern Oregon + Northern California — rural high desert',
+    city: 'Southern Oregon + Northern California — rural high desert',
+    leadStateDefault: 'CA',
+    googleRating: null,
+    uptime: null,
+    storagePrefix: 'tnet',
+    paymentMethods: null,
+    planBenefits: 'No Contract, Router Included',
+    priceLockDuration: null,
+    referralReward: null,
+    guaranteeDays: 30,
+    installFee: 99,
+    installFeeDiscounted: 0,
+    webhooks: {
+      finalize: null,
+      serviceability: null,
+      calendar: null
+    },
+    features: {
+      hasMining: false,
+      hasCalendar: false,
+      hasFreeTV: false,
+      hasMilitaryDiscount: false,
+      hasPoleFees: true,
+      hasBusinessPlans: false,
+    },
+    team: [
+      { value: 'Unassigned', label: 'TBD', fullLabel: 'Unassigned' }
+    ],
+    plans: {
+      plan_a: { name: 'AirFiber 100', speed: '150 Mbps', upload: '10 Mbps', price: 60.0, tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+      plan_b: { name: 'AirFiber 200 (Lakeview only)', speed: '250 Mbps', upload: '10 Mbps', price: 80.0, tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+      plan_c: { name: 'AirFiber 300 (Lakeview only)', speed: '350 Mbps', upload: '10 Mbps', price: 100.0, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+    },
+    competitors: null // assigned below from shared library
   }
 };
+
+
+var competitors = {}; // set by loadClient()
+
 
 // Global references — set by loadClient()
 var CLIENT = null;
@@ -2540,9 +3770,8 @@ const state = {
 
 // ===== CHECKLIST CONFIG =====
 const checkItemsStandard = [
-  { id: 'opening', label: 'Opening + Usage + Score', section: 'sec-opening', icon: '\u{1F4DE}' },
-  { id: 'pain', label: 'Pain Discovery', section: 'sec-pain', icon: '\u{1F494}' },
-  { id: 'discovery', label: 'Qualifying', section: 'sec-discovery', icon: '\u{2753}' },
+  { id: 'opening', label: 'Opening', section: 'sec-opening', icon: '\u{1F4DE}' },
+  { id: 'pain', label: 'Gap Selling Discovery', section: 'sec-gap', icon: '\u{1F494}' },
   { id: 'value', label: 'Value Match', section: 'sec-value', icon: '\u{1F4A1}' },
   { id: 'roi', label: 'ROI + Plan', section: 'sec-roi', icon: '\u{1F4B0}' },
   { id: 'payment', label: 'Payment', section: 'sec-payment', icon: '\u{1F4B3}' },
@@ -2568,11 +3797,465 @@ const checkState = {};
 checkItemsStandard.forEach(c => checkState[c.id] = 'pending');
 
 // ===== PLANS =====
-const plans = {
-  unfiber50:  { name: 'Essentials', speed: '50 Mbps',  upload: '10 Mbps',  price: 59.95,  tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
-  unfiber100: { name: 'Plus',       speed: '100 Mbps', upload: '20 Mbps',  price: 99.95,  tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
-  unfiber300: { name: 'Pro',        speed: '300 Mbps', upload: '50 Mbps',  price: 159.95, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
+// Populated dynamically by loadClient() from CLIENT_CONFIGS.plans
+var plans = {
+  unfiber50:  { name: 'Plan A', speed: '50 Mbps',  upload: '10 Mbps',  price: 50,  tagline: 'Great Value', desc: '1-2 people, browsing & streaming' },
+  unfiber100: { name: 'Plan B', speed: '100 Mbps', upload: '20 Mbps',  price: 75,  tagline: 'Most Popular', desc: '3-5 people, WFH + streaming' },
+  unfiber300: { name: 'Plan C', speed: '300 Mbps', upload: '50 Mbps',  price: 100, tagline: 'Full Power', desc: '5+ people, gaming + WFH + 4K' }
 };
+
+// ===== GAP SELLING v3 STATE + DATA + FUNCTIONS =====
+
+var gsState = {
+  score:0, pains:[], usages:[], who:[], dm:null, spouse:null,
+  selectedDrill:null, customDrill:'', tenAnswer:[],
+  provider:null, price:0, priority:null,
+  quant:{freq:null,dur:null,called:null}
+};
+
+var gsLabels = {
+  pain:{slow:'Slow speeds',drops:'Drops/disconnects',buffering:'Buffering',outages:'Outages',price:'Paying too much',data_cap:'Data caps',support:'Bad support',latency:'Lag/latency',inconsistent:'Inconsistent'},
+  usage:{streaming:'Streaming',gaming:'Gaming',wfh:'Work from home',browsing:'Browsing',smart_home:'Smart home',school:'School',video_calls:'Video calls'},
+  who:{just_me:'Just me',partner:'Partner',family:'Whole family',kids:'Kids',roommates:'Roommates'},
+  dm:{sole:'I handle it',together:'Decide together',spouse:'Spouse decides',landlord:'Landlord'},
+  spouse:{frustrated:'Frustrated too',doesnt_care:"Doesn't care",happy:'Happy with current',on_board:'On board'},
+  ten:{reliable:'Just want it to work',faster:'Faster speeds',no_buffer:'No buffering',cheaper:'Lower price',no_caps:'No data caps',better_support:'Better support',consistent:'Consistent'}
+};
+
+// Drill cards: key = pain+usage+who combos, value = {l: label, a: ask question, m: mirror script}
+var gsDrills = {
+  'buffering+streaming+family':{l:'Movie night ruined',a:'"So the family sits down for movie night and it\'s just... buffering every five minutes?"',m:'"So you finally get everyone on the couch, you hit play... and it just sits there spinning. Every single time. That\'s got to be exhausting."'},
+  'buffering+streaming+kids':{l:'Kids\' shows buffering',a:'"So the kids are trying to watch something and it\'s just loading... loading... loading?"',m:'"The kids just want to watch their show. That\'s it. And they\'re sitting there waiting for it to load while you\'re trying to explain why the internet doesn\'t work again."'},
+  'buffering+streaming':{l:'Streaming won\'t stop buffering',a:'"So every time you sit down to watch something it\'s just buffering constantly?"',m:'"You sit down to relax, hit play, and you\'re just watching a spinning wheel. You\'re paying for internet AND streaming services and you can\'t even use them."'},
+  'buffering+gaming':{l:'Gaming is unplayable',a:'"So you\'re in the middle of a game and it just freezes or lags out?"',m:'"You\'re mid-game, clutch moment, and the whole thing just freezes. Or worse, you get kicked. That\'s not even playable."'},
+  'drops+wfh':{l:'Work calls dropping',a:'"So you\'re on a Zoom call with your team or a potential customer and the connection just drops?"',m:'"So you\'re in the middle of a presentation, or on a call with a client, and you just... disappear. You have to call back, apologize, explain it\'s your internet again. That\'s got to be embarrassing."'},
+  'drops+wfh+family':{l:'Work drops while family is on',a:'"So when everyone\'s online at the same time, your work calls start dropping?"',m:'"The kids are streaming, your partner\'s doing their thing, and suddenly your work call drops. You\'re choosing between your kids\' entertainment and your job. That\'s not a choice you should have to make."'},
+  'drops+wfh+partner':{l:'Both working from home, drops',a:'"So you\'re both trying to work from home and the connection can\'t handle it?"',m:'"You\'re both on calls, both trying to get work done, and the internet picks one of you to drop. Every single time. That\'s two people\'s jobs being affected."'},
+  'drops+video_calls':{l:'Video calls cutting out',a:'"So you\'re on a video call and it just cuts out mid-conversation?"',m:'"You\'re talking to someone, making your point, and suddenly you\'re frozen on their screen or you just vanish. They\'re sitting there wondering if you hung up."'},
+  'slow+wfh':{l:'Work grinding to a halt',a:'"So when you\'re working from home everything is just crawling? Files won\'t upload, pages take forever?"',m:'"You\'re trying to get your work done, deadlines are real, and you\'re watching a progress bar crawl. Something that should take 2 minutes takes 20. That\'s costing you real time and real money."'},
+  'slow+streaming':{l:'Can\'t even stream in HD',a:'"So you can\'t even get a show to stream in decent quality? It drops to blurry or just stops?"',m:'"You\'re paying for a 4K TV, paying for streaming services, paying for internet, and you can\'t even watch something in HD. That\'s three bills for a bad experience."'},
+  'slow+streaming+family':{l:'Family can\'t stream together',a:'"So when the whole family tries to watch something or everyone\'s online, it just grinds to a halt?"',m:'"Everyone gets home, wants to relax, and the internet can\'t even handle the family being online at the same time. That\'s supposed to be your downtime, and instead it\'s another frustration."'},
+  'slow+school':{l:'Kids can\'t do homework',a:'"So the kids are trying to do their homework or get on their school portal and it just won\'t load?"',m:'"Your kids are doing the right thing, trying to get their work done, and the internet won\'t cooperate. They\'re falling behind and it\'s not even their fault."'},
+  'slow+school+kids':{l:'Kids falling behind',a:'"So the kids are trying to do homework and the internet is so slow they can\'t even get their assignments to load?"',m:'"Your kids are trying to do the right thing and the internet is failing them. Then you\'re the one getting the email from the teacher asking why it wasn\'t submitted. That\'s not fair to anyone."'},
+  'slow+gaming':{l:'Downloads take forever',a:'"So game updates that should take minutes are taking hours?"',m:'"A 2 gig update takes all night. By the time it\'s done you don\'t even want to play anymore. And when you do play, it lags anyway."'},
+  'outages+family':{l:'Whole house goes dark',a:'"So the internet just goes out completely and the whole household is sitting there with nothing?"',m:'"The internet just dies, nobody can do anything, the kids are complaining, you\'re trying to figure out if it\'s the router or the provider... and you\'re just stuck waiting. Hours of your life, gone."'},
+  'outages':{l:'Full outages',a:'"So it\'s not just slow, it goes completely down? No internet at all?"',m:'"It\'s not even a speed issue at that point. The whole thing just goes dark. And you\'re just... waiting. Nothing you can do."'},
+  'price':{l:'Bill keeps climbing',a:'"So the bill just keeps going up? Started at one price and now it\'s way more?"',m:'"You signed up at one price, and now every few months you look at the bill and it\'s higher. And the service hasn\'t gotten any better. You\'re paying more for the same problems."'},
+  'price+slow':{l:'Paying more for bad service',a:'"So you\'re paying more every month and the service is still terrible?"',m:'"That\'s the worst combo. The bill goes up and the internet gets worse. You\'re literally paying more money for a worse experience."'},
+  'support':{l:'Can\'t get help',a:'"So when something goes wrong, you call them and it\'s just hold music, transfers, nobody can fix it?"',m:'"You\'re already frustrated because the internet\'s down, and then you call for help and you\'re on hold for 45 minutes, get transferred three times, and they tell you to restart your router. Like you haven\'t already tried that."'},
+  'latency+gaming':{l:'Unplayable lag',a:'"So the ping is so high it\'s basically unplayable?"',m:'"There\'s a half-second delay on everything. You\'re dead before you even see the other player. That\'s not gaming, that\'s watching yourself lose."'},
+  'data_cap':{l:'Hitting the data cap',a:'"So you hit your data cap and they throttle you or charge overage?"',m:'"You\'re paying for internet and halfway through the month they slow you down because you used \'too much.\' In 2026. That shouldn\'t be a thing."'},
+  'inconsistent':{l:'Never know what you\'ll get',a:'"So some days it\'s fine and other days it\'s completely unusable?"',m:'"You never know if the internet is going to work when you need it. You can\'t plan around that. You can\'t tell your boss \'sorry, my internet decided not to work today.\'"'},
+  'inconsistent+wfh':{l:'Can\'t rely on it for work',a:'"So some days it\'s fine for work and other days you can barely send an email?"',m:'"Your job depends on the internet working, and every morning it\'s a coin flip. That kind of uncertainty when your paycheck is on the line... that\'s stressful."'},
+  'slow':{l:'Everything is slow',a:'"So pretty much everything is just slow? Pages, videos, downloads?"',m:'"You\'re paying for internet every month and basically nothing works the way it should. Everything takes twice as long. That adds up."'},
+  'drops':{l:'Keeps disconnecting',a:'"So the connection just drops randomly throughout the day?"',m:'"You never really know if the internet is going to work when you need it. You sit down to do something and it\'s a coin flip whether it\'ll stay connected."'},
+  'buffering':{l:'Constant buffering',a:'"So it\'s just buffering all the time? Like, you can\'t even watch something without it stopping?"',m:'"You hit play, it loads for a few seconds, buffers, loads again, buffers again. At some point you just give up and do something else. That\'s not what you\'re paying for."'}
+};
+
+// --- Gap Selling Step Functions ---
+
+function gsUnlock(id) {
+  var el = document.getElementById(id);
+  if (!el || !el.classList.contains('gs-locked')) return;
+  el.classList.remove('gs-locked');
+  el.classList.add('gs-active', 'gs-slide');
+  // Auto-scroll to newly unlocked step
+  setTimeout(function() { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150);
+}
+
+function gsMarkDone(id) {
+  var el = document.getElementById(id);
+  if (el) { el.classList.remove('gs-active'); el.classList.add('gs-done'); }
+}
+
+function gsTogUsage(el, val) {
+  var i = gsState.usages.indexOf(val);
+  if (i >= 0) { gsState.usages.splice(i, 1); el.classList.remove('active'); }
+  else { gsState.usages.push(val); el.classList.add('active'); }
+  // Sync to main state
+  state.usage_types = gsState.usages.slice();
+  if (gsState.usages.length > 0) { gsMarkDone('gs-s1'); gsUnlock('gs-s2'); }
+  gsUpdateImpact();
+  saveToLocalStorage();
+}
+
+function gsTogWho(el, val) {
+  if (val === 'just_me') {
+    gsState.who = ['just_me'];
+    document.querySelectorAll('#gs-who-tags .pill').forEach(function(t) { t.classList.remove('active'); });
+    el.classList.add('active');
+  } else {
+    gsState.who = gsState.who.filter(function(v) { return v !== 'just_me'; });
+    document.querySelectorAll('#gs-who-tags .pill').forEach(function(t) { if (t.textContent.trim() === 'Just me') t.classList.remove('active'); });
+    var i = gsState.who.indexOf(val);
+    if (i >= 0) { gsState.who.splice(i, 1); el.classList.remove('active'); }
+    else { gsState.who.push(val); el.classList.add('active'); }
+  }
+  // Sync household to main state
+  if (gsState.who.indexOf('family') >= 0 || gsState.who.indexOf('kids') >= 0) { state.household_type = 'whole_household'; state.household_multi = true; }
+  else if (gsState.who.indexOf('partner') >= 0) { state.household_type = 'partner'; state.household_multi = true; }
+  else { state.household_type = 'just_me'; state.household_multi = false; }
+  gsMarkDone('gs-s2'); gsUnlock('gs-s3');
+  if (gsState.pains.length > 0) gsBuildDrills();
+  gsUpdateImpact();
+  gsUpdateDMScript();
+  saveToLocalStorage();
+}
+
+function gsSetScore(n) {
+  gsState.score = n;
+  state.satisfaction_score = n;
+  // Highlight selected score button
+  document.querySelectorAll('#gs-s3 .score-btn').forEach(function(b) { b.classList.remove('selected'); });
+  var btns = document.querySelectorAll('#gs-s3 .score-btn');
+  if (btns[n-1]) btns[n-1].classList.add('selected');
+  // Score response
+  var r = document.getElementById('gs-score-resp');
+  r.classList.remove('hidden');
+  r.className = 'script-block gs-slide';
+  if (n <= 4) { r.style.borderLeftColor = 'var(--danger)'; r.innerHTML = '"A ' + n + '... yeah, that\'s rough."<span class="coaching">They\'re in pain. Lean in. Go right into the impact question.</span>'; }
+  else if (n <= 7) { r.style.borderLeftColor = 'var(--warning)'; r.innerHTML = '"A ' + n + ', so not terrible but not great either."<span class="coaching">There\'s a gap. Find out what\'s behind it.</span>'; }
+  else { r.style.borderLeftColor = 'var(--success)'; r.innerHTML = '"A ' + n + ', nice! Sounds like you\'re in a good spot."<span class="coaching">Small gap. Listen for the one thing that bugs them.</span>'; }
+  document.getElementById('gs-impact-score').textContent = n;
+  gsMarkDone('gs-s3'); gsUnlock('gs-s4');
+  gsUpdateImpact();
+  saveToLocalStorage();
+}
+
+function gsUpdateImpact() {
+  if (gsState.usages.length > 0) {
+    var names = gsState.usages.map(function(u) { return gsLabels.usage[u] ? gsLabels.usage[u].toLowerCase() : u; });
+    document.getElementById('gs-impact-usage').textContent = names.join(', ');
+  }
+  var whoText = '';
+  if (gsState.who.indexOf('family') >= 0 || gsState.who.indexOf('kids') >= 0) whoText = ' for you and your family';
+  else if (gsState.who.indexOf('partner') >= 0) whoText = ' for you and your partner';
+  document.getElementById('gs-impact-who-insert').textContent = whoText;
+}
+
+function gsUpdateDMScript() {
+  var t = document.getElementById('gs-dm-who-text');
+  if (!t) return;
+  if (gsState.who.indexOf('partner') >= 0) t.textContent = 'and your partner';
+  else if (gsState.who.indexOf('family') >= 0 || gsState.who.indexOf('kids') >= 0) t.textContent = 'and your family';
+  else if (gsState.who.indexOf('roommates') >= 0) t.textContent = 'and your roommates';
+  else t.textContent = '';
+}
+
+function gsTogPain(el, val) {
+  var i = gsState.pains.indexOf(val);
+  if (i >= 0) { gsState.pains.splice(i, 1); el.classList.remove('active'); }
+  else { gsState.pains.push(val); el.classList.add('active'); }
+  // Sync to main state pain_types
+  state.pain_types = gsState.pains.slice();
+  if (gsState.pains.length > 0) { gsUnlock('gs-s5'); gsBuildDrills(); }
+  saveToLocalStorage();
+}
+
+function gsBuildDrills() {
+  var c = document.getElementById('gs-drill-cards');
+  c.innerHTML = '';
+  var found = [];
+  gsState.pains.forEach(function(p) {
+    gsState.usages.forEach(function(u) {
+      gsState.who.forEach(function(w) { var k = p + '+' + u + '+' + w; if (gsDrills[k] && found.indexOf(k) < 0) found.push(k); });
+      var k = p + '+' + u; if (gsDrills[k] && found.indexOf(k) < 0) found.push(k);
+    });
+    gsState.who.forEach(function(w) { var k = p + '+' + w; if (gsDrills[k] && found.indexOf(k) < 0) found.push(k); });
+    if (gsDrills[p] && found.indexOf(p) < 0) found.push(p);
+  });
+  if (!found.length) { c.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:16px;text-align:center">Tag pain in Step 4 to see scenarios...</div>'; return; }
+  found.forEach(function(key) {
+    var d = gsDrills[key];
+    var card = document.createElement('div');
+    card.className = 'gs-drill gs-slide';
+    card.innerHTML = '<div class="gs-dl">' + d.l + '</div>' + d.a;
+    card.onclick = function() {
+      document.querySelectorAll('.gs-drill').forEach(function(x) { x.classList.remove('gs-sel'); });
+      card.classList.add('gs-sel');
+      gsState.selectedDrill = key;
+      document.getElementById('gs-mirror-script').innerHTML = d.m;
+      gsMarkDone('gs-s5'); gsUnlock('gs-s6'); gsUnlock('gs-s7');
+      saveToLocalStorage();
+    };
+    c.appendChild(card);
+  });
+}
+
+function gsSetQ(el, type, val) {
+  gsState.quant[type] = val;
+  el.parentNode.querySelectorAll('.pill').forEach(function(p) { p.classList.remove('active'); });
+  el.classList.add('active');
+  // Sync to main state
+  if (type === 'freq') state.pain_frequency = val;
+  if (type === 'dur') state.pain_duration = val;
+  if (type === 'called') state.provider_tried_fix = val;
+  gsBuildQLine();
+  saveToLocalStorage();
+}
+
+function gsBuildQLine() {
+  var q = gsState.quant;
+  if (!q.freq || !q.dur || !q.called) return;
+  var f = {daily:'every single day',few_week:'a few times a week',weekly:'every week',sometimes:'pretty regularly'};
+  var d = {weeks:'a few weeks',months:'months','6mo':'over six months',years:'years'};
+  var c = {yes_no_help:"you've called them and they couldn't fix it",yes_temp:"they gave you a temporary fix that didn't stick",no:"you haven't even been able to get help",gave_up:"you gave up even trying to call them"};
+  var line = '"So this has been going on for ' + d[q.dur] + ', it\'s happening ' + f[q.freq] + ', and ' + c[q.called] + '. That\'s a lot of frustration built up."';
+  document.getElementById('gs-quant-line').innerHTML = line;
+  var tie = document.getElementById('gs-quant-tie');
+  tie.classList.remove('hidden');
+  tie.classList.add('gs-slide');
+  gsMarkDone('gs-s7'); gsUnlock('gs-s8');
+  var tenResp = document.getElementById('gs-ten-response');
+  if (tenResp) tenResp.classList.remove('hidden');
+}
+
+function gsTogTen(el, val) {
+  var i = gsState.tenAnswer.indexOf(val);
+  if (i >= 0) { gsState.tenAnswer.splice(i, 1); el.classList.remove('active'); }
+  else { gsState.tenAnswer.push(val); el.classList.add('active'); }
+  if (gsState.tenAnswer.length > 0) {
+    var bridge = document.getElementById('gs-ten-bridge');
+    bridge.classList.remove('hidden'); bridge.classList.add('gs-slide');
+    var parts = gsState.tenAnswer.map(function(v) { return gsLabels.ten[v] ? gsLabels.ten[v].toLowerCase() : v; });
+    var txt = '"All right, so it sounds like you\'re looking for something that\'s ' + parts.join(' and ') + '. Let me ask you a couple more things and then I\'ll show you exactly what we can do."';
+    document.getElementById('gs-ten-bridge-script').innerHTML = txt + '<span class="coaching">This is the transition. They just gave you permission to pitch.</span>';
+    gsMarkDone('gs-s8'); gsUnlock('gs-s9');
+  }
+  saveToLocalStorage();
+}
+
+function gsSetProv(el, val) {
+  gsState.provider = val;
+  state.current_provider = val;
+  document.querySelectorAll('#gs-provider-tags .pill').forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+  if (val === 'Other') document.getElementById('gs-prov-other').classList.remove('hidden');
+  else document.getElementById('gs-prov-other').classList.add('hidden');
+  // Show price lock weave
+  document.getElementById('gs-price-lock-weave').classList.remove('hidden');
+  // Provider type classification + coach note (reuse existing logic)
+  if (typeof classifyProvider === 'function') {
+    var type = classifyProvider(val);
+    state.provider_type = type;
+  }
+  // Show competitor intel hint
+  var hint = document.getElementById('gs-provider-intel-hint');
+  if (hint) {
+    if (typeof findCompetitor === 'function' && findCompetitor(val)) { hint.classList.remove('hidden'); }
+    else { hint.classList.add('hidden'); }
+  }
+  // Unlock DM if not "just me"
+  if (gsState.who.indexOf('just_me') < 0 && gsState.who.length > 0) gsUnlock('gs-s10');
+  saveToLocalStorage();
+  renderAll();
+}
+
+function gsSetPri(el, val) {
+  gsState.priority = val;
+  state.priority_preference = val;
+  el.parentNode.querySelectorAll('.pill').forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+  gsMarkDone('gs-s9');
+  if (gsState.who.indexOf('just_me') < 0 && gsState.who.length > 0) gsUnlock('gs-s10');
+  else gsShowSummary(); // No DM needed for solo users
+  saveToLocalStorage();
+}
+
+function gsSetDM(el, val) {
+  gsState.dm = val;
+  state.decision_maker = val === 'sole' ? 'sole' : val === 'together' ? 'spouse' : val === 'spouse' ? 'spouse' : 'landlord';
+  document.querySelectorAll('#gs-dm-tags .pill').forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+  if (val === 'together' || val === 'spouse') {
+    var row = document.getElementById('gs-dm-spouse-row');
+    row.classList.remove('hidden'); row.classList.add('gs-slide');
+  } else {
+    document.getElementById('gs-dm-spouse-row').classList.add('hidden');
+  }
+  gsMarkDone('gs-s10');
+  gsShowSummary();
+  saveToLocalStorage();
+}
+
+function gsSetSpouse(el, val) {
+  gsState.spouse = val;
+  state.spouse_feeling = val;
+  el.parentNode.querySelectorAll('.pill').forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+  gsShowSummary();
+  saveToLocalStorage();
+}
+
+function gsShowSummary() {
+  var el = document.getElementById('gs-summary');
+  el.classList.remove('hidden'); el.classList.add('gs-slide');
+  var g = document.getElementById('gs-sum-grid');
+  var r = '';
+  var sl = function(l,v) { return '<span style="color:var(--text-muted);font-size:12px">' + l + '</span><span style="color:var(--text-primary);font-weight:500">' + v + '</span>'; };
+  if (gsState.score) r += sl('Score', gsState.score + ' / 10');
+  if (gsState.usages.length) r += sl('Usage', gsState.usages.map(function(u) { return gsLabels.usage[u]; }).join(', '));
+  if (gsState.who.length) r += sl('Household', gsState.who.map(function(w) { return gsLabels.who[w]; }).join(', '));
+  if (gsState.pains.length) r += sl('Pain', gsState.pains.map(function(p) { return gsLabels.pain[p]; }).join(', '));
+  if (gsState.selectedDrill && gsDrills[gsState.selectedDrill]) r += sl('Event', gsDrills[gsState.selectedDrill].l);
+  var fL = {daily:'Daily',few_week:'Few/week',weekly:'Weekly',sometimes:'Sometimes'};
+  var dL = {weeks:'Weeks',months:'Months','6mo':'6+ months',years:'Years'};
+  var cL = {yes_no_help:'Called, no help',yes_temp:'Temp fix',no:'Never called',gave_up:'Gave up'};
+  if (gsState.quant.freq) r += sl('Frequency', fL[gsState.quant.freq]);
+  if (gsState.quant.dur) r += sl('Duration', dL[gsState.quant.dur]);
+  if (gsState.quant.called) r += sl('Provider contact', cL[gsState.quant.called]);
+  if (gsState.tenAnswer.length) r += sl('Would make it a 10', gsState.tenAnswer.map(function(t) { return gsLabels.ten[t]; }).join(', '));
+  if (gsState.provider) r += sl('Current provider', gsState.provider);
+  if (gsState.price) r += sl('Current price', '$' + gsState.price + '/mo');
+  if (gsState.priority) r += sl('Priority', gsState.priority);
+  if (gsState.dm) r += sl('Decision maker', gsLabels.dm[gsState.dm]);
+  if (gsState.spouse) r += sl('Spouse feeling', gsLabels.spouse[gsState.spouse]);
+  g.innerHTML = r;
+  // Mark discovery checklist item done
+  if (typeof updateChecklist === 'function') {
+    checkState['pain'] = 'completed';
+    updateChecklist();
+  }
+}
+
+// Restore Gap Selling UI from saved gsState (called on page load / renderAll)
+function gsRestoreUI() {
+  if (state.mode === 'mining') return; // Skip for mining mode
+  // Restore usage pills
+  gsState.usages.forEach(function(u) {
+    document.querySelectorAll('#gs-usage-tags .pill').forEach(function(p) {
+      if (p.textContent.trim().toLowerCase().replace(/\s*\/\s*/g,'_').replace(/\s+/g,'_') === u ||
+          (gsLabels.usage[u] && p.textContent.trim() === gsLabels.usage[u])) p.classList.add('active');
+    });
+  });
+  // Restore who pills
+  gsState.who.forEach(function(w) {
+    document.querySelectorAll('#gs-who-tags .pill').forEach(function(p) {
+      if (gsLabels.who[w] && p.textContent.trim() === gsLabels.who[w]) p.classList.add('active');
+    });
+  });
+  // Restore pain pills
+  gsState.pains.forEach(function(pa) {
+    document.querySelectorAll('#gs-pain-tags .pill').forEach(function(p) {
+      if (gsLabels.pain[pa] && p.textContent.trim() === gsLabels.pain[pa]) p.classList.add('active');
+    });
+  });
+  // Unlock completed steps and restore score
+  if (gsState.usages.length > 0) { gsUnlockSilent('gs-s1'); gsMarkDone('gs-s1'); gsUnlockSilent('gs-s2'); }
+  if (gsState.who.length > 0) { gsMarkDone('gs-s2'); gsUnlockSilent('gs-s3'); }
+  if (gsState.score > 0) {
+    gsMarkDone('gs-s3'); gsUnlockSilent('gs-s4');
+    document.getElementById('gs-impact-score').textContent = gsState.score;
+    // Highlight score button
+    var btns = document.querySelectorAll('#gs-s3 .score-btn');
+    if (btns[gsState.score - 1]) btns[gsState.score - 1].classList.add('selected');
+    // Rebuild score response
+    var r = document.getElementById('gs-score-resp');
+    r.classList.remove('hidden'); r.className = 'script-block';
+    if (gsState.score <= 4) { r.style.borderLeftColor = 'var(--danger)'; r.innerHTML = '"A ' + gsState.score + '... yeah, that\'s rough."'; }
+    else if (gsState.score <= 7) { r.style.borderLeftColor = 'var(--warning)'; r.innerHTML = '"A ' + gsState.score + ', so not terrible but not great either."'; }
+    else { r.style.borderLeftColor = 'var(--success)'; r.innerHTML = '"A ' + gsState.score + ', nice! Sounds like you\'re in a good spot."'; }
+  }
+  if (gsState.pains.length > 0) { gsUnlockSilent('gs-s5'); gsBuildDrills(); }
+  if (gsState.selectedDrill) {
+    gsMarkDone('gs-s5'); gsUnlockSilent('gs-s6'); gsUnlockSilent('gs-s7');
+    if (gsDrills[gsState.selectedDrill]) {
+      document.getElementById('gs-mirror-script').innerHTML = gsDrills[gsState.selectedDrill].m;
+    }
+  }
+  // Restore quantify pills
+  ['freq','dur','called'].forEach(function(type) {
+    if (gsState.quant[type]) {
+      document.querySelectorAll('.gs-quant-card .pill').forEach(function(p) {
+        var card = p.closest('.gs-quant-card');
+        if (!card) return;
+        var label = card.querySelector('.gs-quant-label');
+        if (!label) return;
+        var isMatch = false;
+        if (type === 'freq' && label.textContent === 'How often?') isMatch = true;
+        if (type === 'dur' && label.textContent === 'How long?') isMatch = true;
+        if (type === 'called' && label.textContent === 'Called provider?') isMatch = true;
+        if (isMatch && p.getAttribute('onclick') && p.getAttribute('onclick').indexOf("'" + gsState.quant[type] + "'") >= 0) {
+          p.classList.add('active');
+        }
+      });
+    }
+  });
+  if (gsState.quant.freq && gsState.quant.dur && gsState.quant.called) {
+    gsBuildQLine();
+    gsMarkDone('gs-s7'); gsUnlockSilent('gs-s8');
+  }
+  // Restore ten answer pills
+  if (gsState.tenAnswer.length > 0) {
+    document.getElementById('gs-ten-response').classList.remove('hidden');
+    gsState.tenAnswer.forEach(function(t) {
+      document.querySelectorAll('#gs-ten-response .pill').forEach(function(p) {
+        if (gsLabels.ten[t] && p.textContent.trim() === gsLabels.ten[t]) p.classList.add('active');
+      });
+    });
+    gsMarkDone('gs-s8'); gsUnlockSilent('gs-s9');
+    // Rebuild bridge
+    var parts = gsState.tenAnswer.map(function(v) { return gsLabels.ten[v] ? gsLabels.ten[v].toLowerCase() : v; });
+    var txt = '"All right, so it sounds like you\'re looking for something that\'s ' + parts.join(' and ') + '. Let me ask you a couple more things and then I\'ll show you exactly what we can do."';
+    document.getElementById('gs-ten-bridge-script').innerHTML = txt;
+    document.getElementById('gs-ten-bridge').classList.remove('hidden');
+  }
+  // Restore provider
+  if (gsState.provider) {
+    document.querySelectorAll('#gs-provider-tags .pill').forEach(function(p) {
+      if (p.textContent.trim() === gsState.provider) p.classList.add('active');
+    });
+    document.getElementById('gs-price-lock-weave').classList.remove('hidden');
+    gsUnlockSilent('gs-s9');
+  }
+  if (gsState.price) {
+    var priceInp = document.getElementById('gs-inp-price');
+    if (priceInp) priceInp.value = gsState.price;
+  }
+  // Restore priority
+  if (gsState.priority) {
+    document.querySelectorAll('#gs-s9 .pill').forEach(function(p) {
+      if (p.textContent.trim().toLowerCase().replace(/\s+/g,'_') === gsState.priority ||
+          (gsState.priority === 'reliability' && p.textContent.trim() === 'Best Reliability') ||
+          (gsState.priority === 'price' && p.textContent.trim() === 'Lowest Price') ||
+          (gsState.priority === 'mix' && p.textContent.trim() === 'Mix of Both'))
+        p.classList.add('active');
+    });
+    gsMarkDone('gs-s9');
+  }
+  // Restore DM
+  if (gsState.who.indexOf('just_me') < 0 && gsState.who.length > 0 && (gsState.provider || gsState.priority)) {
+    gsUnlockSilent('gs-s10');
+  }
+  if (gsState.dm) {
+    document.querySelectorAll('#gs-dm-tags .pill').forEach(function(p) {
+      if (gsLabels.dm[gsState.dm] && p.textContent.trim() === gsLabels.dm[gsState.dm]) p.classList.add('active');
+    });
+    if (gsState.dm === 'together' || gsState.dm === 'spouse') {
+      document.getElementById('gs-dm-spouse-row').classList.remove('hidden');
+    }
+    gsMarkDone('gs-s10');
+  }
+  if (gsState.spouse) {
+    document.querySelectorAll('#gs-dm-spouse-row .pill').forEach(function(p) {
+      if (gsLabels.spouse[gsState.spouse] && p.textContent.trim() === gsLabels.spouse[gsState.spouse]) p.classList.add('active');
+    });
+  }
+  // Show summary if DM is done or solo user completed s9
+  if (gsState.dm || (gsState.who.indexOf('just_me') >= 0 && gsState.priority)) {
+    gsShowSummary();
+  }
+  gsUpdateImpact();
+  gsUpdateDMScript();
+}
+
+// Silent unlock (no auto-scroll — used during restore)
+function gsUnlockSilent(id) {
+  var el = document.getElementById(id);
+  if (!el || !el.classList.contains('gs-locked')) return;
+  el.classList.remove('gs-locked');
+  el.classList.add('gs-active');
+}
 
 // ===== PAIN TREE (11 Alamo-specific pain tiles based on transcript analysis) =====
 const painTree = {
@@ -3413,139 +5096,276 @@ const objections = [
   }
 ];
 
-// ===== COMPETITOR DATA =====
-var competitors = {
-  att: {
-    name: 'AT&T',
-    match: ['att', 'at&t', 'at and t', 'att fiber', 'att air', 'at&t air', 'uverse', 'u-verse'],
-    killer: '"A lot of AT&T customers tell us their bills keep creeping up or their AT&T Air drops throughout the day. What\'s been your experience?"',
-    response: '"I hear that a lot. AT&T is great in some areas, but many of our customers switched because of the price increases and reliability issues. With Alamo Broadband, you get a fixed price \u2014 what you sign up for is what you pay. No surprises. Plus unlimited data, free TV service, and local support right here in San Antonio."',
-    table: [
-      ['Price Lock', 'Promotional pricing expires', 'Your price stays the same'],
-      ['Data', 'May have caps on some plans', 'Truly unlimited \u2014 no throttling'],
-      ['Contract', '1-2 year with ETF', '30-day money-back guarantee'],
-      ['Support', 'National call center', 'Local San Antonio team'],
-      ['TV Service', 'Separate subscription', 'Free with all plans'],
-      ['Installation', '$0-99 varies', '$99 one-time']
-    ]
-  },
-  spectrum: {
-    name: 'Spectrum',
-    match: ['spectrum', 'charter', 'time warner', 'twc', 'bright house'],
-    killer: '"Spectrum is known for those introductory rates that jump way up after a year. Have you noticed your bill going up?"',
-    response: '"That\'s the number one reason people switch from Spectrum. They advertise $30-50 but within a year or two you\'re paying $75-90. With Alamo Broadband, your price is your price. No promotional gimmicks. And you get free TV service included, which most Spectrum customers are paying extra for."',
-    table: [
-      ['Pricing', 'Promo rate \u2192 price hike', 'Same price, always'],
-      ['Data', 'Unlimited (on most plans)', 'Unlimited \u2014 no throttling'],
-      ['TV', 'Separate $50-80/mo add-on', 'Free with all plans'],
-      ['Contract', 'No contract (but prices rise)', '30-day money-back guarantee'],
-      ['Support', 'Long wait times reported', 'Local San Antonio team'],
-      ['Installation', '$0-49', '$99 one-time']
-    ]
-  },
-  starlink: {
-    name: 'Starlink',
-    match: ['starlink', 'spacex', 'elon'],
-    killer: '"Starlink is impressive technology, but at $120 a month plus that $599 equipment cost, a lot of folks find it\'s more than they need. What drew you to Starlink?"',
-    response: '"Starlink is great for truly remote locations. But if we can reach you with our towers \u2014 and it looks like we can \u2014 you\'ll get comparable speeds at nearly half the monthly cost. Plus you don\'t have to buy $599 in equipment. Our installation is $99 one-time, router included, and you get free TV service on top."',
-    table: [
-      ['Monthly Cost', '$120/mo', 'Starting at $59.95/mo'],
-      ['Equipment', '$599 purchase', '$99 install (equipment included)'],
-      ['Data', 'Deprioritized during congestion', 'Truly unlimited \u2014 never throttled'],
-      ['Latency', '25-60ms (improving)', '~20ms'],
-      ['TV Service', 'Not included', 'Free with all plans'],
-      ['Support', 'Email only', 'Local phone + in-person']
-    ]
-  },
-  tmobile: {
-    name: 'T-Mobile Home Internet',
-    match: ['t-mobile', 'tmobile', 't mobile', 'tmo', 'metro', 'metronet'],
-    killer: '"T-Mobile 5G Home is affordable, but a lot of customers have issues with their streaming services thinking they\'re in a different city. Have you run into that?"',
-    response: '"That\'s the IP rotation problem \u2014 T-Mobile\'s 5G bounces your connection around different towers, so Hulu or Netflix might think you\'re in Houston when you\'re in San Antonio. With Alamo Broadband, you get a fixed connection pointed directly at your home. Your IP stays consistent, your streaming works perfectly, and you get a more reliable connection overall."',
-    table: [
-      ['Connection Type', 'Shared 5G (scattered)', 'Fixed wireless (direct to home)'],
-      ['IP Address', 'Rotates (streaming issues)', 'Consistent \u2014 no location problems'],
-      ['Reliability', 'Varies by congestion', '99.99% uptime'],
-      ['Data', 'Deprioritized after threshold', 'Truly unlimited'],
-      ['TV Service', 'Not included', 'Free with all plans'],
-      ['Support', 'National call center', 'Local San Antonio team']
-    ]
-  },
-  viasat: {
-    name: 'Viasat',
-    match: ['viasat', 'exede', 'wildblue'],
-    killer: '"Viasat customers often tell us they\'re paying over $100 a month but the speeds don\'t come close to what was promised. Sound familiar?"',
-    response: '"Satellite internet has to travel 22,000 miles to space and back \u2014 that\'s why it\'s slow and drops in bad weather. Our towers are right here in the San Antonio area, just a few miles from your home. You\'ll notice the difference immediately. Lower price, faster speeds, and no weather headaches."',
-    table: [
-      ['Technology', 'Satellite (22,000 mi)', 'Ground tower (few miles)'],
-      ['Latency', '600ms+', '~20ms'],
-      ['Weather Impact', 'Major \u2014 rain/storms', 'Minimal'],
-      ['Price', '$100-170/mo', 'Starting at $59.95/mo'],
-      ['Data', 'Capped + throttled', 'Truly unlimited'],
-      ['TV Service', 'Not included', 'Free with all plans']
-    ]
-  },
-  hughesnet: {
-    name: 'HughesNet',
-    match: ['hughesnet', 'hughes net', 'hughes'],
-    killer: '"HughesNet customers usually tell us they\'re paying over $100 for speeds that feel like dial-up. What speeds are you actually getting?"',
-    response: '"I hear that constantly. HughesNet advertises certain speeds but the reality is very different because of satellite limitations. Many of our customers who switched from HughesNet say it\'s like night and day. Our signal only travels a few miles from a local tower, not 22,000 miles to space."',
-    table: [
-      ['Technology', 'Satellite (22,000 mi)', 'Ground tower (few miles)'],
-      ['Weather Impact', 'Significant — rain/storms', 'Minimal — local tower'],
-      ['Real Speeds', 'Often 1-4 Mbps actual', 'Consistent performance'],
-      ['Latency', '600ms+', '~20ms'],
-      ['Price', '$64-170/mo', 'Starting at $59.95/mo'],
-      ['Data', '15-100 GB caps', 'Truly unlimited'],
-      ['Contract', '2-year with $400 ETF', '30-day money-back guarantee']
-    ]
-  },
-  rise: {
-    name: 'Rise Broadband',
-    match: ['rise', 'rise broadband', 'jab broadband'],
-    killer: '"Rise Broadband is another fixed wireless provider in the area. What\'s been your experience with them \u2014 reliability or support issues?"',
-    response: '"Rise is a good company, but we hear from customers who switch that our equipment is newer and our support is truly local. We own our towers \u2014 we don\'t piggyback off other providers. And while Rise might be a few dollars cheaper on paper, we include free TV service, a 30-day money-back guarantee, and local technicians right here in San Antonio."',
-    table: [
-      ['Tower Ownership', 'Mixed / leased', 'We own our towers'],
-      ['Support', 'Regional call center', 'Local San Antonio team'],
-      ['TV Service', 'Not included', 'Free with all plans'],
-      ['Guarantee', 'Varies', '30-day money-back'],
-      ['Equipment', 'Standard', 'Next-gen equipment'],
-      ['Price', 'Starting ~$59.99/mo', 'Starting at $59.95/mo']
-    ]
-  },
-  frontier: {
-    name: 'Frontier',
-    match: ['frontier', 'brightspeed', 'fios'],
-    killer: '"Frontier has been making some changes in the area. Are you getting the speeds and reliability they promised?"',
-    response: '"Frontier has good fiber in some neighborhoods, but their DSL and fixed wireless products are hit or miss. If you\'re on DSL especially, you\'ll see a massive improvement with our service. And even compared to their fiber, we include free TV service and truly local support."',
-    table: [
-      ['Technology', 'DSL / Fiber (varies)', 'Fixed wireless'],
-      ['Availability', 'Limited areas', 'Broad rural coverage'],
-      ['Price', '$49-79/mo', 'Starting at $59.95/mo'],
-      ['TV Service', 'Not included', 'Free with all plans'],
-      ['Support', 'National', 'Local San Antonio team'],
-      ['Data', 'Unlimited (fiber plans)', 'Unlimited on all plans']
-    ]
-  },
-  gvec: {
-    name: 'GVEC',
-    match: ['gvec', 'guadalupe valley'],
-    killer: '"GVEC is a local option too. What\'s been your experience \u2014 any issues with speeds, the app requirements, or support?"',
-    response: '"GVEC is a solid local provider. Some customers switch to us because of GVEC\'s mandatory app-based parental controls that can be frustrating, or because we offer better pricing for comparable speeds. We also include free TV service and a 30-day money-back guarantee so you can compare risk-free."',
-    table: [
-      ['Type', 'Co-op (fiber/FWA)', 'Fixed wireless'],
-      ['Parental Controls', 'Mandatory app', 'Optional'],
-      ['TV Service', 'Not included', 'Free with all plans'],
-      ['Guarantee', 'Varies', '30-day money-back'],
-      ['Support', 'Local co-op', 'Local San Antonio team'],
-      ['Price', 'Varies by area', 'Starting at $59.95/mo']
-    ]
-  }
-};
+// ===== COMPETITOR ASSIGNMENTS (from shared library) =====
+// ===== COMPETITOR ASSIGNMENTS =====
+// Each client gets competitors from the shared library
+CLIENT_CONFIGS.cbnflx.competitors = (function() {
+  var c = {};
+  c.spectrum = COMPETITOR_LIBRARY.spectrum;
+  c.frontier = COMPETITOR_LIBRARY.frontier;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  return c;
+})();
+CLIENT_CONFIGS.vtx1.competitors = (function() {
+  var c = {};
+  c.spectrum = COMPETITOR_LIBRARY.spectrum;
+  c.att = COMPETITOR_LIBRARY.att;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.viasat = COMPETITOR_LIBRARY.viasat;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.alamo.competitors = (function() {
+  var c = {};
+  c.spectrum = COMPETITOR_LIBRARY.spectrum;
+  c.att = COMPETITOR_LIBRARY.att;
+  c.viasat = COMPETITOR_LIBRARY.viasat;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.frontier = COMPETITOR_LIBRARY.frontier;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.verizon = COMPETITOR_LIBRARY.verizon;
+  return c;
+})();
+CLIENT_CONFIGS.altitude.competitors = (function() {
+  var c = {};
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.aristotle.competitors = (function() {
+  var c = {};
+  c.centurylink = COMPETITOR_LIBRARY.centurylink;
+  c.att = COMPETITOR_LIBRARY.att;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  c.xfinity = COMPETITOR_LIBRARY.xfinity;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  return c;
+})();
+CLIENT_CONFIGS.beecreek.competitors = (function() {
+  var c = {};
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  c.spectrum = COMPETITOR_LIBRARY.spectrum;
+  c.windstream = COMPETITOR_LIBRARY.windstream;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.frontier = COMPETITOR_LIBRARY.frontier;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.att = COMPETITOR_LIBRARY.att;
+  return c;
+})();
+CLIENT_CONFIGS.broadbandcorp.competitors = (function() {
+  var c = {};
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.buffalofiber.competitors = (function() {
+  var c = {};
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.celerity.competitors = (function() {
+  var c = {};
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.centralvalley.competitors = (function() {
+  var c = {};
+  c.xfinity = COMPETITOR_LIBRARY.xfinity;
+  c.att = COMPETITOR_LIBRARY.att;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.frontier = COMPETITOR_LIBRARY.frontier;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  return c;
+})();
+CLIENT_CONFIGS.communitywireless.competitors = (function() {
+  var c = {};
+  c.spectrum = COMPETITOR_LIBRARY.spectrum;
+  c.att = COMPETITOR_LIBRARY.att;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  c.frontier = COMPETITOR_LIBRARY.frontier;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.viasat = COMPETITOR_LIBRARY.viasat;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  return c;
+})();
+CLIENT_CONFIGS.countrywireless.competitors = (function() {
+  var c = {};
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.crosslink.competitors = (function() {
+  var c = {};
+  c.att = COMPETITOR_LIBRARY.att;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.fallsnet.competitors = (function() {
+  var c = {};
+  c.spectrum = COMPETITOR_LIBRARY.spectrum;
+  c.centurylink = COMPETITOR_LIBRARY.centurylink;
+  c.midco = COMPETITOR_LIBRARY.midco;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  c.att = COMPETITOR_LIBRARY.att;
+  c.verizon = COMPETITOR_LIBRARY.verizon;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  return c;
+})();
+CLIENT_CONFIGS.gvtc.competitors = (function() {
+  var c = {};
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.inlandfiber.competitors = (function() {
+  var c = {};
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.jcwifi.competitors = (function() {
+  var c = {};
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.lightwave.competitors = (function() {
+  var c = {};
+  c.att = COMPETITOR_LIBRARY.att;
+  c.cox = COMPETITOR_LIBRARY.cox;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  c.verizon = COMPETITOR_LIBRARY.verizon;
+  c.spectrum = COMPETITOR_LIBRARY.spectrum;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.mediacom = COMPETITOR_LIBRARY.mediacom;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  return c;
+})();
+CLIENT_CONFIGS.matrix.competitors = (function() {
+  var c = {};
+  c.xfinity = COMPETITOR_LIBRARY.xfinity;
+  c.att = COMPETITOR_LIBRARY.att;
+  c.frontier = COMPETITOR_LIBRARY.frontier;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  return c;
+})();
+CLIENT_CONFIGS.mojo.competitors = (function() {
+  var c = {};
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.mounthoreb.competitors = (function() {
+  var c = {};
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.nativenetwork.competitors = (function() {
+  var c = {};
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  c.centurylink = COMPETITOR_LIBRARY.centurylink;
+  return c;
+})();
+CLIENT_CONFIGS.netwave.competitors = (function() {
+  var c = {};
+  c.xfinity = COMPETITOR_LIBRARY.xfinity;
+  c.mediacom = COMPETITOR_LIBRARY.mediacom;
+  c.frontier = COMPETITOR_LIBRARY.frontier;
+  c.centurylink = COMPETITOR_LIBRARY.centurylink;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  c.verizon = COMPETITOR_LIBRARY.verizon;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.spectrum = COMPETITOR_LIBRARY.spectrum;
+  return c;
+})();
+CLIENT_CONFIGS.oasis.competitors = (function() {
+  var c = {};
+  c.att = COMPETITOR_LIBRARY.att;
+  c.spectrum = COMPETITOR_LIBRARY.spectrum;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.viasat = COMPETITOR_LIBRARY.viasat;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.xfinity = COMPETITOR_LIBRARY.xfinity;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.optimus.competitors = (function() {
+  var c = {};
+  c.spectrum = COMPETITOR_LIBRARY.spectrum;
+  c.verizon = COMPETITOR_LIBRARY.verizon;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  c.centurylink = COMPETITOR_LIBRARY.centurylink;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  return c;
+})();
+CLIENT_CONFIGS.rivercanyon.competitors = (function() {
+  var c = {};
+  c.frontier = COMPETITOR_LIBRARY.frontier;
+  c.verizon = COMPETITOR_LIBRARY.verizon;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  return c;
+})();
+CLIENT_CONFIGS.seamless.competitors = (function() {
+  var c = {};
+  c.mediacom = COMPETITOR_LIBRARY.mediacom;
+  c.frontier = COMPETITOR_LIBRARY.frontier;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  return c;
+})();
+CLIENT_CONFIGS.simpliunlimited.competitors = (function() {
+  var c = {};
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.tecinfo.competitors = (function() {
+  var c = {};
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
+CLIENT_CONFIGS.tnet.competitors = (function() {
+  var c = {};
+  c.starlink = COMPETITOR_LIBRARY.starlink;
+  c.hughesnet = COMPETITOR_LIBRARY.hughesnet;
+  c.tmobile = COMPETITOR_LIBRARY.tmobile;
+  return c;
+})();
 
-// Link competitors into client config
-CLIENT_CONFIGS.alamo.competitors = competitors;
 
 // ===== TRIGGER RESPONSES =====
 // v5.10.3: Keys aligned to pill onclick values
@@ -3599,6 +5419,8 @@ function updateState(key, value) {
 
 function saveToLocalStorage() {
   try { localStorage.setItem(CLIENT.storagePrefix + '_sales_state', JSON.stringify(state)); } catch(e) {}
+  // Save Gap Selling state
+  try { localStorage.setItem(CLIENT.storagePrefix + '_gap_state', JSON.stringify(gsState)); } catch(e) {}
   // Auto-save session if lead has a name or phone
   if (state.lead_name || state.lead_phone) saveSession();
 }
@@ -3617,6 +5439,7 @@ function renderAll() {
   renderROI();
   renderRecScript();
   renderAnchorClose();
+  gsRestoreUI();
   renderSpouseCallback();
   renderSpouseAmmo();
   renderTriggerResponse();
@@ -4618,6 +6441,16 @@ function loadStateFromStorage() {
       if (state.hasOwnProperty(key)) state[key] = saved[key];
     });
   } catch(e) {}
+  // Restore Gap Selling state
+  try {
+    var rawGs = localStorage.getItem(CLIENT.storagePrefix + '_gap_state');
+    if (rawGs) {
+      var savedGs = JSON.parse(rawGs);
+      Object.keys(savedGs).forEach(function(key) {
+        if (gsState.hasOwnProperty(key)) gsState[key] = savedGs[key];
+      });
+    }
+  } catch(e) {}
 }
 
 function getSavedSessions() {
@@ -4631,7 +6464,7 @@ function saveSession() {
   var sessions = getSavedSessions();
   var label = state.lead_name || state.lead_phone || 'Unknown';
   var existing = sessions.findIndex(function(s) { return s.label === label; });
-  var entry = { label: label, timestamp: new Date().toISOString(), state: JSON.parse(JSON.stringify(state)) };
+  var entry = { label: label, timestamp: new Date().toISOString(), state: JSON.parse(JSON.stringify(state)), gsState: JSON.parse(JSON.stringify(gsState)) };
   if (existing >= 0) sessions[existing] = entry;
   else sessions.push(entry);
   if (sessions.length > 20) sessions = sessions.slice(-20);
@@ -4645,6 +6478,13 @@ function resumeSession(index) {
   Object.keys(saved).forEach(function(key) {
     if (state.hasOwnProperty(key)) state[key] = saved[key];
   });
+  // Restore Gap Selling state from session
+  if (sessions[index].gsState) {
+    var savedGs = sessions[index].gsState;
+    Object.keys(savedGs).forEach(function(key) {
+      if (gsState.hasOwnProperty(key)) gsState[key] = savedGs[key];
+    });
+  }
   saveToLocalStorage();
   renderAll();
   if (state.lead_name) { var el = document.getElementById('inp-name'); if(el) el.value = state.lead_name; }
@@ -5020,6 +6860,40 @@ function setSpouseFeeling(el, val) {
   var labels = { frustrated:'Frustrated too', doesnt_care:"Doesn't care", happy:'Happy with current', unaware:'Unaware of issues', on_board:'On board to switch' };
   document.getElementById('inp-dm-inline-feeling').value = labels[val] || val;
   saveToLocalStorage();
+}
+
+function renderPlanCards() {
+  var grid = document.getElementById('plan-grid');
+  if (!grid) return;
+  var ids = ['unfiber50','unfiber100','unfiber300'];
+  var html = '';
+  var cfg = window.CLIENT || {};
+  var hasFreeTV = cfg.features && cfg.features.hasFreeTV;
+  ids.forEach(function(id) {
+    var p = plans[id];
+    if (!p) return;
+    var dollars = Math.floor(p.price);
+    var cents = (p.price % 1).toFixed(2).substring(1);
+    if (cents === '.00') cents = '/mo';
+    else cents = cents + '/mo';
+    html += '<div class="plan-card" onclick="selectPlan(\'' + id + '\')">';
+    html += '<div class="plan-name">' + p.name + '</div>';
+    html += '<div class="plan-tagline">' + p.tagline + '</div>';
+    html += '<div class="plan-price">$' + dollars + '<span>' + cents + '</span></div>';
+    html += '<p style="font-size:11px;color:var(--success);margin-top:4px;font-weight:700">Unlimited Data</p>';
+    if (hasFreeTV) {
+      html += '<p class="feature-free-tv" style="font-size:11px;color:var(--accent);margin-top:2px">Free TV Service + Router Included</p>';
+    }
+    html += '<p style="font-size:11px;color:var(--text-muted);margin-top:4px">' + p.desc + '</p>';
+    html += '</div>';
+  });
+  grid.innerHTML = html;
+  // Re-apply selection state
+  if (state.recommended_plan) {
+    grid.querySelectorAll('.plan-card').forEach(function(c, i) {
+      if (ids[i] === state.recommended_plan) c.classList.add('selected');
+    });
+  }
 }
 
 function selectPlan(planId) {
@@ -6286,6 +8160,7 @@ function setupActiveTracking() {
 function newCall() {
   if (!confirm('Start a new call? This will clear all current data.')) return;
   localStorage.removeItem(CLIENT.storagePrefix + '_sales_state');
+  localStorage.removeItem(CLIENT.storagePrefix + '_gap_state');
   location.reload();
 }
 
@@ -6320,6 +8195,12 @@ function resetForm() {
   state.mode = keepMode || 'standard';
   state.call_type = 'outbound';
   state.schedule_type = 'install';
+  // Reset Gap Selling state
+  gsState.score = 0; gsState.pains = []; gsState.usages = []; gsState.who = [];
+  gsState.dm = null; gsState.spouse = null; gsState.selectedDrill = null;
+  gsState.customDrill = ''; gsState.tenAnswer = []; gsState.provider = null;
+  gsState.price = 0; gsState.priority = null;
+  gsState.quant = {freq:null,dur:null,called:null};
   // Reset all checkState
   Object.keys(checkState).forEach(function(k) { checkState[k] = 'pending'; });
   // Rebuild UI
@@ -6639,12 +8520,19 @@ function loadClient(clientId) {
   var cfg = CLIENT_CONFIGS[clientId] || CLIENT_CONFIGS['alamo'];
   window.CLIENT = cfg;
   competitors = cfg.competitors;
+  // Map plan_a/b/c to internal plan IDs used throughout the app
+  if (cfg.plans) {
+    plans.unfiber50 = cfg.plans.plan_a || plans.unfiber50;
+    plans.unfiber100 = cfg.plans.plan_b || plans.unfiber100;
+    plans.unfiber300 = cfg.plans.plan_c || plans.unfiber300;
+  }
   document.title = cfg.name + ' — Sales Intelligence ' + cfg.version;
   state.plan_benefits = cfg.planBenefits;
   state.lead_state = cfg.leadStateDefault;
   renderTeamSelect();
   applyFeatureFlags();
   renderBranding();
+  renderPlanCards();
   var sel = document.getElementById('client-selector');
   if (sel) sel.value = clientId;
   try { localStorage.setItem('last_client', clientId); } catch(e) {}
